@@ -1,0 +1,299 @@
+// Bootstrap
+@import 'bootstrap/scss/bootstrap';
+
+// Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&family=Noto+Serif+JP:wght@300;400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+
+// --- Variables (Auralee / Comoli Tone) ---
+$bg-color: #f4f5f7;
+$text-main: #3a3a3a;
+$text-sub: #9ea1a3;
+$line-color: rgba(0, 0, 0, 0.08);
+
+// --- Base Styles ---
+body {
+    background-color: $bg-color;
+    color: $text-main;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;       // フレックスボックス
+    flex-direction: column; // 縦並び
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+// --- Concrete Texture ---
+.concrete-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, rgba(240,240,240,0.1) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: $bg-color;
+    background-blend-mode: overlay;
+}
+
+// --- Layout & Spacing ---
+.main-container {
+    flex: 1; // 画面の空きスペースを全て埋める（これでフッターが下に落ちる）
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0;
+    transition: opacity 2s ease;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        padding-top: 25vh;
+        // フッター分の余白は自動で確保されるので削除
+    }
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+}
+
+// --- Typography ---
+h1.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.2rem;
+    color: $text-main;
+    line-height: 1;
+
+    @media (max-width: 768px) {
+        font-size: 3.2rem;
+        text-align: center;
+        margin-bottom: 1rem; // スマホ用余白
+    }
+}
+
+.dot-highlight { color: #000; }
+
+.brand-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $text-sub;
+    margin-bottom: 3.5rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; width: 40px;
+        height: 1px;
+        background-color: $text-sub;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        letter-spacing: 0.15em;
+        margin-bottom: 3rem; // スマホ用余白
+        display: block;
+        text-align: center;
+        &::after { left: 50%; transform: translateX(-50%); }
+    }
+}
+
+.collab-text {
+    font-size: 0.85rem;
+    color: $text-sub;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+
+    @media (max-width: 768px) {
+        text-align: center;
+        font-size: 0.75rem;
+    }
+}
+
+.story-text {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    line-height: 2.2;
+    color: lighten($text-main, 10%);
+    text-align: justify;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    font-weight: 300;
+
+    strong { font-weight: 500; color: #000; }
+
+    @media (max-width: 768px) {
+        text-align: left;
+        font-size: 1rem;
+        line-height: 2;
+        padding: 0 10px;
+    }
+}
+
+// --- Architectural Line ---
+.architectural-line {
+    position: absolute;
+    left: -30px;
+    top: -50px;
+    bottom: -50px;
+    width: 1px;
+    background: $line-color;
+
+    @media (max-width: 768px) { display: none; }
+}
+
+// --- Intro Splash Screen ---
+#intro-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: $bg-color;
+    padding: 2rem;
+}
+
+.intro-content { margin-bottom: 4rem; }
+
+.intro-text {
+    font-family: 'Noto Serif JP', serif;
+    color: $text-main;
+    opacity: 0;
+    transform: translateY(20px);
+    margin-bottom: 2rem;
+}
+
+.intro-small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: $text-sub;
+    text-transform: uppercase;
+}
+
+.intro-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    line-height: 1.4;
+
+    @media (max-width: 768px) { font-size: 1.8rem; }
+}
+
+.intro-date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-top: 1px solid $text-sub;
+    padding-top: 15px;
+    display: inline-block;
+    color: $text-sub;
+}
+
+// --- Enter Button ---
+.intro-action { opacity: 0; transform: translateY(10px); }
+
+.enter-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.5s ease;
+
+    .btn-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: $text-main;
+    }
+
+    .btn-line {
+        width: 30px;
+        height: 1px;
+        background-color: $text-main;
+        transition: all 0.5s ease;
+    }
+
+    &:hover, &:active { .btn-line { width: 50px; } }
+}
+
+// --- Animation ---
+.fade-up { animation: floatUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-out { animation: fadeOut 1.2s ease forwards; }
+
+@keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+// --- Language Switcher ---
+.lang-switcher {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    display: flex;
+    gap: 0.8rem;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+.lang-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(0,0,0,0.3);
+    padding: 5px;
+    transition: all 0.4s ease;
+
+    &.active { color: #000; font-weight: 600; }
+}
+
+// --- Footer (Instagram) ★ここを修正 ---
+.footer-insta {
+    // position: absolute; ← 削除！
+    width: 100%;
+    text-align: center;
+    padding-bottom: 2rem;
+    padding-top: 3rem; // コンテンツとの距離
+    margin-top: auto;  // Flexboxで一番下に押しやる魔法の記述
+
+    opacity: 0;
+    transition: opacity 2s ease;
+    z-index: 10;
+
+    a {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: $text-sub;
+        text-decoration: none;
+        padding-bottom: 5px;
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+
+        &:hover {
+            color: $text-main;
+            border-bottom-color: $text-main;
+        }
+    }
+}
