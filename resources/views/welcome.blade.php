@@ -41,6 +41,7 @@
             </div>
         </div>
     </div>
+
     <div class="teaser-section">
         <div class="teaser-image-wrapper">
             <img src="{{ asset('images/street.png') }}" alt="Menzah 9 Street" class="street-photo">
@@ -51,6 +52,7 @@
             </div>
         </div>
     </div>
+
     @include('parts.footer')
 
     <script type="module">
@@ -62,7 +64,7 @@
             const $action = $('#intro-action');
             const $overlay = $('#intro-overlay');
             const $enterBtn = $('#enter-btn');
-            // フッター内の要素も対象に追加
+            // フッターやTeaserもアニメーション対象
             const $mainElements = $('.main-container, .lang-switcher, .site-footer, .teaser-section');
 
             setTimeout(() => $intro1.addClass('fade-up'), 500);
@@ -77,7 +79,7 @@
                 }, 800);
             });
 
-            // --- 2. Content Data (User Defined) ---
+            // --- 2. Content Data ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,

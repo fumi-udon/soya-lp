@@ -1,22 +1,22 @@
-// ==========================================
-//   FOOTER & TEASER SECTION
-//   (Auralee-like Minimalist Style)
-// ==========================================
+/* ==========================================
+   FOOTER & TEASER SECTION
+   (Auralee-like Minimalist Style)
+   ========================================== */
 
 /* --- 1. Teaser Image (Street View) --- */
 .teaser-section {
     width: 100%;
-    margin-top: 40px;    /* 5pxだと詰まりすぎるので40px推奨 */
+    margin-top: 40px;
     margin-bottom: 60px;
     display: flex;
     justify-content: center;
-    opacity: 0;
+    opacity: 0; /* JSでフェードイン */
     transition: opacity 2s ease;
 }
 
 .teaser-image-wrapper {
     position: relative;
-    max-width: 350px; /* 小さくしました */
+    max-width: 350px;
     width: 100%;
     overflow: hidden;
     margin-left: auto;
@@ -82,7 +82,7 @@
     text-align: center;
     padding-bottom: 4rem;
     margin-top: auto;
-    opacity: 0;
+    opacity: 0; /* JSで表示 */
     transition: opacity 2s ease;
 }
 

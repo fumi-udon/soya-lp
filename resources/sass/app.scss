@@ -4,7 +4,7 @@
 // 2. Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Noto+Serif+JP:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
 
-// --- Variables (Auralee / Comoli Tone) ---
+// --- Variables ---
 $bg-color: #f4f5f7;
 $text-main: #3a3a3a;
 $text-sub: #9ea1a3;
@@ -99,7 +99,7 @@ body {
     text-indent: 0.8em;
 }
 
-/* Enter Button (Blinking Line) */
+/* Enter Button */
 .intro-action { opacity: 0; transform: translateY(10px); }
 
 .enter-btn {
@@ -131,11 +131,7 @@ body {
 
     &:hover, &:active {
         opacity: 0.7;
-        .btn-line {
-            width: 50px;
-            animation: none;
-            opacity: 1;
-        }
+        .btn-line { width: 50px; animation: none; opacity: 1; }
     }
 }
 
