@@ -121,12 +121,12 @@
                         <p><strong>「Söya.」が宿す、二つの本質。</strong></p>
                         <p>一つは、日本の最北端<strong>「宗谷岬」</strong>へのオマージュ。アフリカの最北端・チュニジアと同じく、世界の「北と北」を結びます。</p>
                         <p>もう一つは、日本食の魂であり、旨味の源である<strong>「大豆（Soya）」</strong>。</p>
-                        <p>名前の最後にあるピリオド<strong>「.」</strong>は目的地。ここで、シンプルに味を楽しんでください。</p>
+                        <p>名前の最後にあるピリオド<strong>「.」</strong>は目的地。ここで、味と空間を楽しんでください。</p>
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
                         <p style="font-size: 0.9em; opacity: 0.8;">
                             来年で10周年を迎える Bistro Nippon。<br>
-                            毎年帰国するたびに感じる、めまぐるしい東京の食の進化。<br>
-                            Söya は、そんな「今の東京」を反映させたクラフト・ラーメンです。
+                            毎年帰国するたびに感じる、めまぐるしい東京の食の進化/流行。<br>
+                            Söya は、そんな「今の東京」を反映させた手打ちラーメンレストランです。
                         </p>
                         <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
                             この春、Menzah 9 にて。
