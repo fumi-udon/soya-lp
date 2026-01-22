@@ -9,7 +9,7 @@
 
         <div class="intro-text intro-date" id="intro-3">
             Craft Ramen<br>
-            Grand Opening Spring 2026
+            Grand Opening Spring 2026<br><br>
             <span class="jp-decoration">北と北</span>
         </div>
     </div>
