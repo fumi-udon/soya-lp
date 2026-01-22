@@ -105,7 +105,7 @@
                     footer: "Follow us on Instagram"
                 },
                 'fr': {
-                    subtitle: `Nord et Nord<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel`,
+                    subtitle: `Nord et Nord<br><span style="display:block; margin-top:10px;"><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel</span>`,
                     body: `
                         <p><strong>"Söya." porte une double essence.</strong></p>
                         <p>Premièrement, un hommage au <strong>Cap Soya</strong>, l'extrême nord du Japon. Comme la Tunisie, nous relions deux extrémités du monde.</p>
