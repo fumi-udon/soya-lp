@@ -25,7 +25,7 @@
 
             <div class="row align-items-center">
                 <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text">prod. </span>
+                    <p class="collab-text">prod. <span style="font-size:0.8em; margin:0 5px;">×</span>
                         Bistronippon</p>
                     <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
 
@@ -41,18 +41,17 @@
             </div>
         </div>
     </div>
+    <div class="teaser-section">
+        <div class="teaser-image-wrapper">
+            <img src="{{ asset('images/street.png') }}" alt="Menzah 9 Street" class="street-photo">
 
-    <footer class="footer-insta">
-        <p class="insta-text" id="footer-text">Check Instagram for updates.</p>
-
-        <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-icon-link">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20"
-                style="width: 20px; height: 20px;">
-                <path
-                    d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.5 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.9 0-184.9zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
-            </svg>
-        </a>
-    </footer>
+            <div class="loading-overlay">
+                <span class="loading-text">Where it all begins. Coming soon.</span>
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+    @include('parts.footer')
 
     <script type="module">
         $(function() {
@@ -63,7 +62,8 @@
             const $action = $('#intro-action');
             const $overlay = $('#intro-overlay');
             const $enterBtn = $('#enter-btn');
-            const $mainElements = $('.main-container, .lang-switcher, .footer-insta');
+            // フッター内の要素も対象に追加
+            const $mainElements = $('.main-container, .lang-switcher, .site-footer, .teaser-section');
 
             setTimeout(() => $intro1.addClass('fade-up'), 500);
             setTimeout(() => $intro2.addClass('fade-up'), 1500);
@@ -77,7 +77,7 @@
                 }, 800);
             });
 
-            // --- 2. Content Data ---
+            // --- 2. Content Data (User Defined) ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -95,7 +95,7 @@
                             Opening this Spring in Menzah 9.
                         </p>
                     `,
-                    footer: "Check Instagram for updates."
+                    footer: "Follow us on Instagram"
                 },
                 'fr': {
                     subtitle: `Nord et Nord<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel`,
@@ -113,7 +113,7 @@
                             Ouverture ce printemps à Menzah 9.
                         </p>
                     `,
-                    footer: "Infos et mises à jour sur Instagram."
+                    footer: "Suivez-nous sur Instagram"
                 },
                 'jp': {
                     subtitle: `北と北<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -132,7 +132,7 @@
                             この春、Menzah 9 にて。
                         </p>
                     `,
-                    footer: "最新情報はInstagramでキャッチしてください。"
+                    footer: "Instagramをフォローする"
                 }
             };
 
@@ -141,11 +141,10 @@
             const $footerText = $('#footer-text');
 
             // --- 3. Language Auto Detection ---
-            // ブラウザの言語を取得 (例: "ja-JP", "fr-FR", "en-US")
             const browserLang = navigator.language || navigator.userLanguage;
-            const langCode = browserLang.substring(0, 2).toLowerCase(); // 最初の2文字 ("ja", "fr", "en")
+            const langCode = browserLang.substring(0, 2).toLowerCase();
 
-            let initLang = 'en'; // デフォルトは英語
+            let initLang = 'en';
 
             if (langCode === 'ja') {
                 initLang = 'jp';
@@ -153,12 +152,11 @@
                 initLang = 'fr';
             }
 
-            // 初期表示をセット
+            // Set Initial Content
             $subtitle.html(contentData[initLang].subtitle);
             $story.html(contentData[initLang].body).css('opacity', 1);
             $footerText.text(contentData[initLang].footer);
 
-            // ボタンのActive状態をセット
             $('.lang-btn').removeClass('active');
             $(`.lang-btn[data-lang="${initLang}"]`).addClass('active');
 
@@ -168,18 +166,23 @@
                 $('.lang-btn').removeClass('active');
                 $(this).addClass('active');
 
+                // Fade Out
                 $story.css('opacity', 0);
                 $subtitle.css('opacity', 0);
-                $('.footer-insta').css('opacity', 0);
+                $('.teaser-section').css('opacity', 0);
+                $('.site-footer').css('opacity', 0);
 
                 setTimeout(function() {
+                    // Change Text
                     $subtitle.html(contentData[lang].subtitle);
                     $story.html(contentData[lang].body);
                     $footerText.text(contentData[lang].footer);
 
+                    // Fade In
                     $subtitle.css('opacity', 1);
                     $story.css('opacity', 1);
-                    $('.footer-insta').css('opacity', 1);
+                    $('.teaser-section').css('opacity', 1);
+                    $('.site-footer').css('opacity', 1);
                 }, 400);
             });
         });

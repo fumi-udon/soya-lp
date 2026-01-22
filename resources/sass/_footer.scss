@@ -1,0 +1,160 @@
+// ==========================================
+//   FOOTER & TEASER SECTION
+//   (Auralee-like Minimalist Style)
+// ==========================================
+
+/* --- 1. Teaser Image (Street View) --- */
+/* ... 前略 ... */
+
+/* --- 1. Teaser Image (Street View) --- */
+.teaser-section {
+    width: 100%;
+    margin-top: 5px;  /* 上のマージンを少し調整 */
+    margin-bottom: 60px; /* 下のマージンも調整 */
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 4s ease;
+}
+
+.teaser-image-wrapper {
+    position: relative;
+    max-width: 350px; /* ★ここを小さくしました (500px -> 350px) */
+    width: 100%;
+    overflow: hidden;
+    /* 中央寄せを確実にするため念のため追加 */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ... 後略 (残りのスタイルはそのまま) ... */
+
+.street-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+
+    /* Auralee風: 彩度を落とし、コントラストを下げて霧がかったように */
+    filter: grayscale(100%) contrast(85%) brightness(110%);
+    opacity: 0.7;
+    transition: all 1.2s ease;
+    border-radius: 2px;
+}
+
+/* Hover時に少しだけ「現像」される演出 */
+.teaser-image-wrapper:hover .street-photo {
+    filter: grayscale(50%) contrast(95%) brightness(100%);
+    opacity: 1;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.loading-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #555;
+    background-color: rgba(255,255,255,0.8);
+    padding: 3px 8px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.loading-bar {
+    width: 30px;
+    height: 1px;
+    background-color: #555;
+    animation: teaserLoad 2.5s infinite ease-in-out;
+}
+
+@keyframes teaserLoad {
+    0% { width: 0; opacity: 0.3; }
+    50% { width: 30px; opacity: 0.8; }
+    100% { width: 0; opacity: 0.3; margin-left: 30px; }
+}
+
+/* --- 2. Site Footer (Credits & Insta) --- */
+.site-footer {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 4rem;
+    margin-top: auto;
+    opacity: 0; /* JSで表示 */
+    transition: opacity 2s ease;
+}
+
+/* Instagram Button (Minimalist Box) */
+.insta-cta-wrapper {
+    margin-bottom: 50px;
+}
+
+.insta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 14px 35px;
+    border: 1px solid rgba(0,0,0,0.1); /* 極めて薄いライン */
+    background-color: transparent;
+    text-decoration: none;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover {
+        border-color: #333;
+        background-color: #333;
+
+        .btn-label { color: #fff; }
+        .btn-icon { color: #fff; }
+    }
+}
+
+.btn-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: #555;
+    transition: color 0.5s ease;
+}
+
+.btn-icon {
+    color: #555;
+    display: flex;
+    align-items: center;
+    transition: color 0.5s ease;
+}
+
+/* Team Credit */
+.team-credit {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: #bbb;
+    text-transform: uppercase;
+}
+
+.credit-label {
+    margin-right: 6px;
+    font-weight: 300;
+}
+
+.credit-name {
+    font-weight: 500;
+    color: #999;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+
+    /* ホバーで少しだけ主張 */
+    &:hover {
+        border-bottom-color: #999;
+    }
+}

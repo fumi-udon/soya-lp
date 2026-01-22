@@ -288,46 +288,5 @@ h1.brand-title {
     &.active { color: #000; font-weight: 600; }
 }
 
-// --- Footer (Instagram Revised) ---
-.footer-insta {
-    width: 100%; text-align: center;
-    padding-bottom: 2rem; padding-top: 3rem;
-    margin-top: auto;
-    opacity: 0; transition: opacity 2s ease; z-index: 10;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-
-    /* メッセージテキスト */
-    .insta-text {
-        font-family: 'Noto Serif JP', serif;
-        font-size: 0.75rem;
-        letter-spacing: 0.1em;
-        color: $text-sub;
-        margin: 0;
-    }
-
-    /* アイコンリンク */
-    .insta-icon-link {
-        display: inline-block;
-        color: $text-sub;
-        transition: color 0.3s ease;
-
-        svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-            /* 点滅アニメーション */
-            animation: iconPulse 3s infinite ease-in-out;
-        }
-
-        &:hover {
-            color: $text-main;
-            svg { animation: none; opacity: 1; }
-        }
-    }
-}
-
-@keyframes iconPulse {
-    0%   { opacity: 0.4; transform: scale(0.95); }
-    50%  { opacity: 1.0; transform: scale(1.05); }
-    100% { opacity: 0.4; transform: scale(0.95); }
-}
+// --- Import Footer Styles ---
+@import 'footer';
