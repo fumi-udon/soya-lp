@@ -25,8 +25,8 @@
 
             <div class="row align-items-center">
                 <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text">prod. <span style="font-size:0.8em; margin:0 5px;">×</span>
-                        Bistronippon</p>
+                    <p class="collab-text">Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span>
+                        Menzah 9</p>
                     <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
 
                     <h2 class="brand-subtitle" id="subtitle">
@@ -85,6 +85,7 @@
             });
 
             // --- 2. Content Data ---
+            // --- 2. Content Data ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -92,32 +93,43 @@
                         <p><strong>"Söya." bears a double essence.</strong></p>
                         <p>Firstly, it pays homage to <strong>Cape Soya</strong>, the northernmost point of Japan. Like Tunisia, the northern tip of Africa, we bridge these two ends of the world.</p>
                         <p>Secondly, it signifies <strong>Soya</strong> (Soybean), the soul of Japanese cuisine and the source of Umami.</p>
-                        <p>The final period <strong>"."</strong> symbolizes the destination. Just savor the essence.</p>
+                        <p>The final period <strong>"."</strong> marks a destination where you can casually stop by in your daily life.</p>
+
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-                        <p style="font-size: 0.9em; opacity: 0.8;">
-                            Bistro Nippon marks its 10th year. Returning to Japan annually, I feel the shifting trends.
-                            Söya reconstructs this <strong>"Tokyo Current"</strong> with a unique interpretation.
-                        </p>
+
+                        <p>Tokyo’s food scene evolves every time I visit.</p>
+                        <p>We’ve casually updated Bistro Nippon’s recipes to capture that "Tokyo Current" vibe.</p>
+                        <p>Located in Menzah 9, <strong>Söya.</strong> is your new everyday spot for handmade ramen.</p>
+
                         <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            Opening this Spring in Menzah 9.
+                            Opening this Spring.
+                        </p>
+                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
+                            *Opening date will be announced on Instagram. Please follow us.
                         </p>
                     `,
                     footer: "Follow us on Instagram"
                 },
                 'fr': {
+                    // レイアウト崩れ防止のスタイル適用済み
                     subtitle: `Nord et Nord<br><span style="display:block; margin-top:10px;"><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel</span>`,
                     body: `
                         <p><strong>"Söya." porte une double essence.</strong></p>
                         <p>Premièrement, un hommage au <strong>Cap Soya</strong>, l'extrême nord du Japon. Comme la Tunisie, nous relions deux extrémités du monde.</p>
                         <p>Deuxièmement, le <strong>Soya</strong> (Soja), l'âme de la cuisine japonaise et la source de l'Umami.</p>
-                        <p>Le point final <strong>"."</strong> est la destination. Savourez simplement l'essentiel.</p>
+                        <p>Le point final <strong>"."</strong> marque une destination où vous pouvez faire une halte spontanée dans votre quotidien.</p>
+
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-                        <p style="font-size: 0.9em; opacity: 0.8;">
-                            Bistro Nippon fête ses 10 ans. En retournant au Japon chaque année, je ressens l'évolution des goûts.
-                            Söya reconstruit ce <strong>"Tokyo Actuel"</strong> avec une interprétation unique.
-                        </p>
+
+                        <p>Les tendances culinaires à Tokyo évoluent à chaque visite.</p>
+                        <p>Nous avons remis au goût du jour les ramens du Bistro Nippon, avec une touche "Tokyo Actuel" décontractée.</p>
+                        <p>Situé à Menzah 9, <strong>Söya.</strong> est votre nouvelle adresse quotidienne pour des ramens faits main.</p>
+
                         <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            Ouverture ce printemps à Menzah 9.
+                            Ouverture ce printemps.
+                        </p>
+                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
+                            *La date d'ouverture sera annoncée sur Instagram. Suivez-nous.
                         </p>
                     `,
                     footer: "Suivez-nous sur Instagram"
@@ -128,15 +140,19 @@
                         <p><strong>「Söya.」が宿す、二つの本質。</strong></p>
                         <p>一つは、日本の最北端<strong>「宗谷岬」</strong>へのオマージュ。アフリカの最北端・チュニジアと同じく、世界の「北と北」を結びます。</p>
                         <p>もう一つは、日本食の魂であり、旨味の源である<strong>「大豆（Soya）」</strong>。</p>
-                        <p>名前の最後にあるピリオド<strong>「.」</strong>は目的地。ここで、味と空間を楽しんでください。</p>
+                        <p>名前の最後にあるピリオド<strong>「.」</strong>は日常の中でふらっと立ち止まれる目的地。</p>
+
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-                        <p style="font-size: 0.9em; opacity: 0.8;">
-                            来年で10周年を迎える Bistro Nippon。<br>
-                            毎年帰国するたびに感じる、めまぐるしい東京の食の進化/流行。<br>
-                            Söya は、そんな「今の東京」を反映させた手打ちラーメンレストランです。
-                        </p>
+
+                        <p>毎年帰るたびに新しい発見がある、東京の食トレンド。</p>
+                        <p>Bistro Nipponのラーメンを、今の東京っぽくさらりとアップデートしました。</p>
+                        <p>Menzah 9にできる『Söya.』は、そんな普段使いの手打ちラーメン屋です。</p>
+
                         <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            この春、Menzah 9 にて。
+                            この春、お待ちしています。
+                        </p>
+                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
+                            ※オープン日は決まり次第Instagramでお知らせします。ぜひフォローを。
                         </p>
                     `,
                     footer: "Instagramをフォローする"
