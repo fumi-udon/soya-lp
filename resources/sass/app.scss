@@ -284,5 +284,78 @@ h1.brand-title {
     &.active { color: #000; font-weight: 600; }
 }
 
-// --- Import Footer Styles ---
-@import 'footer';
+// ==========================================
+//   FOOTER STYLES (Moved here)
+// ==========================================
+.site-footer {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 4rem;
+    margin-top: auto;
+    opacity: 0; /* JSで表示 */
+    transition: opacity 2s ease;
+}
+
+.insta-cta-wrapper {
+    margin-bottom: 50px;
+}
+
+.insta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    padding: 14px 35px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background-color: transparent;
+    text-decoration: none;
+    transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+
+    &:hover {
+        border-color: #333;
+        background-color: #333;
+
+        .btn-label { color: #fff; }
+        .btn-icon { color: #fff; }
+    }
+}
+
+.btn-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    color: #555;
+    transition: color 0.5s ease;
+}
+
+.btn-icon {
+    color: #555;
+    display: flex;
+    align-items: center;
+    transition: color 0.5s ease;
+}
+
+.team-credit {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: #bbb;
+    text-transform: uppercase;
+}
+
+.credit-label {
+    margin-right: 6px;
+    font-weight: 300;
+}
+
+.credit-name {
+    font-weight: 500;
+    color: #999;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+
+    &:hover {
+        border-bottom-color: #999;
+    }
+}
