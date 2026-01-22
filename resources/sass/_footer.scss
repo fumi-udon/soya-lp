@@ -4,30 +4,24 @@
 // ==========================================
 
 /* --- 1. Teaser Image (Street View) --- */
-/* ... 前略 ... */
-
-/* --- 1. Teaser Image (Street View) --- */
 .teaser-section {
     width: 100%;
-    margin-top: 5px;  /* 上のマージンを少し調整 */
-    margin-bottom: 60px; /* 下のマージンも調整 */
+    margin-top: 40px;    /* 5pxだと詰まりすぎるので40px推奨 */
+    margin-bottom: 60px;
     display: flex;
     justify-content: center;
     opacity: 0;
-    transition: opacity 4s ease;
+    transition: opacity 2s ease;
 }
 
 .teaser-image-wrapper {
     position: relative;
-    max-width: 350px; /* ★ここを小さくしました (500px -> 350px) */
+    max-width: 350px; /* 小さくしました */
     width: 100%;
     overflow: hidden;
-    /* 中央寄せを確実にするため念のため追加 */
     margin-left: auto;
     margin-right: auto;
 }
-
-/* ... 後略 (残りのスタイルはそのまま) ... */
 
 .street-photo {
     width: 100%;
@@ -88,11 +82,11 @@
     text-align: center;
     padding-bottom: 4rem;
     margin-top: auto;
-    opacity: 0; /* JSで表示 */
+    opacity: 0;
     transition: opacity 2s ease;
 }
 
-/* Instagram Button (Minimalist Box) */
+/* Instagram Button */
 .insta-cta-wrapper {
     margin-bottom: 50px;
 }
@@ -104,7 +98,7 @@
     gap: 12px;
 
     padding: 14px 35px;
-    border: 1px solid rgba(0,0,0,0.1); /* 極めて薄いライン */
+    border: 1px solid rgba(0,0,0,0.1);
     background-color: transparent;
     text-decoration: none;
     transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
@@ -153,7 +147,6 @@
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s;
 
-    /* ホバーで少しだけ主張 */
     &:hover {
         border-bottom-color: #999;
     }
