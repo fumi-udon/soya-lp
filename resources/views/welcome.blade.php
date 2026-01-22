@@ -42,17 +42,6 @@
         </div>
     </div>
 
-    <div class="teaser-section">
-        <div class="teaser-image-wrapper">
-            <img src="{{ asset('images/street.png') }}" alt="Menzah 9 Street" class="street-photo">
-
-            <div class="loading-overlay">
-                <span class="loading-text">Where it all begins. Coming soon.</span>
-                <div class="loading-bar"></div>
-            </div>
-        </div>
-    </div>
-
     @include('parts.footer')
 
     <script type="module">
@@ -64,8 +53,8 @@
             const $action = $('#intro-action');
             const $overlay = $('#intro-overlay');
             const $enterBtn = $('#enter-btn');
-            // フッターやTeaserもアニメーション対象
-            const $mainElements = $('.main-container, .lang-switcher, .site-footer, .teaser-section');
+            // アニメーション対象から teaser-section を削除
+            const $mainElements = $('.main-container, .lang-switcher, .site-footer');
 
             setTimeout(() => $intro1.addClass('fade-up'), 500);
             setTimeout(() => $intro2.addClass('fade-up'), 1500);
@@ -147,12 +136,8 @@
             const langCode = browserLang.substring(0, 2).toLowerCase();
 
             let initLang = 'en';
-
-            if (langCode === 'ja') {
-                initLang = 'jp';
-            } else if (langCode === 'fr') {
-                initLang = 'fr';
-            }
+            if (langCode === 'ja') initLang = 'jp';
+            else if (langCode === 'fr') initLang = 'fr';
 
             // Set Initial Content
             $subtitle.html(contentData[initLang].subtitle);
@@ -171,7 +156,6 @@
                 // Fade Out
                 $story.css('opacity', 0);
                 $subtitle.css('opacity', 0);
-                $('.teaser-section').css('opacity', 0);
                 $('.site-footer').css('opacity', 0);
 
                 setTimeout(function() {
@@ -183,7 +167,6 @@
                     // Fade In
                     $subtitle.css('opacity', 1);
                     $story.css('opacity', 1);
-                    $('.teaser-section').css('opacity', 1);
                     $('.site-footer').css('opacity', 1);
                 }, 400);
             });

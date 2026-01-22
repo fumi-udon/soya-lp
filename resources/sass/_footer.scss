@@ -1,82 +1,8 @@
 /* ==========================================
-   FOOTER & TEASER SECTION
-   (Auralee-like Minimalist Style)
+   FOOTER SECTION
    ========================================== */
 
-/* --- 1. Teaser Image (Street View) --- */
-.teaser-section {
-    width: 100%;
-    margin-top: 40px;
-    margin-bottom: 60px;
-    display: flex;
-    justify-content: center;
-    opacity: 0; /* JSでフェードイン */
-    transition: opacity 2s ease;
-}
-
-.teaser-image-wrapper {
-    position: relative;
-    max-width: 350px;
-    width: 100%;
-    overflow: hidden;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.street-photo {
-    width: 100%;
-    height: auto;
-    display: block;
-
-    /* Auralee風: 彩度を落とし、コントラストを下げて霧がかったように */
-    filter: grayscale(100%) contrast(85%) brightness(110%);
-    opacity: 0.7;
-    transition: all 1.2s ease;
-    border-radius: 2px;
-}
-
-/* Hover時に少しだけ「現像」される演出 */
-.teaser-image-wrapper:hover .street-photo {
-    filter: grayscale(50%) contrast(95%) brightness(100%);
-    opacity: 1;
-}
-
-/* Loading Overlay */
-.loading-overlay {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    pointer-events: none;
-}
-
-.loading-text {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: #555;
-    background-color: rgba(255,255,255,0.8);
-    padding: 3px 8px;
-    text-transform: uppercase;
-    display: inline-block;
-}
-
-.loading-bar {
-    width: 30px;
-    height: 1px;
-    background-color: #555;
-    animation: teaserLoad 2.5s infinite ease-in-out;
-}
-
-@keyframes teaserLoad {
-    0% { width: 0; opacity: 0.3; }
-    50% { width: 30px; opacity: 0.8; }
-    100% { width: 0; opacity: 0.3; margin-left: 30px; }
-}
-
-/* --- 2. Site Footer (Credits & Insta) --- */
+/* --- Site Footer (Credits & Insta) --- */
 .site-footer {
     width: 100%;
     text-align: center;
