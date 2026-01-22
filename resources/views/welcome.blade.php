@@ -25,7 +25,7 @@
 
             <div class="row align-items-center">
                 <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text">prod. <span style="font-size:0.8em; margin:0 5px;">×</span>
+                    <p class="collab-text">prod. </span>
                         Bistronippon</p>
                     <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
 
