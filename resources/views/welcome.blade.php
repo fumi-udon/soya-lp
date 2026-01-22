@@ -43,6 +43,7 @@
 
     <footer class="footer-insta">
         <p class="insta-text" id="footer-text">Check Instagram for updates.</p>
+
         <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-icon-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                 <path
@@ -53,7 +54,7 @@
 
     <script type="module">
         $(function() {
-            // --- Intro Animation ---
+            // --- 1. Intro Animation ---
             const $intro1 = $('#intro-1');
             const $intro2 = $('#intro-2');
             const $intro3 = $('#intro-3');
@@ -74,7 +75,7 @@
                 }, 800);
             });
 
-            // --- Content Data (JP修正済み) ---
+            // --- 2. Content Data ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -123,7 +124,7 @@
                         <p style="font-size: 0.9em; opacity: 0.8;">
                             来年で10周年を迎える Bistro Nippon。<br>
                             毎年帰国するたびに感じる、めまぐるしい東京の食の進化。<br>
-                            Söya は、そんな「今の東京」を反映させた手打ちラーメンレストランです。
+                            Söya は、そんな「今の東京」を反映させたクラフト・ラーメンです。
                         </p>
                         <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
                             この春、Menzah 9 にて。
@@ -137,11 +138,29 @@
             const $subtitle = $('#subtitle');
             const $footerText = $('#footer-text');
 
-            // 初期表示 (EN)
-            $story.html(contentData['en'].body).css('opacity', 1);
-            $footerText.text(contentData['en'].footer);
+            // --- 3. Language Auto Detection ---
+            // ブラウザの言語を取得 (例: "ja-JP", "fr-FR", "en-US")
+            const browserLang = navigator.language || navigator.userLanguage;
+            const langCode = browserLang.substring(0, 2).toLowerCase(); // 最初の2文字 ("ja", "fr", "en")
 
-            // 言語切り替えクリックイベント
+            let initLang = 'en'; // デフォルトは英語
+
+            if (langCode === 'ja') {
+                initLang = 'jp';
+            } else if (langCode === 'fr') {
+                initLang = 'fr';
+            }
+
+            // 初期表示をセット
+            $subtitle.html(contentData[initLang].subtitle);
+            $story.html(contentData[initLang].body).css('opacity', 1);
+            $footerText.text(contentData[initLang].footer);
+
+            // ボタンのActive状態をセット
+            $('.lang-btn').removeClass('active');
+            $(`.lang-btn[data-lang="${initLang}"]`).addClass('active');
+
+            // --- 4. Language Switch Event ---
             $('.lang-btn').on('click', function() {
                 const lang = $(this).data('lang');
                 $('.lang-btn').removeClass('active');
