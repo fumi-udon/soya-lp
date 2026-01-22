@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Söya. | North and North x Tokyo Current</title>
+    <title>Söya. | prod. bistronippon 北と北</title>
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
@@ -25,7 +25,8 @@
 
             <div class="row align-items-center">
                 <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text">Söya. <span style="font-size:0.8em; margin:0 5px;">×</span> bistronippon</p>
+                    <p class="collab-text">prod. <span style="font-size:0.8em; margin:0 5px;">×</span>
+                        Bistronippon</p>
                     <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
 
                     <h2 class="brand-subtitle" id="subtitle">
