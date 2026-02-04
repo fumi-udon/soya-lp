@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Söya. | prod. bistronippon 北と北</title>
+
+    <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
+
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 
