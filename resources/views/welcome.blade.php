@@ -4,9 +4,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Söya. | prod. bistronippon 北と北</title>
+    <meta name="description"
+        content="Menzah 9's authentic Japanese Ramen 'Söya.' produced by Bistro Nippon. Bridging Tunisia and Japan (Hokkaido) with handmade noodles and Tokyo's current style. チュニジア唯一の日本人経営ラーメン店。">
 
     <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
+
+    <meta property="og:url" content="{{ url()->current() }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Söya. | prod. bistronippon 北と北" />
+    <meta property="og:description" content="North and North × Tokyo Current. Menzah 9 に新オープンする手打ちラーメン店。" />
+    <meta property="og:site_name" content="Söya." />
+    <meta property="og:image" content="{{ asset('soya-ogp.jpg') }}" />
+
+    <meta name="facebook-domain-verification" content="1c2kf7tg3zs6oxf0hwawlgxrwanrmg" />
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
@@ -88,7 +100,6 @@
             });
 
             // --- 2. Content Data ---
-            // --- 2. Content Data ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -114,7 +125,6 @@
                     footer: "Follow us on Instagram"
                 },
                 'fr': {
-                    // レイアウト崩れ防止のスタイル適用済み
                     subtitle: `Nord et Nord<br><span style="display:block; margin-top:10px;"><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel</span>`,
                     body: `
                         <p><strong>"Söya." porte une double essence.</strong></p>
@@ -206,6 +216,49 @@
                 }, 400);
             });
         });
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Söya.",
+      "image": "{{ asset('soya-ogp.jpg') }}",
+      "url": "{{ url()->current() }}",
+      "servesCuisine": "Japanese Ramen",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Menzah 9",
+        "addressRegion": "Tunis",
+        "addressCountry": "TN"
+      },
+"geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "36.8437522",
+    "longitude": "10.1554465"
+  },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          "opens": "11:30",
+          "closes": "22:00"
+        }
+      ],
+      "parentOrganization": {
+        "@type": "Restaurant",
+        "name": "Bistro Nippon",
+        "url": "https://bistronippon.tn",
+        "sameAs": "https://www.facebook.com/bistronippon"
+      },
+      "description": "The only authentic handmade Japanese Ramen shop in Menzah 9, Tunis. Produced by Bistro Nippon team (est. 2017). Concept: 'North and North' - bridging Hokkaido and Tunisia with Tokyo's current ramen style.",
+      "chef": {
+        "@type": "Person",
+        "name": "Japanese Owner Chef",
+        "nationality": "Japanese"
+      }
+    }
     </script>
 </body>
 
