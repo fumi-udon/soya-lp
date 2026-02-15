@@ -1,9 +1,4 @@
 <header class="global-header">
-    <div class="nav-left">
-        <a href="{{ url('/') }}" class="logo-link">
-            <img src="{{ asset('logo.svg') }}" alt="Söya." style="height: 32px;">
-        </a>
-    </div>
 
     <div class="nav-right">
         @env('local')
@@ -11,8 +6,8 @@
                 <span class="bottle-wrapper">
                     <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
 
-                        <path class="sauce-stream" d="M35,55 L35,140" stroke="#2c1a16" stroke-width="6"
-                            stroke-linecap="round" fill="none" />
+                        <path class="sauce-stream" d="M35,55 L35,140" stroke="#2c1a16" stroke-width="6" stroke-linecap="round"
+                            fill="none" />
                         <circle class="sauce-drop" cx="35" cy="140" r="3" fill="#2c1a16" />
 
                         <g class="bottle-group">
