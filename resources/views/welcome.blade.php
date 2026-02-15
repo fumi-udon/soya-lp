@@ -1,105 +1,42 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('layouts.soya')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+@section('title', 'Söya. | prod. bistronippon 北と北')
 
-    <title>Söya. | prod. bistronippon 北と北</title>
-    <meta name="description"
-        content="Menzah 9's authentic Japanese Ramen 'Söya.' produced by Bistro Nippon. Bridging Tunisia and Japan (Hokkaido) with handmade noodles and Tokyo's current style. チュニジア唯一の日本人経営ラーメン店。">
-
-    <link rel="icon" type="image/svg+xml" href="{{ asset('logo.svg') }}">
-
-    <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Söya. | prod. bistronippon 北と北" />
-    <meta property="og:description" content="North and North × Tokyo Current. Menzah 9 に新オープンする手打ちラーメン店。" />
-    <meta property="og:site_name" content="Söya." />
-    <meta property="og:image" content="{{ asset('soya-ogp.jpg') }}" />
-
-    <meta name="facebook-domain-verification" content="1c2kf7tg3zs6oxf0hwawlgxrwanrmg" />
-
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-</head>
-
-<body>
-    <div class="concrete-bg"></div>
-
+@section('content')
+    {{-- 1. Intro Splash --}}
     @include('parts.intro')
 
-    <nav class="lang-switcher">
-        <button class="lang-btn" data-lang="fr">FR</button>
-        <button class="lang-btn active" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="jp">JP</button>
-    </nav>
-
+    {{-- 2. Main Content --}}
     <div class="main-container">
         <div class="content-wrapper">
             <div class="architectural-line d-none d-md-block"></div>
 
             <div class="row align-items-center">
                 <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text">Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span>
-                        Menzah 9</p>
+                    <p class="collab-text animate__animated animate__fadeIn">
+                        Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span> Menzah 9
+                    </p>
                     <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
 
                     <h2 class="brand-subtitle" id="subtitle">
-                        North and North<br>
-                        <span style="font-weight: 300; opacity: 0.7; margin-right: 6px;">×</span>Tokyo Current
+                        {{-- JSで動的に挿入 --}}
                     </h2>
                 </div>
 
                 <div class="col-lg-7">
-                    <div class="story-text" id="story-content"></div>
+                    <div class="story-text" id="story-content">
+                        {{-- JSで動的に挿入 --}}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
 
-    <footer class="site-footer">
-        <div class="insta-cta-wrapper">
-            <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-btn">
-                <span class="btn-label" id="footer-text">Check Instagram for updates.</span>
-                <span class="btn-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16">
-                        <path fill="currentColor"
-                            d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.9 0-184.9zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
-                    </svg>
-                </span>
-            </a>
-        </div>
-
-        <div class="team-credit">
-            <span class="credit-label">Produced by</span>
-            <span class="credit-name">Bistro Nippon Team</span>
-        </div>
-    </footer>
-
+@push('scripts')
     <script type="module">
         $(function() {
-            // --- 1. Intro Animation ---
-            const $intro1 = $('#intro-1');
-            const $intro2 = $('#intro-2');
-            const $intro3 = $('#intro-3');
-            const $action = $('#intro-action');
-            const $overlay = $('#intro-overlay');
-            const $enterBtn = $('#enter-btn');
-            const $mainElements = $('.main-container, .lang-switcher, .site-footer');
-
-            setTimeout(() => $intro1.addClass('fade-up'), 500);
-            setTimeout(() => $intro2.addClass('fade-up'), 1500);
-            setTimeout(() => $intro3.addClass('fade-up'), 2500);
-            setTimeout(() => $action.addClass('fade-up'), 3500);
-
-            $enterBtn.on('click', function() {
-                $overlay.addClass('fade-out');
-                setTimeout(() => {
-                    $mainElements.css('opacity', 1);
-                }, 800);
-            });
-
-            // --- 2. Content Data ---
+            // --- 1. Content Data ---
             const contentData = {
                 'en': {
                     subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
@@ -108,19 +45,11 @@
                         <p>Firstly, it pays homage to <strong>Cape Soya</strong>, the northernmost point of Japan. Like Tunisia, the northern tip of Africa, we bridge these two ends of the world.</p>
                         <p>Secondly, it signifies <strong>Soya</strong> (Soybean), the soul of Japanese cuisine and the source of Umami.</p>
                         <p>The final period <strong>"."</strong> marks a destination where you can casually stop by in your daily life.</p>
-
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-
                         <p>Tokyo’s food scene evolves every time I visit.</p>
                         <p>We’ve casually updated Bistro Nippon’s recipes to capture that "Tokyo Current" vibe.</p>
                         <p>Located in Menzah 9, <strong>Söya.</strong> is your new everyday spot for handmade ramen.</p>
-
-                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            Opening this Spring.
-                        </p>
-                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
-                            *Opening date will be announced on Instagram. Please follow us.
-                        </p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">Opening this Spring.</p>
                     `,
                     footer: "Follow us on Instagram"
                 },
@@ -131,19 +60,11 @@
                         <p>Premièrement, un hommage au <strong>Cap Soya</strong>, l'extrême nord du Japon. Comme la Tunisie, nous relions deux extrémités du monde.</p>
                         <p>Deuxièmement, le <strong>Soya</strong> (Soja), l'âme de la cuisine japonaise et la source de l'Umami.</p>
                         <p>Le point final <strong>"."</strong> marque une destination où vous pouvez faire une halte spontanée dans votre quotidien.</p>
-
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-
                         <p>Les tendances culinaires à Tokyo évoluent à chaque visite.</p>
                         <p>Nous avons remis au goût du jour les ramens du Bistro Nippon, avec une touche "Tokyo Actuel" décontractée.</p>
                         <p>Situé à Menzah 9, <strong>Söya.</strong> est votre nouvelle adresse quotidienne pour des ramens faits main.</p>
-
-                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            Ouverture ce printemps.
-                        </p>
-                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
-                            *La date d'ouverture sera annoncée sur Instagram. Suivez-nous.
-                        </p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">Ouverture ce printemps.</p>
                     `,
                     footer: "Suivez-nous sur Instagram"
                 },
@@ -154,19 +75,11 @@
                         <p>一つは、日本の最北端<strong>「宗谷岬」</strong>へのオマージュ。アフリカの最北端・チュニジアと同じく、世界の「北と北」を結びます。</p>
                         <p>もう一つは、日本食の魂であり、旨味の源である<strong>「大豆（Soya）」</strong>。</p>
                         <p>名前の最後にあるピリオド<strong>「.」</strong>は日常の中でふらっと立ち止まれる目的地。</p>
-
                         <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
-
                         <p>毎年帰るたびに新しい発見がある、東京の食トレンド。</p>
                         <p>Bistro Nipponのラーメンを、今の東京っぽくさらりとアップデートしました。</p>
                         <p>Menzah 9にできる『Söya.』は、そんな普段使いの手打ちラーメン屋です。</p>
-
-                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">
-                            この春、お待ちしています。
-                        </p>
-                        <p style="font-size: 0.8em; opacity: 0.7; margin-top: 10px;">
-                            ※オープン日は決まり次第Instagramでお知らせします。ぜひフォローを。
-                        </p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">この春、お待ちしています。</p>
                     `,
                     footer: "Instagramをフォローする"
                 }
@@ -175,91 +88,44 @@
             const $story = $('#story-content');
             const $subtitle = $('#subtitle');
             const $footerText = $('#footer-text');
+            const $overlay = $('#intro-overlay');
+            const $mainElements = $('.main-container, .global-nav, .site-footer');
 
-            // --- 3. Language Auto Detection ---
+            // --- 2. Language Setup ---
             const browserLang = navigator.language || navigator.userLanguage;
             const langCode = browserLang.substring(0, 2).toLowerCase();
+            let currentLang = (langCode === 'ja') ? 'jp' : (langCode === 'fr' ? 'fr' : 'en');
 
-            let initLang = 'en';
-            if (langCode === 'ja') initLang = 'jp';
-            else if (langCode === 'fr') initLang = 'fr';
-
-            // Set Initial Content
-            $subtitle.html(contentData[initLang].subtitle);
-            $story.html(contentData[initLang].body).css('opacity', 1);
-            $footerText.text(contentData[initLang].footer);
-
-            $('.lang-btn').removeClass('active');
-            $(`.lang-btn[data-lang="${initLang}"]`).addClass('active');
-
-            // --- 4. Language Switch Event ---
-            $('.lang-btn').on('click', function() {
-                const lang = $(this).data('lang');
+            const updateContent = (lang) => {
+                $subtitle.html(contentData[lang].subtitle).css('opacity', 1);
+                $story.html(contentData[lang].body).css('opacity', 1);
+                $footerText.text(contentData[lang].footer);
                 $('.lang-btn').removeClass('active');
-                $(this).addClass('active');
+                $(`.lang-btn[data-lang="${lang}"]`).addClass('active');
+            };
 
-                // Fade Out
+            updateContent(currentLang);
+
+            // --- 3. Intro Animation ---
+            setTimeout(() => $('#intro-1').addClass('fade-up'), 500);
+            setTimeout(() => $('#intro-2').addClass('fade-up'), 1500);
+            setTimeout(() => $('#intro-3').addClass('fade-up'), 2500);
+            setTimeout(() => $('#intro-action').addClass('fade-up'), 3500);
+
+            $('#enter-btn').on('click', function() {
+                $overlay.addClass('fade-out');
+                setTimeout(() => {
+                    $mainElements.css('opacity', 1);
+                }, 800);
+            });
+
+            // --- 4. Language Switch ---
+            $(document).on('click', '.lang-btn', function() {
+                const lang = $(this).data('lang');
                 $story.css('opacity', 0);
                 $subtitle.css('opacity', 0);
-                $('.site-footer').css('opacity', 0);
-
-                setTimeout(function() {
-                    // Change Text
-                    $subtitle.html(contentData[lang].subtitle);
-                    $story.html(contentData[lang].body);
-                    $footerText.text(contentData[lang].footer);
-
-                    // Fade In
-                    $subtitle.css('opacity', 1);
-                    $story.css('opacity', 1);
-                    $('.site-footer').css('opacity', 1);
-                }, 400);
+                setTimeout(() => updateContent(lang), 400);
             });
         });
     </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Restaurant",
-      "name": "Söya.",
-      "image": "{{ asset('soya-ogp.jpg') }}",
-      "url": "{{ url()->current() }}",
-      "servesCuisine": "Japanese Ramen",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Menzah 9",
-        "addressRegion": "Tunis",
-        "addressCountry": "TN"
-      },
-"geo": {
-    "@type": "GeoCoordinates",
-    "latitude": "36.8437522",
-    "longitude": "10.1554465"
-  },
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-          "opens": "11:30",
-          "closes": "22:00"
-        }
-      ],
-      "parentOrganization": {
-        "@type": "Restaurant",
-        "name": "Bistro Nippon",
-        "url": "https://bistronippon.tn",
-        "sameAs": "https://www.facebook.com/bistronippon"
-      },
-      "description": "The only authentic handmade Japanese Ramen shop in Menzah 9, Tunis. Produced by Bistro Nippon team (est. 2017). Concept: 'North and North' - bridging Hokkaido and Tunisia with Tokyo's current ramen style.",
-      "chef": {
-        "@type": "Person",
-        "name": "Japanese Owner Chef",
-        "nationality": "Japanese"
-      }
-    }
-    </script>
-</body>
-
-</html>
+@endpush

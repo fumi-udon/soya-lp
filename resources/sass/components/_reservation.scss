@@ -1,0 +1,249 @@
+/* resources/sass/components/_reservation.scss */
+
+/* --- Tokyo Current: High-End Minimal & Ramen Dynamics --- */
+
+// 1. 全画面背景のスライダー（モノトーン・シズル）
+.gallery-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.35; // フォームを際立たせるために沈める
+    pointer-events: none;
+
+    .photo-scroller {
+        display: flex;
+        width: calc(300px * 20);
+        animation: scroll 60s linear infinite; // JSでこの速度を動的に変える
+    }
+
+    .photo-item {
+        width: 300px;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+        filter: grayscale(100%) contrast(1.1); // 東京のストリート感
+        border-right: 1px solid rgba(255,255,255,0.05);
+        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+}
+
+// 2. メインレイアウト
+.main-content {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+// 3. ガラスレイヤーのフォームコンテナ
+.content-container {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px) saturate(150%); // 東京の夜のような屈折
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 60px 40px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    transform: perspective(1000px) rotateX(1deg);
+}
+
+// 4. タイポグラフィ
+.brand-header {
+    margin-bottom: 50px;
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.8rem;
+        color: #000;
+        letter-spacing: -0.05em;
+        line-height: 0.8;
+        span { color: #a3b8c9; } // Concrete Blue
+    }
+    .sub {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.5em;
+        margin-top: 15px;
+        color: #888;
+        text-transform: uppercase;
+    }
+}
+
+// 5. フォーム要素と「麺」のアニメーション
+.form-group {
+    position: relative;
+    margin-bottom: 35px;
+
+    .label-min {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.25em;
+        color: #aaa;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    // 麺の演出：フォーカス時に伸びる黄金色のライン
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: #f1c40f; // 黄金色の麺カラー
+        box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        // 麺の弾力を表現するカスタムベジェ
+        transition: width 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        z-index: 2;
+    }
+
+    &:focus-within::after {
+        width: 100%;
+    }
+}
+
+.input-soya {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05); // ベースの細い線
+    background: transparent;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: #000;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.5s ease;
+
+    &::placeholder {
+        font-size: 0.75rem;
+        color: #ddd;
+        transition: opacity 0.3s;
+    }
+
+    &:focus {
+        padding-left: 8px; // わずかな動的変化
+        &::placeholder { opacity: 0; }
+    }
+}
+
+// 6. 送信ボタン（北海道×キッコーマン×コンクリート）
+// ここだけのローカル変数定義
+$k-red: #e60012;     // Kikkoman Red
+$k-gray: #d4d8db;    // Concrete Gray
+$k-text: #2c2c2c;    // Dark Text
+$k-white: #ffffff;
+
+.btn-whatsapp {
+    // ベース：静的なコンクリート
+    background-color: $k-gray;
+    color: $k-text;
+    width: 100%;
+    padding: 22px 0;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin-top: 30px;
+
+    // コンクリートの質量感
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+
+    // コンテンツレイアウト
+    .btn-content {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px; // ロゴを見やすく
+    }
+
+    // 北海道ロゴ：最初から主張する
+    .hokkaido-icon {
+        height: 24px;
+        width: auto;
+        opacity: 0.85; // 最初からくっきり
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        letter-spacing: 0.25em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: $k-text;
+        transition: color 0.3s ease;
+    }
+
+    // --- Hover Action: 粋な変化 ---
+    &:hover {
+        background-color: darken($k-gray, 5%); // 石が濡れたような濃さに
+        box-shadow: 0 8px 25px rgba(230, 0, 18, 0.15); // 影だけ「ほんのり赤いオーラ」
+
+        // 文字だけが鮮烈な赤になる
+        .btn-text {
+            color: $k-red;
+        }
+
+        // 北海道ロゴが嬉しそうに動く
+        .hokkaido-icon {
+            opacity: 1;
+            transform: scale(1.15) rotate(-3deg);
+        }
+    }
+
+    // --- Click Action: 旨味プルプル ---
+    &:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+
+        .btn-content {
+            animation: purupuru 0.3s linear infinite;
+        }
+    }
+}
+
+// 7. ラマダン休業通知（ミニマル）
+.holiday-notice {
+    h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        letter-spacing: -0.02em;
+        color: #000;
+    }
+}
+
+// 8. アニメーション定義
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-300px * 10)); }
+}
+
+// 震えるアニメーション（ゼリーのような弾力）
+@keyframes purupuru {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    20%  { transform: translate(-2px, 0) rotate(-2deg); }
+    40%  { transform: translate(2px, 0) rotate(2deg); }
+    60%  { transform: translate(-2px, 0) rotate(-1deg); }
+    80%  { transform: translate(2px, 0) rotate(1deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 40px 25px;
+        backdrop-filter: blur(20px);
+    }
+    .brand-header h1 {
+        font-size: 2.8rem;
+    }
+}

@@ -1,0 +1,75 @@
+.site-footer {
+    width: 100%;
+    padding: 40px 20px;
+    background: transparent;
+    border-top: 1px solid rgba(163, 184, 201, 0.2);
+    margin-top: 40px;
+    opacity: 1 !important; // 強制表示
+
+    .footer-container {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .insta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        border: 1px solid $c-blue;
+        text-decoration: none;
+        transition: 0.3s;
+
+        .bi-instagram {
+            color: $c-blue;
+            font-size: 1.1rem;
+            display: inline-block;
+        }
+
+        .btn-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: $d-gray;
+            text-transform: uppercase;
+        }
+
+        &:active {
+            background-color: $c-blue;
+            .bi-instagram, .btn-label { color: #fff; }
+        }
+    }
+
+    .store-info-grid {
+        margin: 30px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .info-label {
+            display: block;
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: $c-blue;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: $d-gray;
+            margin: 0;
+        }
+    }
+
+    .team-credit {
+        margin-top: 30px;
+        font-size: 0.5rem;
+        letter-spacing: 0.2em;
+        color: #bbb;
+        text-transform: uppercase;
+    }
+}

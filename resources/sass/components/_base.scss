@@ -1,0 +1,39 @@
+// --- Base Styles ---
+body {
+    background-color: $bg-color;
+    color: $text-main;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+// --- Concrete Texture ---
+.concrete-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, rgba(240,240,240,0.1) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: $bg-color;
+    background-blend-mode: overlay;
+    animation: grainMovement 8s steps(10) infinite;
+}
+
+@keyframes grainMovement {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-1%, -1%); }
+    30% { transform: translate(1%, 1%); }
+    50% { transform: translate(-0.5%, 1.5%); }
+    70% { transform: translate(1.5%, -0.5%); }
+    90% { transform: translate(-1%, 0.5%); }
+}
+
+// --- Common Animations ---
+.fade-up { animation: floatUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-out { animation: fadeOut 1.2s ease forwards; }
+
+@keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }

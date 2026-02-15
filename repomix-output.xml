@@ -1,0 +1,3842 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files and files not matching ignore patterns, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of a subset of the repository's contents that is considered the most important context.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: app/**/*, resources/**/*, routes/**/*, database/**/*, config/**/*
+- Files matching these patterns are excluded: **/*.lock, **/*.map, **/*.png, **/*.jpg, **/*.jpeg, **/*.svg, **/*.ico, **/public/**, **/storage/**, **/tests/**, **/vendor/**, **/node_modules/**
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+app/Console/Kernel.php
+app/Exceptions/Handler.php
+app/Http/Controllers/Controller.php
+app/Http/Kernel.php
+app/Http/Middleware/Authenticate.php
+app/Http/Middleware/EncryptCookies.php
+app/Http/Middleware/PreventRequestsDuringMaintenance.php
+app/Http/Middleware/RedirectIfAuthenticated.php
+app/Http/Middleware/TrimStrings.php
+app/Http/Middleware/TrustHosts.php
+app/Http/Middleware/TrustProxies.php
+app/Http/Middleware/ValidateSignature.php
+app/Http/Middleware/VerifyCsrfToken.php
+app/Models/User.php
+app/Providers/AppServiceProvider.php
+app/Providers/AuthServiceProvider.php
+app/Providers/BroadcastServiceProvider.php
+app/Providers/EventServiceProvider.php
+app/Providers/RouteServiceProvider.php
+config/app.php
+config/auth.php
+config/broadcasting.php
+config/cache.php
+config/cors.php
+config/database.php
+config/filesystems.php
+config/hashing.php
+config/logging.php
+config/mail.php
+config/queue.php
+config/sanctum.php
+config/services.php
+config/session.php
+config/view.php
+database/.gitignore
+database/factories/UserFactory.php
+database/migrations/2014_10_12_000000_create_users_table.php
+database/migrations/2014_10_12_100000_create_password_resets_table.php
+database/migrations/2019_08_19_000000_create_failed_jobs_table.php
+database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+database/seeders/DatabaseSeeder.php
+resources/js/app.js
+resources/js/bootstrap.js
+resources/sass/app.scss
+resources/sass/components/_base.scss
+resources/sass/components/_footer.scss
+resources/sass/components/_header.scss
+resources/sass/components/_intro.scss
+resources/sass/components/_reservation.scss
+resources/sass/components/_variables.scss
+resources/sass/components/_welcome.scss
+resources/views/layouts/soya.blade.php
+resources/views/parts/footer.blade.php
+resources/views/parts/header.blade.php
+resources/views/parts/intro.blade.php
+resources/views/reservation.blade.php
+resources/views/welcome.blade.php
+routes/api.php
+routes/channels.php
+routes/console.php
+routes/web.php
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="resources/sass/components/_base.scss">
+// --- Base Styles ---
+body {
+    background-color: $bg-color;
+    color: $text-main;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+// --- Concrete Texture ---
+.concrete-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, rgba(240,240,240,0.1) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: $bg-color;
+    background-blend-mode: overlay;
+    animation: grainMovement 8s steps(10) infinite;
+}
+
+@keyframes grainMovement {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-1%, -1%); }
+    30% { transform: translate(1%, 1%); }
+    50% { transform: translate(-0.5%, 1.5%); }
+    70% { transform: translate(1.5%, -0.5%); }
+    90% { transform: translate(-1%, 0.5%); }
+}
+
+// --- Common Animations ---
+.fade-up { animation: floatUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-out { animation: fadeOut 1.2s ease forwards; }
+
+@keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+</file>
+
+<file path="resources/sass/components/_footer.scss">
+.site-footer {
+    width: 100%;
+    padding: 40px 20px;
+    background: transparent;
+    border-top: 1px solid rgba(163, 184, 201, 0.2);
+    margin-top: 40px;
+    opacity: 1 !important; // 強制表示
+
+    .footer-container {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .insta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        border: 1px solid $c-blue;
+        text-decoration: none;
+        transition: 0.3s;
+
+        .bi-instagram {
+            color: $c-blue;
+            font-size: 1.1rem;
+            display: inline-block;
+        }
+
+        .btn-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: $d-gray;
+            text-transform: uppercase;
+        }
+
+        &:active {
+            background-color: $c-blue;
+            .bi-instagram, .btn-label { color: #fff; }
+        }
+    }
+
+    .store-info-grid {
+        margin: 30px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .info-label {
+            display: block;
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: $c-blue;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: $d-gray;
+            margin: 0;
+        }
+    }
+
+    .team-credit {
+        margin-top: 30px;
+        font-size: 0.5rem;
+        letter-spacing: 0.2em;
+        color: #bbb;
+        text-transform: uppercase;
+    }
+}
+</file>
+
+<file path="resources/sass/components/_header.scss">
+/* --- Tokyo Current: Soy Sauce Bottle Gimmick --- */
+
+.global-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 11000;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    .nav-left, .nav-right { pointer-events: auto; }
+    @media (max-width: 768px) { padding: 15px 20px; }
+}
+
+.menu-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 60px;
+    height: 90px; // 縦長ボトル用
+    position: relative;
+    z-index: 10002;
+    color: #000; // 通常時の線の色
+
+    .bottle-wrapper {
+        display: block;
+        width: 100%;
+        height: 100%;
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+    }
+
+    // --- 初期状態 ---
+    .bottle-group {
+        transform-origin: 50% 80%; // ボトルの底の方を中心に回転
+        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    }
+
+    .bottle-cap {
+        transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    .bottle-liquid {
+        transition: opacity 0.4s ease;
+    }
+
+    .sauce-stream {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .sauce-drop {
+        opacity: 0;
+        transform: translateY(0);
+    }
+
+    // --- ACTIVE: 醤油注ぎモード発動 ---
+    &.is-active {
+        // 1. ボトルを大胆に傾ける (-135度で左上の注ぎ口が下を向く)
+        .bottle-group {
+            transform: rotate(-135deg) translate(-10px, -15px);
+        }
+
+        // 2. キャップがあの「赤」になる
+        .bottle-cap {
+            fill: #e60012; // Kikkoman Red
+            stroke: #e60012; // 線も赤くして一体化
+        }
+
+        // 3. 中身の醤油が満タンになる（黒くなる）
+        .bottle-liquid {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        // 4. ボディの線も少し薄くして液体を際立たせる（任意）
+        .bottle-body {
+            stroke: #2c1a16;
+        }
+
+        // 5. 注ぎ口からタレ発射
+        .sauce-stream {
+            opacity: 1;
+            stroke-dashoffset: 0;
+            // 傾き終わった頃にドバっと出る
+            transition: stroke-dashoffset 0.4s ease-in 0.3s, opacity 0.1s 0.3s;
+        }
+
+        // 6. 雫のループ
+        .sauce-drop {
+            opacity: 1;
+            animation: drip-drop 1.5s cubic-bezier(0.5, 0, 1, 1) infinite 0.7s;
+        }
+    }
+}
+
+// 滴下アニメーション（前回と同じ物理挙動）
+@keyframes drip-drop {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    20% { transform: translateY(15px) scale(0.8, 1.2); } // 伸びる
+    50% { transform: translateY(50px) scale(0.6, 1.4); } // 加速
+    90% { transform: translateY(90px) scale(0.5, 1.5); opacity: 1; }
+    100% { transform: translateY(110px) scale(2, 0.1); opacity: 0; } // 着地して消滅
+}
+
+// フルスクリーンメニュー（既存維持）
+.global-nav {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 10500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-100%) scaleY(0.8);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
+    opacity: 0;
+    visibility: hidden;
+
+    &.is-open {
+        transform: translateY(0) scaleY(1);
+        opacity: 1;
+        visibility: visible;
+        animation: menu-wobble 1s ease-in-out forwards;
+    }
+
+    .nav-links {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+        li {
+            margin: 25px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+    }
+
+    &.is-open li {
+        opacity: 1;
+        transform: translateY(0);
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) { transition-delay: #{0.3 + ($i * 0.1)}s; }
+        }
+    }
+
+    .nav-item {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #000;
+        text-decoration: none;
+        letter-spacing: -0.02em;
+        position: relative;
+        display: inline-block;
+        &::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px;
+            background: #e60012; // メニューの下線も赤に合わせてみる？
+            transition: width 0.4s ease;
+        }
+        &:hover {
+            color: #e60012;
+            &::after { width: 100%; }
+        }
+    }
+}
+
+@keyframes menu-wobble {
+    0% { transform: translateY(0) skewY(0); }
+    20% { transform: translateY(0) skewY(2deg); }
+    40% { transform: translateY(0) skewY(-1deg); }
+    60% { transform: translateY(0) skewY(0.5deg); }
+    100% { transform: translateY(0) skewY(0); }
+}
+</file>
+
+<file path="resources/sass/components/_intro.scss">
+#intro-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: $bg-color;
+    padding: 2rem;
+}
+
+.intro-content { margin-bottom: 4rem; }
+
+.intro-text {
+    font-family: 'Noto Serif JP', serif;
+    color: $text-main;
+    opacity: 0;
+    transform: translateY(20px);
+    margin-bottom: 2rem;
+}
+
+.intro-small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: $text-sub;
+    text-transform: uppercase;
+}
+
+.intro-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    line-height: 1.4;
+
+    @media (max-width: 768px) { font-size: 1.8rem; }
+}
+
+.intro-date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-top: 1px solid $text-sub;
+    padding: 15px 0 0 0;
+    display: inline-block;
+    color: $text-sub;
+    line-height: 1.8;
+}
+
+.jp-decoration {
+    display: block;
+    margin-top: 15px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem;
+    color: rgba(0,0,0,0.3);
+    letter-spacing: 0.8em;
+    text-indent: 0.8em;
+}
+
+/* Enter Button Animation */
+.intro-action { opacity: 0; transform: translateY(10px); }
+
+.enter-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 10px 20px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+
+    .btn-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+    }
+    .btn-line {
+        width: 30px; height: 1px; background-color: $text-main;
+        animation: blinkLine 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+@keyframes blinkLine {
+    0%   { opacity: 0.2; transform: scaleX(0.8); }
+    50%  { opacity: 1;   transform: scaleX(1); }
+    100% { opacity: 0.2; transform: scaleX(0.8); }
+}
+</file>
+
+<file path="resources/sass/components/_reservation.scss">
+/* --- Tokyo Current: High-End Minimal & Ramen Dynamics --- */
+
+// 1. 全画面背景のスライダー（モノトーン・シズル）
+.gallery-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.35; // フォームを際立たせるために沈める
+    pointer-events: none;
+
+    .photo-scroller {
+        display: flex;
+        width: calc(300px * 20);
+        animation: scroll 60s linear infinite; // JSでこの速度を動的に変える
+    }
+
+    .photo-item {
+        width: 300px;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+        filter: grayscale(100%) contrast(1.1); // 東京のストリート感
+        border-right: 1px solid rgba(255,255,255,0.05);
+        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+}
+
+// 2. メインレイアウト
+.main-content {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+// 3. ガラスレイヤーのフォームコンテナ
+.content-container {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px) saturate(150%); // 東京の夜のような屈折
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 60px 40px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    transform: perspective(1000px) rotateX(1deg);
+}
+
+// 4. タイポグラフィ
+.brand-header {
+    margin-bottom: 50px;
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.8rem;
+        color: #000;
+        letter-spacing: -0.05em;
+        line-height: 0.8;
+        span { color: $c-blue; }
+    }
+    .sub {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.5em;
+        margin-top: 15px;
+        color: #888;
+        text-transform: uppercase;
+    }
+}
+
+// 5. フォーム要素と「麺」のアニメーション
+.form-group {
+    position: relative;
+    margin-bottom: 35px;
+
+    .label-min {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.25em;
+        color: #aaa;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    // 麺の演出：フォーカス時に伸びる黄金色のライン
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: #f1c40f; // 黄金色の麺カラー
+        box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        // 麺の弾力を表現するカスタムベジェ
+        transition: width 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        z-index: 2;
+    }
+
+    &:focus-within::after {
+        width: 100%;
+    }
+}
+
+.input-soya {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05); // ベースの細い線
+    background: transparent;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: #000;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.5s ease;
+
+    &::placeholder {
+        font-size: 0.75rem;
+        color: #ddd;
+        transition: opacity 0.3s;
+    }
+
+    &:focus {
+        padding-left: 8px; // わずかな動的変化
+        &::placeholder { opacity: 0; }
+    }
+}
+
+// 6. 送信ボタン（麺のコシを感じるバウンド）
+.btn-whatsapp {
+    background: #000;
+    color: #fff;
+    width: 100%;
+    padding: 24px;
+    border: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); // 弾力
+
+    &:hover {
+        background: #222;
+        letter-spacing: 0.5em;
+        transform: translateY(-2px);
+    }
+
+    &:active {
+        transform: scale(0.96);
+    }
+}
+
+// 7. ラマダン休業通知（ミニマル）
+.holiday-notice {
+    h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        letter-spacing: -0.02em;
+        color: #000;
+    }
+}
+
+// 8. 背景スクロールアニメーション
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-300px * 10)); }
+}
+
+/* モバイル対応：さらに削ぎ落とす */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 40px 25px;
+        backdrop-filter: blur(20px);
+    }
+    .brand-header h1 {
+        font-size: 2.8rem;
+    }
+}
+</file>
+
+<file path="resources/sass/components/_variables.scss">
+/* resources/sass/components/_variables.scss */
+
+// --- Colors ---
+$c-blue: #a3b8c9;    // コンクリートブルー
+$c-gray: #e0e0e0;    // ライトグレー
+$d-gray: #4a4a4a;    // ディープグレー
+$bg-color: #f4f5f7;  // 背景色
+
+// --- Text Colors (エラー解消のために追加) ---
+$text-main: #3a3a3a;
+$text-sub: #9ea1a3;
+
+// --- Lines ---
+$line-color: rgba(0, 0, 0, 0.08);
+</file>
+
+<file path="resources/sass/components/_welcome.scss">
+/* resources/sass/components/_welcome.scss */
+
+.main-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; // JSでフェードインさせるため
+    transition: opacity 2s ease;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        padding-top: 20vh;
+    }
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+}
+
+h1.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: $d-gray;
+    line-height: 1;
+
+    @media (max-width: 768px) {
+        font-size: 3.2rem;
+        text-align: center;
+    }
+}
+
+.brand-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $text-sub;
+    margin-bottom: 3.5rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; width: 40px;
+        height: 1px;
+        background-color: $text-sub;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        display: block;
+        text-align: center;
+        &::after { left: 50%; transform: translateX(-50%); }
+    }
+}
+
+.story-text {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    line-height: 2.2;
+    color: $d-gray;
+    text-align: justify;
+    opacity: 1 !important; // ここが効いていない可能性が高い
+    font-weight: 300;
+
+    strong { font-weight: 500; color: #000; }
+    hr { margin: 30px 0; border-top: 1px solid $line-color; }
+
+    @media (max-width: 768px) {
+        text-align: left;
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+}
+
+.architectural-line {
+    position: absolute;
+    left: -40px; top: -50px; bottom: -50px;
+    width: 1px;
+    background: $line-color;
+    @media (max-width: 768px) { display: none; }
+}
+</file>
+
+<file path="resources/views/layouts/soya.blade.php">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', 'Söya. | prod. bistronippon')</title>
+
+    @stack('meta')
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @stack('page-styles')
+</head>
+
+<body>
+    <div class="concrete-bg"></div>
+
+    {{-- ここにヘッダーを追加します --}}
+    @include('parts.header')
+
+    <main>
+        @yield('content')
+    </main>
+
+    @include('parts.footer')
+    @stack('scripts')
+</body>
+
+</html>
+</file>
+
+<file path="resources/views/parts/header.blade.php">
+<header class="global-header">
+    <div class="nav-left">
+        <a href="{{ url('/') }}" class="logo-link">
+            <img src="{{ asset('logo.svg') }}" alt="Söya." style="height: 32px;">
+        </a>
+    </div>
+
+    <div class="nav-right">
+        <button class="menu-trigger" id="menuTrigger">
+            <span class="bottle-wrapper">
+                <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+
+                    <path class="sauce-stream" d="M35,55 L35,140" stroke="#2c1a16" stroke-width="6"
+                        stroke-linecap="round" fill="none" />
+
+                    <circle class="sauce-drop" cx="35" cy="140" r="3" fill="#2c1a16" />
+
+                    <g class="bottle-group">
+                        <path class="bottle-body"
+                            d="M25,50 L75,50 L80,110 C80,125 70,135 50,135 C30,135 20,125 20,110 L25,50 Z"
+                            stroke="currentColor" stroke-width="3" fill="none" />
+
+                        <path class="bottle-liquid"
+                            d="M27,60 L73,60 L78,110 C78,122 68,130 50,130 C32,130 22,122 22,110 L27,60 Z"
+                            fill="#2c1a16" stroke="none" opacity="0" />
+
+                        <path class="bottle-cap" d="M25,50 L75,50 L70,25 L30,25 L25,50 Z M20,30 L30,25 L30,35 Z"
+                            stroke="currentColor" stroke-width="3" fill="#fff" />
+                    </g>
+                </svg>
+            </span>
+        </button>
+    </div>
+</header>
+
+<nav class="global-nav" id="globalNav">
+    {{-- メニューの中身は変更なし --}}
+    <ul class="nav-links">
+        <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
+        <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
+        <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" class="nav-item">Instagram</a></li>
+    </ul>
+</nav>
+</file>
+
+<file path="resources/views/reservation.blade.php">
+@extends('layouts.soya')
+
+@section('title', 'Reservation | Söya.')
+
+@php
+    /* |--------------------------------------------------------------------------
+       | RAMADAN SETTINGS (2026/02/15 - 03/12)
+       |-------------------------------------------------------------------------- */
+    $holiday = [
+        'is_active' => true,
+        'start' => '2026-02-15',
+        'end' => '2026-03-12',
+        'title' => 'RAMADAN BREAK',
+        'message' => "We are currently closed for the holy month of Ramadan.\nPreparing for our Grand Opening.",
+        'period_txt' => 'Feb 15 – March 12, 2026',
+    ];
+
+    $isClosed = $holiday['is_active'] && now()->between($holiday['start'], $holiday['end']);
+@endphp
+
+@section('content')
+    {{-- 1. 背景：モノトーンの動的スライダー --}}
+    <div class="gallery-wrapper">
+        <div class="photo-scroller">
+            @for ($j = 0; $j < 2; $j++)
+                @for ($i = 1; $i <= 10; $i++)
+                    <div class="photo-item" style="background-image: url('{{ asset('res_' . $i . '.png') }}')"></div>
+                @endfor
+            @endfor
+        </div>
+    </div>
+
+    <div class="main-content">
+        {{-- 2. ガラスコンテナ --}}
+        <div class="content-container animate__animated animate__fadeInUp">
+
+            @if ($isClosed)
+                {{-- A. 休業告知モード --}}
+                <div class="holiday-notice text-center">
+                    <h2 class="animate__animated animate__fadeIn">{{ $holiday['title'] }}</h2>
+                    <p class="mt-4"
+                        style="font-family: 'Noto Serif JP', serif; font-weight: 300; line-height: 2.2; color: #4a4a4a;">
+                        {!! nl2br(e($holiday['message'])) !!}
+                    </p>
+                    <div class="mt-5 pt-4" style="border-top: 1px solid rgba(0,0,0,0.05);">
+                        <span class="small"
+                            style="letter-spacing: 0.3em; color: #a3b8c9;">{{ $holiday['period_txt'] }}</span>
+                    </div>
+                </div>
+            @else
+                {{-- B. 予約フォームモード --}}
+                <div class="brand-header text-center">
+                    <h1>Res<span>.</span></h1>
+                    <p class="sub">TOKYO CURRENT</p>
+                </div>
+
+                <form id="resForm" class="animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
+                    <div class="form-group">
+                        <label class="label-min">GUEST NAME</label>
+                        <input type="text" id="name" class="input-soya" placeholder="TYPE YOUR NAME" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group">
+                                <label class="label-min">SELECT DATE</label>
+                                <input type="date" id="date" class="input-soya" required>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label class="label-min">TIME</label>
+                                <select id="time" class="input-soya" required>
+                                    <option value="">--:--</option>
+                                    <option value="12:00">12:00</option>
+                                    <option value="19:00">19:00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-min">PARTY SIZE</label>
+                        <select id="guests" class="input-soya">
+                            @for ($i = 1; $i <= 6; $i++)
+                                <option value="{{ $i }}">{{ $i }} {{ $i > 1 ? 'PEOPLE' : 'PERSON' }}
+                                </option>
+                            @endfor
+                        </select>
+                    </div>
+
+                    <button type="button" id="whatsappBtn" class="btn-whatsapp">
+                        SEND REQUEST
+                    </button>
+                </form>
+            @endif
+
+            {{-- 3. フッター --}}
+            <div class="text-center mt-5">
+                <a href="{{ url('/') }}" class="back-link"
+                    style="font-size: 0.55rem; color: #aaa; letter-spacing: 0.2em; text-decoration: none; text-transform: uppercase;">
+                    TERMINAL / BACK TO HOME
+                </a>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script type="module">
+        $(function() {
+            const $whatsappBtn = $('#whatsappBtn');
+            const $inputs = $('.input-soya');
+            const $scroller = $('.photo-scroller');
+
+            // --- 1. 麺の躍動感演出 ---
+            $inputs.on('focus', function() {
+                $scroller.css('animation-duration', '20s'); // 背景加速
+            }).on('blur', function() {
+                $scroller.css('animation-duration', '60s'); // 減速
+            });
+
+            $whatsappBtn.on('mousedown', function() {
+                $(this).css('transform', 'scaleX(1.1) scaleY(0.8)'); // 麺のコシ（弾力）
+            }).on('mouseup mouseleave', function() {
+                $(this).css('transform', 'scale(1)');
+            });
+
+            // --- 2. 予約送信 & AIデータ構造化 ---
+            $whatsappBtn.on('click', function() {
+                const name = $('#name').val();
+                const date = $('#date').val();
+                const time = $('#time').val();
+                const guests = $('#guests').val();
+
+                if (!name || !date || !time) {
+                    alert('Please complete the form.');
+                    return;
+                }
+
+                const resData = {
+                    id: `RES-${Date.now()}`,
+                    timestamp: new Date().toISOString(),
+                    customer: name,
+                    booking_date: date,
+                    booking_time: time,
+                    party_size: guests,
+                    store: "Soya_Menzah9",
+                    ver: "2.0"
+                };
+
+                // ブラウザログ保存
+                const history = JSON.parse(localStorage.getItem('soya_res_logs') || '[]');
+                history.push(resData);
+                localStorage.setItem('soya_res_logs', JSON.stringify(history));
+
+                // AI解析・WhatsApp用 YAMLフォーマット
+                const text = `*NEW RESERVATION*
+---
+ID: ${resData.id}
+NAME: ${resData.customer}
+DATE: ${resData.booking_date}
+TIME: ${resData.booking_time}
+GUESTS: ${resData.party_size}
+---
+Generated by Söya-AI-Agent.
+Please send this without modification.`;
+
+                // GA4送信
+                if (typeof gtag === 'function') {
+                    gtag('event', 'generate_lead', {
+                        'value': guests
+                    });
+                }
+
+                window.open(`https://wa.me/216557786656?text=${encodeURIComponent(text)}`, '_blank');
+            });
+
+            // 日付制限
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            $('#date').attr('min', tomorrow.toISOString().split('T')[0]);
+        });
+    </script>
+@endpush
+</file>
+
+<file path="app/Console/Kernel.php">
+<?php
+
+namespace App\Console;
+
+use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+
+class Kernel extends ConsoleKernel
+{
+    /**
+     * Define the application's command schedule.
+     *
+     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @return void
+     */
+    protected function schedule(Schedule $schedule)
+    {
+        // $schedule->command('inspire')->hourly();
+    }
+
+    /**
+     * Register the commands for the application.
+     *
+     * @return void
+     */
+    protected function commands()
+    {
+        $this->load(__DIR__.'/Commands');
+
+        require base_path('routes/console.php');
+    }
+}
+</file>
+
+<file path="app/Exceptions/Handler.php">
+<?php
+
+namespace App\Exceptions;
+
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
+
+class Handler extends ExceptionHandler
+{
+    /**
+     * A list of exception types with their corresponding custom log levels.
+     *
+     * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
+     */
+    protected $levels = [
+        //
+    ];
+
+    /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array<int, class-string<\Throwable>>
+     */
+    protected $dontReport = [
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed to the session on validation exceptions.
+     *
+     * @var array<int, string>
+     */
+    protected $dontFlash = [
+        'current_password',
+        'password',
+        'password_confirmation',
+    ];
+
+    /**
+     * Register the exception handling callbacks for the application.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->reportable(function (Throwable $e) {
+            //
+        });
+    }
+}
+</file>
+
+<file path="app/Http/Controllers/Controller.php">
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
+
+class Controller extends BaseController
+{
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+}
+</file>
+
+<file path="app/Http/Kernel.php">
+<?php
+
+namespace App\Http;
+
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
+
+class Kernel extends HttpKernel
+{
+    /**
+     * The application's global HTTP middleware stack.
+     *
+     * These middleware are run during every request to your application.
+     *
+     * @var array<int, class-string|string>
+     */
+    protected $middleware = [
+        // \App\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+    ];
+
+    /**
+     * The application's route middleware groups.
+     *
+     * @var array<string, array<int, class-string|string>>
+     */
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'api' => [
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+    ];
+
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
+}
+</file>
+
+<file path="app/Http/Middleware/Authenticate.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
+
+class Authenticate extends Middleware
+{
+    /**
+     * Get the path the user should be redirected to when they are not authenticated.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string|null
+     */
+    protected function redirectTo($request)
+    {
+        if (! $request->expectsJson()) {
+            return route('login');
+        }
+    }
+}
+</file>
+
+<file path="app/Http/Middleware/EncryptCookies.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Cookie\Middleware\EncryptCookies as Middleware;
+
+class EncryptCookies extends Middleware
+{
+    /**
+     * The names of the cookies that should not be encrypted.
+     *
+     * @var array<int, string>
+     */
+    protected $except = [
+        //
+    ];
+}
+</file>
+
+<file path="app/Http/Middleware/PreventRequestsDuringMaintenance.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
+
+class PreventRequestsDuringMaintenance extends Middleware
+{
+    /**
+     * The URIs that should be reachable while maintenance mode is enabled.
+     *
+     * @var array<int, string>
+     */
+    protected $except = [
+        //
+    ];
+}
+</file>
+
+<file path="app/Http/Middleware/RedirectIfAuthenticated.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Providers\RouteServiceProvider;
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class RedirectIfAuthenticated
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param  string|null  ...$guards
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next, ...$guards)
+    {
+        $guards = empty($guards) ? [null] : $guards;
+
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return redirect(RouteServiceProvider::HOME);
+            }
+        }
+
+        return $next($request);
+    }
+}
+</file>
+
+<file path="app/Http/Middleware/TrimStrings.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
+
+class TrimStrings extends Middleware
+{
+    /**
+     * The names of the attributes that should not be trimmed.
+     *
+     * @var array<int, string>
+     */
+    protected $except = [
+        'current_password',
+        'password',
+        'password_confirmation',
+    ];
+}
+</file>
+
+<file path="app/Http/Middleware/TrustHosts.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Middleware\TrustHosts as Middleware;
+
+class TrustHosts extends Middleware
+{
+    /**
+     * Get the host patterns that should be trusted.
+     *
+     * @return array<int, string|null>
+     */
+    public function hosts()
+    {
+        return [
+            $this->allSubdomainsOfApplicationUrl(),
+        ];
+    }
+}
+</file>
+
+<file path="app/Http/Middleware/TrustProxies.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Middleware\TrustProxies as Middleware;
+use Illuminate\Http\Request;
+
+class TrustProxies extends Middleware
+{
+    /**
+     * The trusted proxies for this application.
+     *
+     * @var array<int, string>|string|null
+     */
+    protected $proxies;
+
+    /**
+     * The headers that should be used to detect proxies.
+     *
+     * @var int
+     */
+    protected $headers =
+        Request::HEADER_X_FORWARDED_FOR |
+        Request::HEADER_X_FORWARDED_HOST |
+        Request::HEADER_X_FORWARDED_PORT |
+        Request::HEADER_X_FORWARDED_PROTO |
+        Request::HEADER_X_FORWARDED_AWS_ELB;
+}
+</file>
+
+<file path="app/Http/Middleware/ValidateSignature.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
+
+class ValidateSignature extends Middleware
+{
+    /**
+     * The names of the query string parameters that should be ignored.
+     *
+     * @var array<int, string>
+     */
+    protected $except = [
+        // 'fbclid',
+        // 'utm_campaign',
+        // 'utm_content',
+        // 'utm_medium',
+        // 'utm_source',
+        // 'utm_term',
+    ];
+}
+</file>
+
+<file path="app/Http/Middleware/VerifyCsrfToken.php">
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
+
+class VerifyCsrfToken extends Middleware
+{
+    /**
+     * The URIs that should be excluded from CSRF verification.
+     *
+     * @var array<int, string>
+     */
+    protected $except = [
+        //
+    ];
+}
+</file>
+
+<file path="app/Models/User.php">
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable
+{
+    use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+}
+</file>
+
+<file path="app/Providers/AppServiceProvider.php">
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+}
+</file>
+
+<file path="app/Providers/AuthServiceProvider.php">
+<?php
+
+namespace App\Providers;
+
+// use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+
+        //
+    }
+}
+</file>
+
+<file path="app/Providers/BroadcastServiceProvider.php">
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\ServiceProvider;
+
+class BroadcastServiceProvider extends ServiceProvider
+{
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Broadcast::routes();
+
+        require base_path('routes/channels.php');
+    }
+}
+</file>
+
+<file path="app/Providers/EventServiceProvider.php">
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
+
+class EventServiceProvider extends ServiceProvider
+{
+    /**
+     * The event to listener mappings for the application.
+     *
+     * @var array<class-string, array<int, class-string>>
+     */
+    protected $listen = [
+        Registered::class => [
+            SendEmailVerificationNotification::class,
+        ],
+    ];
+
+    /**
+     * Register any events for your application.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     *
+     * @return bool
+     */
+    public function shouldDiscoverEvents()
+    {
+        return false;
+    }
+}
+</file>
+
+<file path="app/Providers/RouteServiceProvider.php">
+<?php
+
+namespace App\Providers;
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Route;
+
+class RouteServiceProvider extends ServiceProvider
+{
+    /**
+     * The path to the "home" route for your application.
+     *
+     * Typically, users are redirected here after authentication.
+     *
+     * @var string
+     */
+    public const HOME = '/home';
+
+    /**
+     * Define your route model bindings, pattern filters, and other route configuration.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->configureRateLimiting();
+
+        $this->routes(function () {
+            Route::middleware('api')
+                ->prefix('api')
+                ->group(base_path('routes/api.php'));
+
+            Route::middleware('web')
+                ->group(base_path('routes/web.php'));
+        });
+    }
+
+    /**
+     * Configure the rate limiters for the application.
+     *
+     * @return void
+     */
+    protected function configureRateLimiting()
+    {
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+        });
+    }
+}
+</file>
+
+<file path="config/app.php">
+<?php
+
+use Illuminate\Support\Facades\Facade;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Name
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+
+    'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Environment
+    |--------------------------------------------------------------------------
+    |
+    | This value determines the "environment" your application is currently
+    | running in. This may determine how you prefer to configure various
+    | services the application utilizes. Set this in your ".env" file.
+    |
+    */
+
+    'env' => env('APP_ENV', 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Debug Mode
+    |--------------------------------------------------------------------------
+    |
+    | When your application is in debug mode, detailed error messages with
+    | stack traces will be shown on every error that occurs within your
+    | application. If disabled, a simple generic error page is shown.
+    |
+    */
+
+    'debug' => (bool) env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application URL
+    |--------------------------------------------------------------------------
+    |
+    | This URL is used by the console to properly generate URLs when using
+    | the Artisan command line tool. You should set this to the root of
+    | your application so that it is used when running Artisan tasks.
+    |
+    */
+
+    'url' => env('APP_URL', 'http://localhost'),
+
+    'asset_url' => env('ASSET_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Timezone
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default timezone for your application, which
+    | will be used by the PHP date and date-time functions. We have gone
+    | ahead and set this to a sensible default for you out of the box.
+    |
+    */
+
+    'timezone' => 'UTC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Locale Configuration
+    |--------------------------------------------------------------------------
+    |
+    | The application locale determines the default locale that will be used
+    | by the translation service provider. You are free to set this value
+    | to any of the locales which will be supported by the application.
+    |
+    */
+
+    'locale' => 'en',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Fallback Locale
+    |--------------------------------------------------------------------------
+    |
+    | The fallback locale determines the locale to use when the current one
+    | is not available. You may change the value to correspond to any of
+    | the language folders that are provided through your application.
+    |
+    */
+
+    'fallback_locale' => 'en',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Faker Locale
+    |--------------------------------------------------------------------------
+    |
+    | This locale will be used by the Faker PHP library when generating fake
+    | data for your database seeds. For example, this will be used to get
+    | localized telephone numbers, street address information and more.
+    |
+    */
+
+    'faker_locale' => 'en_US',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Encryption Key
+    |--------------------------------------------------------------------------
+    |
+    | This key is used by the Illuminate encrypter service and should be set
+    | to a random, 32 character string, otherwise these encrypted strings
+    | will not be safe. Please do this before deploying an application!
+    |
+    */
+
+    'key' => env('APP_KEY'),
+
+    'cipher' => 'AES-256-CBC',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maintenance Mode Driver
+    |--------------------------------------------------------------------------
+    |
+    | These configuration options determine the driver used to determine and
+    | manage Laravel's "maintenance mode" status. The "cache" driver will
+    | allow maintenance mode to be controlled across multiple machines.
+    |
+    | Supported drivers: "file", "cache"
+    |
+    */
+
+    'maintenance' => [
+        'driver' => 'file',
+        // 'store'  => 'redis',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
+
+    'providers' => [
+
+        /*
+         * Laravel Framework Service Providers...
+         */
+        Illuminate\Auth\AuthServiceProvider::class,
+        Illuminate\Broadcasting\BroadcastServiceProvider::class,
+        Illuminate\Bus\BusServiceProvider::class,
+        Illuminate\Cache\CacheServiceProvider::class,
+        Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
+        Illuminate\Cookie\CookieServiceProvider::class,
+        Illuminate\Database\DatabaseServiceProvider::class,
+        Illuminate\Encryption\EncryptionServiceProvider::class,
+        Illuminate\Filesystem\FilesystemServiceProvider::class,
+        Illuminate\Foundation\Providers\FoundationServiceProvider::class,
+        Illuminate\Hashing\HashServiceProvider::class,
+        Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
+        Illuminate\Pagination\PaginationServiceProvider::class,
+        Illuminate\Pipeline\PipelineServiceProvider::class,
+        Illuminate\Queue\QueueServiceProvider::class,
+        Illuminate\Redis\RedisServiceProvider::class,
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Session\SessionServiceProvider::class,
+        Illuminate\Translation\TranslationServiceProvider::class,
+        Illuminate\Validation\ValidationServiceProvider::class,
+        Illuminate\View\ViewServiceProvider::class,
+
+        /*
+         * Package Service Providers...
+         */
+
+        /*
+         * Application Service Providers...
+         */
+        App\Providers\AppServiceProvider::class,
+        App\Providers\AuthServiceProvider::class,
+        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\EventServiceProvider::class,
+        App\Providers\RouteServiceProvider::class,
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    |
+    | This array of class aliases will be registered when this application
+    | is started. However, feel free to register as many as you wish as
+    | the aliases are "lazy" loaded so they don't hinder performance.
+    |
+    */
+
+    'aliases' => Facade::defaultAliases()->merge([
+        // 'ExampleClass' => App\Example\ExampleClass::class,
+    ])->toArray(),
+
+];
+</file>
+
+<file path="config/auth.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default authentication "guard" and password
+    | reset options for your application. You may change these defaults
+    | as required, but they're a perfect start for most applications.
+    |
+    */
+
+    'defaults' => [
+        'guard' => 'web',
+        'passwords' => 'users',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Guards
+    |--------------------------------------------------------------------------
+    |
+    | Next, you may define every authentication guard for your application.
+    | Of course, a great default configuration has been defined for you
+    | here which uses session storage and the Eloquent user provider.
+    |
+    | All authentication drivers have a user provider. This defines how the
+    | users are actually retrieved out of your database or other storage
+    | mechanisms used by this application to persist your user's data.
+    |
+    | Supported: "session"
+    |
+    */
+
+    'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | User Providers
+    |--------------------------------------------------------------------------
+    |
+    | All authentication drivers have a user provider. This defines how the
+    | users are actually retrieved out of your database or other storage
+    | mechanisms used by this application to persist your user's data.
+    |
+    | If you have multiple user tables or models you may configure multiple
+    | sources which represent each model / table. These sources may then
+    | be assigned to any extra authentication guards you have defined.
+    |
+    | Supported: "database", "eloquent"
+    |
+    */
+
+    'providers' => [
+        'users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\User::class,
+        ],
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resetting Passwords
+    |--------------------------------------------------------------------------
+    |
+    | You may specify multiple password reset configurations if you have more
+    | than one user table or model in the application and you want to have
+    | separate password reset settings based on the specific user types.
+    |
+    | The expire time is the number of minutes that each reset token will be
+    | considered valid. This security feature keeps tokens short-lived so
+    | they have less time to be guessed. You may change this as needed.
+    |
+    */
+
+    'passwords' => [
+        'users' => [
+            'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Password Confirmation Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the amount of seconds before a password confirmation
+    | times out and the user is prompted to re-enter their password via the
+    | confirmation screen. By default, the timeout lasts for three hours.
+    |
+    */
+
+    'password_timeout' => 10800,
+
+];
+</file>
+
+<file path="config/broadcasting.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Broadcaster
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default broadcaster that will be used by the
+    | framework when an event needs to be broadcast. You may set this to
+    | any of the connections defined in the "connections" array below.
+    |
+    | Supported: "pusher", "ably", "redis", "log", "null"
+    |
+    */
+
+    'default' => env('BROADCAST_DRIVER', 'null'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Broadcast Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define all of the broadcast connections that will be used
+    | to broadcast events to other systems or over websockets. Samples of
+    | each available type of connection are provided inside this array.
+    |
+    */
+
+    'connections' => [
+
+        'pusher' => [
+            'driver' => 'pusher',
+            'key' => env('PUSHER_APP_KEY'),
+            'secret' => env('PUSHER_APP_SECRET'),
+            'app_id' => env('PUSHER_APP_ID'),
+            'options' => [
+                'host' => env('PUSHER_HOST') ?: 'api-'.env('PUSHER_APP_CLUSTER', 'mt1').'.pusher.com',
+                'port' => env('PUSHER_PORT', 443),
+                'scheme' => env('PUSHER_SCHEME', 'https'),
+                'encrypted' => true,
+                'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
+            ],
+            'client_options' => [
+                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+            ],
+        ],
+
+        'ably' => [
+            'driver' => 'ably',
+            'key' => env('ABLY_KEY'),
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+        ],
+
+        'log' => [
+            'driver' => 'log',
+        ],
+
+        'null' => [
+            'driver' => 'null',
+        ],
+
+    ],
+
+];
+</file>
+
+<file path="config/cache.php">
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Cache Store
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default cache connection that gets used while
+    | using this caching library. This connection is used when another is
+    | not explicitly specified when executing a given caching function.
+    |
+    */
+
+    'default' => env('CACHE_DRIVER', 'file'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Stores
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define all of the cache "stores" for your application as
+    | well as their drivers. You may even define multiple stores for the
+    | same cache driver to group types of items stored in your caches.
+    |
+    | Supported drivers: "apc", "array", "database", "file",
+    |         "memcached", "redis", "dynamodb", "octane", "null"
+    |
+    */
+
+    'stores' => [
+
+        'apc' => [
+            'driver' => 'apc',
+        ],
+
+        'array' => [
+            'driver' => 'array',
+            'serialize' => false,
+        ],
+
+        'database' => [
+            'driver' => 'database',
+            'table' => 'cache',
+            'connection' => null,
+            'lock_connection' => null,
+        ],
+
+        'file' => [
+            'driver' => 'file',
+            'path' => storage_path('framework/cache/data'),
+        ],
+
+        'memcached' => [
+            'driver' => 'memcached',
+            'persistent_id' => env('MEMCACHED_PERSISTENT_ID'),
+            'sasl' => [
+                env('MEMCACHED_USERNAME'),
+                env('MEMCACHED_PASSWORD'),
+            ],
+            'options' => [
+                // Memcached::OPT_CONNECT_TIMEOUT => 2000,
+            ],
+            'servers' => [
+                [
+                    'host' => env('MEMCACHED_HOST', '127.0.0.1'),
+                    'port' => env('MEMCACHED_PORT', 11211),
+                    'weight' => 100,
+                ],
+            ],
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'cache',
+            'lock_connection' => 'default',
+        ],
+
+        'dynamodb' => [
+            'driver' => 'dynamodb',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'table' => env('DYNAMODB_CACHE_TABLE', 'cache'),
+            'endpoint' => env('DYNAMODB_ENDPOINT'),
+        ],
+
+        'octane' => [
+            'driver' => 'octane',
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cache Key Prefix
+    |--------------------------------------------------------------------------
+    |
+    | When utilizing the APC, database, memcached, Redis, or DynamoDB cache
+    | stores there might be other applications using the same cache. For
+    | that reason, you may prefix every cache key to avoid collisions.
+    |
+    */
+
+    'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
+
+];
+</file>
+
+<file path="config/cors.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cross-Origin Resource Sharing (CORS) Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure your settings for cross-origin resource sharing
+    | or "CORS". This determines what cross-origin operations may execute
+    | in web browsers. You are free to adjust these settings as needed.
+    |
+    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    |
+    */
+
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => ['*'],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [],
+
+    'max_age' => 0,
+
+    'supports_credentials' => false,
+
+];
+</file>
+
+<file path="config/database.php">
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Database Connection Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify which of the database connections below you wish
+    | to use as your default connection for all database work. Of course
+    | you may use many connections at once using the Database library.
+    |
+    */
+
+    'default' => env('DB_CONNECTION', 'mysql'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Database Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here are each of the database connections setup for your application.
+    | Of course, examples of configuring each database platform that is
+    | supported by Laravel is shown below to make development simple.
+    |
+    |
+    | All database work in Laravel is done through the PHP PDO facilities
+    | so make sure you have the driver for your particular database of
+    | choice installed on your machine before you begin development.
+    |
+    */
+
+    'connections' => [
+
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DATABASE_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+        ],
+
+        'mysql' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'search_path' => 'public',
+            'sslmode' => 'prefer',
+        ],
+
+        'sqlsrv' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '1433'),
+            'database' => env('DB_DATABASE', 'forge'),
+            'username' => env('DB_USERNAME', 'forge'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            // 'encrypt' => env('DB_ENCRYPT', 'yes'),
+            // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Migration Repository Table
+    |--------------------------------------------------------------------------
+    |
+    | This table keeps track of all the migrations that have already run for
+    | your application. Using this information, we can determine which of
+    | the migrations on disk haven't actually been run in the database.
+    |
+    */
+
+    'migrations' => 'migrations',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Redis Databases
+    |--------------------------------------------------------------------------
+    |
+    | Redis is an open source, fast, and advanced key-value store that also
+    | provides a richer body of commands than a typical key-value system
+    | such as APC or Memcached. Laravel makes it easy to dig right in.
+    |
+    */
+
+    'redis' => [
+
+        'client' => env('REDIS_CLIENT', 'phpredis'),
+
+        'options' => [
+            'cluster' => env('REDIS_CLUSTER', 'redis'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+        ],
+
+        'default' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_DB', '0'),
+        ],
+
+        'cache' => [
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
+            'username' => env('REDIS_USERNAME'),
+            'password' => env('REDIS_PASSWORD'),
+            'port' => env('REDIS_PORT', '6379'),
+            'database' => env('REDIS_CACHE_DB', '1'),
+        ],
+
+    ],
+
+];
+</file>
+
+<file path="config/filesystems.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Filesystem Disk
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default filesystem disk that should be used
+    | by the framework. The "local" disk, as well as a variety of cloud
+    | based disks are available to your application. Just store away!
+    |
+    */
+
+    'default' => env('FILESYSTEM_DISK', 'local'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Filesystem Disks
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure as many filesystem "disks" as you wish, and you
+    | may even configure multiple disks of the same driver. Defaults have
+    | been set up for each driver as an example of the required values.
+    |
+    | Supported Drivers: "local", "ftp", "sftp", "s3"
+    |
+    */
+
+    'disks' => [
+
+        'local' => [
+            'driver' => 'local',
+            'root' => storage_path('app'),
+            'throw' => false,
+        ],
+
+        'public' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public'),
+            'url' => env('APP_URL').'/storage',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        's3' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),
+            'endpoint' => env('AWS_ENDPOINT'),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'throw' => false,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Symbolic Links
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the symbolic links that will be created when the
+    | `storage:link` Artisan command is executed. The array keys should be
+    | the locations of the links and the values should be their targets.
+    |
+    */
+
+    'links' => [
+        public_path('storage') => storage_path('app/public'),
+    ],
+
+];
+</file>
+
+<file path="config/hashing.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Hash Driver
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default hash driver that will be used to hash
+    | passwords for your application. By default, the bcrypt algorithm is
+    | used; however, you remain free to modify this option if you wish.
+    |
+    | Supported: "bcrypt", "argon", "argon2id"
+    |
+    */
+
+    'driver' => 'bcrypt',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Bcrypt Options
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the configuration options that should be used when
+    | passwords are hashed using the Bcrypt algorithm. This will allow you
+    | to control the amount of time it takes to hash the given password.
+    |
+    */
+
+    'bcrypt' => [
+        'rounds' => env('BCRYPT_ROUNDS', 10),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Argon Options
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the configuration options that should be used when
+    | passwords are hashed using the Argon algorithm. These will allow you
+    | to control the amount of time it takes to hash the given password.
+    |
+    */
+
+    'argon' => [
+        'memory' => 65536,
+        'threads' => 1,
+        'time' => 4,
+    ],
+
+];
+</file>
+
+<file path="config/logging.php">
+<?php
+
+use Monolog\Handler\NullHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\SyslogUdpHandler;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option defines the default log channel that gets used when writing
+    | messages to the logs. The name specified in this option should match
+    | one of the channels defined in the "channels" configuration array.
+    |
+    */
+
+    'default' => env('LOG_CHANNEL', 'stack'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deprecations Log Channel
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the log channel that should be used to log warnings
+    | regarding deprecated PHP and library features. This allows you to get
+    | your application ready for upcoming major versions of dependencies.
+    |
+    */
+
+    'deprecations' => [
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+        'trace' => false,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Log Channels
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the log channels for your application. Out of
+    | the box, Laravel uses the Monolog PHP logging library. This gives
+    | you a variety of powerful log handlers / formatters to utilize.
+    |
+    | Available Drivers: "single", "daily", "slack", "syslog",
+    |                    "errorlog", "monolog",
+    |                    "custom", "stack"
+    |
+    */
+
+    'channels' => [
+        'stack' => [
+            'driver' => 'stack',
+            'channels' => ['single'],
+            'ignore_exceptions' => false,
+        ],
+
+        'single' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/laravel.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'days' => 14,
+        ],
+
+        'slack' => [
+            'driver' => 'slack',
+            'url' => env('LOG_SLACK_WEBHOOK_URL'),
+            'username' => 'Laravel Log',
+            'emoji' => ':boom:',
+            'level' => env('LOG_LEVEL', 'critical'),
+        ],
+
+        'papertrail' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
+            'handler_with' => [
+                'host' => env('PAPERTRAIL_URL'),
+                'port' => env('PAPERTRAIL_PORT'),
+                'connectionString' => 'tls://'.env('PAPERTRAIL_URL').':'.env('PAPERTRAIL_PORT'),
+            ],
+        ],
+
+        'stderr' => [
+            'driver' => 'monolog',
+            'level' => env('LOG_LEVEL', 'debug'),
+            'handler' => StreamHandler::class,
+            'formatter' => env('LOG_STDERR_FORMATTER'),
+            'with' => [
+                'stream' => 'php://stderr',
+            ],
+        ],
+
+        'syslog' => [
+            'driver' => 'syslog',
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'errorlog' => [
+            'driver' => 'errorlog',
+            'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'path' => storage_path('logs/laravel.log'),
+        ],
+    ],
+
+];
+</file>
+
+<file path="config/mail.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Mailer
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default mailer that is used to send any email
+    | messages sent by your application. Alternative mailers may be setup
+    | and used as needed; however, this mailer will be used by default.
+    |
+    */
+
+    'default' => env('MAIL_MAILER', 'smtp'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mailer Configurations
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure all of the mailers used by your application plus
+    | their respective settings. Several examples have been configured for
+    | you and you are free to add your own as your application requires.
+    |
+    | Laravel supports a variety of mail "transport" drivers to be used while
+    | sending an e-mail. You will specify which one you are using for your
+    | mailers below. You are free to add additional mailers as required.
+    |
+    | Supported: "smtp", "sendmail", "mailgun", "ses",
+    |            "postmark", "log", "array", "failover"
+    |
+    */
+
+    'mailers' => [
+        'smtp' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+            'port' => env('MAIL_PORT', 587),
+            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_USERNAME'),
+            'password' => env('MAIL_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'ses' => [
+            'transport' => 'ses',
+        ],
+
+        'mailgun' => [
+            'transport' => 'mailgun',
+        ],
+
+        'postmark' => [
+            'transport' => 'postmark',
+        ],
+
+        'sendmail' => [
+            'transport' => 'sendmail',
+            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
+        ],
+
+        'log' => [
+            'transport' => 'log',
+            'channel' => env('MAIL_LOG_CHANNEL'),
+        ],
+
+        'array' => [
+            'transport' => 'array',
+        ],
+
+        'failover' => [
+            'transport' => 'failover',
+            'mailers' => [
+                'smtp',
+                'log',
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global "From" Address
+    |--------------------------------------------------------------------------
+    |
+    | You may wish for all e-mails sent by your application to be sent from
+    | the same address. Here, you may specify a name and address that is
+    | used globally for all e-mails that are sent by your application.
+    |
+    */
+
+    'from' => [
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Markdown Mail Settings
+    |--------------------------------------------------------------------------
+    |
+    | If you are using Markdown based email rendering, you may configure your
+    | theme and component paths here, allowing you to customize the design
+    | of the emails. Or, you may simply stick with the Laravel defaults!
+    |
+    */
+
+    'markdown' => [
+        'theme' => 'default',
+
+        'paths' => [
+            resource_path('views/vendor/mail'),
+        ],
+    ],
+
+];
+</file>
+
+<file path="config/queue.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Queue Connection Name
+    |--------------------------------------------------------------------------
+    |
+    | Laravel's queue API supports an assortment of back-ends via a single
+    | API, giving you convenient access to each back-end using the same
+    | syntax for every one. Here you may define a default connection.
+    |
+    */
+
+    'default' => env('QUEUE_CONNECTION', 'sync'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Queue Connections
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the connection information for each server that
+    | is used by your application. A default configuration has been added
+    | for each back-end shipped with Laravel. You are free to add more.
+    |
+    | Drivers: "sync", "database", "beanstalkd", "sqs", "redis", "null"
+    |
+    */
+
+    'connections' => [
+
+        'sync' => [
+            'driver' => 'sync',
+        ],
+
+        'database' => [
+            'driver' => 'database',
+            'table' => 'jobs',
+            'queue' => 'default',
+            'retry_after' => 90,
+            'after_commit' => false,
+        ],
+
+        'beanstalkd' => [
+            'driver' => 'beanstalkd',
+            'host' => 'localhost',
+            'queue' => 'default',
+            'retry_after' => 90,
+            'block_for' => 0,
+            'after_commit' => false,
+        ],
+
+        'sqs' => [
+            'driver' => 'sqs',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+            'queue' => env('SQS_QUEUE', 'default'),
+            'suffix' => env('SQS_SUFFIX'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'after_commit' => false,
+        ],
+
+        'redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => env('REDIS_QUEUE', 'default'),
+            'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
+        ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Failed Queue Jobs
+    |--------------------------------------------------------------------------
+    |
+    | These options configure the behavior of failed queue job logging so you
+    | can control which database and table are used to store the jobs that
+    | have failed. You may change them to any database / table you wish.
+    |
+    */
+
+    'failed' => [
+        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+        'database' => env('DB_CONNECTION', 'mysql'),
+        'table' => 'failed_jobs',
+    ],
+
+];
+</file>
+
+<file path="config/sanctum.php">
+<?php
+
+use Laravel\Sanctum\Sanctum;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stateful Domains
+    |--------------------------------------------------------------------------
+    |
+    | Requests from the following domains / hosts will receive stateful API
+    | authentication cookies. Typically, these should include your local
+    | and production domains which access your API via a frontend SPA.
+    |
+    */
+
+    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
+        '%s%s',
+        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+        Sanctum::currentApplicationUrlWithPort()
+    ))),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sanctum Guards
+    |--------------------------------------------------------------------------
+    |
+    | This array contains the authentication guards that will be checked when
+    | Sanctum is trying to authenticate a request. If none of these guards
+    | are able to authenticate the request, Sanctum will use the bearer
+    | token that's present on an incoming request for authentication.
+    |
+    */
+
+    'guard' => ['web'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Expiration Minutes
+    |--------------------------------------------------------------------------
+    |
+    | This value controls the number of minutes until an issued token will be
+    | considered expired. If this value is null, personal access tokens do
+    | not expire. This won't tweak the lifetime of first-party sessions.
+    |
+    */
+
+    'expiration' => null,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sanctum Middleware
+    |--------------------------------------------------------------------------
+    |
+    | When authenticating your first-party SPA with Sanctum you may need to
+    | customize some of the middleware Sanctum uses while processing the
+    | request. You may change the middleware listed below as required.
+    |
+    */
+
+    'middleware' => [
+        'verify_csrf_token' => App\Http\Middleware\VerifyCsrfToken::class,
+        'encrypt_cookies' => App\Http\Middleware\EncryptCookies::class,
+    ],
+
+];
+</file>
+
+<file path="config/services.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Third Party Services
+    |--------------------------------------------------------------------------
+    |
+    | This file is for storing the credentials for third party services such
+    | as Mailgun, Postmark, AWS and more. This file provides the de facto
+    | location for this type of information, allowing packages to have
+    | a conventional file to locate the various service credentials.
+    |
+    */
+
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
+    ],
+
+    'postmark' => [
+        'token' => env('POSTMARK_TOKEN'),
+    ],
+
+    'ses' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    ],
+
+];
+</file>
+
+<file path="config/session.php">
+<?php
+
+use Illuminate\Support\Str;
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Session Driver
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default session "driver" that will be used on
+    | requests. By default, we will use the lightweight native driver but
+    | you may specify any of the other wonderful drivers provided here.
+    |
+    | Supported: "file", "cookie", "database", "apc",
+    |            "memcached", "redis", "dynamodb", "array"
+    |
+    */
+
+    'driver' => env('SESSION_DRIVER', 'file'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Lifetime
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the number of minutes that you wish the session
+    | to be allowed to remain idle before it expires. If you want them
+    | to immediately expire on the browser closing, set that option.
+    |
+    */
+
+    'lifetime' => env('SESSION_LIFETIME', 120),
+
+    'expire_on_close' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Encryption
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to easily specify that all of your session data
+    | should be encrypted before it is stored. All encryption will be run
+    | automatically by Laravel and you can use the Session like normal.
+    |
+    */
+
+    'encrypt' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session File Location
+    |--------------------------------------------------------------------------
+    |
+    | When using the native session driver, we need a location where session
+    | files may be stored. A default has been set for you but a different
+    | location may be specified. This is only needed for file sessions.
+    |
+    */
+
+    'files' => storage_path('framework/sessions'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Database Connection
+    |--------------------------------------------------------------------------
+    |
+    | When using the "database" or "redis" session drivers, you may specify a
+    | connection that should be used to manage these sessions. This should
+    | correspond to a connection in your database configuration options.
+    |
+    */
+
+    'connection' => env('SESSION_CONNECTION'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Database Table
+    |--------------------------------------------------------------------------
+    |
+    | When using the "database" session driver, you may specify the table we
+    | should use to manage the sessions. Of course, a sensible default is
+    | provided for you; however, you are free to change this as needed.
+    |
+    */
+
+    'table' => 'sessions',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cache Store
+    |--------------------------------------------------------------------------
+    |
+    | While using one of the framework's cache driven session backends you may
+    | list a cache store that should be used for these sessions. This value
+    | must match with one of the application's configured cache "stores".
+    |
+    | Affects: "apc", "dynamodb", "memcached", "redis"
+    |
+    */
+
+    'store' => env('SESSION_STORE'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Sweeping Lottery
+    |--------------------------------------------------------------------------
+    |
+    | Some session drivers must manually sweep their storage location to get
+    | rid of old sessions from storage. Here are the chances that it will
+    | happen on a given request. By default, the odds are 2 out of 100.
+    |
+    */
+
+    'lottery' => [2, 100],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may change the name of the cookie used to identify a session
+    | instance by ID. The name specified here will get used every time a
+    | new session cookie is created by the framework for every driver.
+    |
+    */
+
+    'cookie' => env(
+        'SESSION_COOKIE',
+        Str::slug(env('APP_NAME', 'laravel'), '_').'_session'
+    ),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Path
+    |--------------------------------------------------------------------------
+    |
+    | The session cookie path determines the path for which the cookie will
+    | be regarded as available. Typically, this will be the root path of
+    | your application but you are free to change this when necessary.
+    |
+    */
+
+    'path' => '/',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Cookie Domain
+    |--------------------------------------------------------------------------
+    |
+    | Here you may change the domain of the cookie used to identify a session
+    | in your application. This will determine which domains the cookie is
+    | available to in your application. A sensible default has been set.
+    |
+    */
+
+    'domain' => env('SESSION_DOMAIN'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTPS Only Cookies
+    |--------------------------------------------------------------------------
+    |
+    | By setting this option to true, session cookies will only be sent back
+    | to the server if the browser has a HTTPS connection. This will keep
+    | the cookie from being sent to you when it can't be done securely.
+    |
+    */
+
+    'secure' => env('SESSION_SECURE_COOKIE'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Access Only
+    |--------------------------------------------------------------------------
+    |
+    | Setting this value to true will prevent JavaScript from accessing the
+    | value of the cookie and the cookie will only be accessible through
+    | the HTTP protocol. You are free to modify this option if needed.
+    |
+    */
+
+    'http_only' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Same-Site Cookies
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how your cookies behave when cross-site requests
+    | take place, and can be used to mitigate CSRF attacks. By default, we
+    | will set this value to "lax" since this is a secure default value.
+    |
+    | Supported: "lax", "strict", "none", null
+    |
+    */
+
+    'same_site' => 'lax',
+
+];
+</file>
+
+<file path="config/view.php">
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | View Storage Paths
+    |--------------------------------------------------------------------------
+    |
+    | Most templating systems load templates from disk. Here you may specify
+    | an array of paths that should be checked for your views. Of course
+    | the usual Laravel view path has already been registered for you.
+    |
+    */
+
+    'paths' => [
+        resource_path('views'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Compiled View Path
+    |--------------------------------------------------------------------------
+    |
+    | This option determines where all the compiled Blade templates will be
+    | stored for your application. Typically, this is within the storage
+    | directory. However, as usual, you are free to change this value.
+    |
+    */
+
+    'compiled' => env(
+        'VIEW_COMPILED_PATH',
+        realpath(storage_path('framework/views'))
+    ),
+
+];
+</file>
+
+<file path="database/.gitignore">
+*.sqlite*
+</file>
+
+<file path="database/factories/UserFactory.php">
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ */
+class UserFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition()
+    {
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+            'remember_token' => Str::random(10),
+        ];
+    }
+
+    /**
+     * Indicate that the model's email address should be unverified.
+     *
+     * @return static
+     */
+    public function unverified()
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
+        ]);
+    }
+}
+</file>
+
+<file path="database/migrations/2014_10_12_000000_create_users_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('users');
+    }
+};
+</file>
+
+<file path="database/migrations/2014_10_12_100000_create_password_resets_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('password_resets', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('password_resets');
+    }
+};
+</file>
+
+<file path="database/migrations/2019_08_19_000000_create_failed_jobs_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('failed_jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid')->unique();
+            $table->text('connection');
+            $table->text('queue');
+            $table->longText('payload');
+            $table->longText('exception');
+            $table->timestamp('failed_at')->useCurrent();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('failed_jobs');
+    }
+};
+</file>
+
+<file path="database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('personal_access_tokens', function (Blueprint $table) {
+            $table->id();
+            $table->morphs('tokenable');
+            $table->string('name');
+            $table->string('token', 64)->unique();
+            $table->text('abilities')->nullable();
+            $table->timestamp('last_used_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('personal_access_tokens');
+    }
+};
+</file>
+
+<file path="database/seeders/DatabaseSeeder.php">
+<?php
+
+namespace Database\Seeders;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class DatabaseSeeder extends Seeder
+{
+    /**
+     * Seed the application's database.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        // \App\Models\User::factory(10)->create();
+
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+    }
+}
+</file>
+
+<file path="resources/js/app.js">
+import './bootstrap';
+import 'bootstrap';
+import jQuery from 'jquery';
+window.$ = window.jQuery = jQuery;
+import '../sass/app.scss';
+
+$(function() {
+    console.log("Tokyo Current: Söya. Engine Started");
+
+    const $menu = $('#globalNav');
+    const $trigger = $('#menuTrigger');
+
+    // メニュー開閉
+    $trigger.on('click', function() {
+        $(this).toggleClass('is-active');
+        $menu.toggleClass('is-open');
+
+        // 丼がカチャッと動く振動演出
+        if($(this).hasClass('is-active')) {
+            $(this).addClass('animate__animated animate__headShake');
+            setTimeout(() => {
+                $(this).removeClass('animate__animated animate__headShake');
+            }, 500);
+        }
+    });
+
+    // リンククリックで閉じる
+    $('.nav-item').on('click', function() {
+        $trigger.removeClass('is-active');
+        $menu.removeClass('is-open');
+    });
+});
+</file>
+
+<file path="resources/js/bootstrap.js">
+import _ from 'lodash';
+window._ = _;
+
+/**
+ * We'll load the axios HTTP library which allows us to easily issue requests
+ * to our Laravel back-end. This library automatically handles sending the
+ * CSRF token as a header based on the value of the "XSRF" token cookie.
+ */
+
+import axios from 'axios';
+window.axios = axios;
+
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+/**
+ * Echo exposes an expressive API for subscribing to channels and listening
+ * for events that are broadcast by Laravel. Echo and event broadcasting
+ * allows your team to easily build robust real-time web applications.
+ */
+
+// import Echo from 'laravel-echo';
+
+// import Pusher from 'pusher-js';
+// window.Pusher = Pusher;
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: import.meta.env.VITE_PUSHER_APP_KEY,
+//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+//     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
+//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
+//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+//     enabledTransports: ['ws', 'wss'],
+// });
+</file>
+
+<file path="routes/api.php">
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+</file>
+
+<file path="routes/channels.php">
+<?php
+
+use Illuminate\Support\Facades\Broadcast;
+
+/*
+|--------------------------------------------------------------------------
+| Broadcast Channels
+|--------------------------------------------------------------------------
+|
+| Here you may register all of the event broadcasting channels that your
+| application supports. The given channel authorization callbacks are
+| used to check if an authenticated user can listen to the channel.
+|
+*/
+
+Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
+    return (int) $user->id === (int) $id;
+});
+</file>
+
+<file path="routes/console.php">
+<?php
+
+use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\Artisan;
+
+/*
+|--------------------------------------------------------------------------
+| Console Routes
+|--------------------------------------------------------------------------
+|
+| This file is where you may define all of your Closure based console
+| commands. Each Closure is bound to a command instance allowing a
+| simple approach to interacting with each command's IO methods.
+|
+*/
+
+Artisan::command('inspire', function () {
+    $this->comment(Inspiring::quote());
+})->purpose('Display an inspiring quote');
+</file>
+
+<file path="routes/web.php">
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+//予約
+Route::get('/reservation', function () {
+    // 既存のステータス管理変数（status）はControllerから渡す想定ですが、
+    // ここでは簡易的に 1 (通常営業) としています。
+    return view('reservation', ['status' => 1, 'message' => '']);
+})->name('reservation');
+</file>
+
+<file path="resources/views/parts/footer.blade.php">
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="insta-cta-wrapper">
+            <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-btn">
+                <span class="btn-icon">
+                    <i class="bi bi-instagram"></i>
+                </span>
+                <span class="btn-label" id="footer-text">Follow us @soya.tunis</span>
+            </a>
+        </div>
+
+        <div class="store-info-grid">
+            <div class="info-item">
+                <span class="info-label">Address</span>
+                <p class="info-value">Menzah 9, Tunis, Tunisia</p>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Hours</span>
+                <p class="info-value">Mon–Sat: 11:30 – 22:00</p>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Contact</span>
+                <p class="info-value">+216 55 778 656</p>
+            </div>
+        </div>
+
+        <div class="team-credit">
+            <span class="credit-label">Produced by</span>
+            <span class="credit-name">Bistro Nippon Team</span>
+        </div>
+    </div>
+</footer>
+</file>
+
+<file path="resources/views/parts/intro.blade.php">
+<div id="intro-overlay">
+    <div class="intro-content">
+        <div class="intro-text intro-small" id="intro-1">prod. bistronippon</div>
+
+        <div class="intro-text intro-main" id="intro-2">
+            Menzah 9<br>
+            Söya.
+        </div>
+
+        <div class="intro-text intro-date" id="intro-3">
+            Craft Ramen<br>
+            Grand Opening Spring 2026<br><br>
+            <span class="jp-decoration">北と北</span>
+        </div>
+    </div>
+
+    <div id="intro-action" class="intro-action">
+        <button id="enter-btn" class="enter-btn">
+            <span class="btn-text">Enter</span>
+            <span class="btn-line"></span>
+        </button>
+    </div>
+</div>
+</file>
+
+<file path="resources/sass/app.scss">
+/* resources/sass/app.scss */
+
+@import 'bootstrap/scss/bootstrap';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Noto+Serif+JP:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css');
+
+// 1位: 変数
+@import 'components/variables';
+
+// 2位: ベース (ここで $text-main を使うので、上が先に読み込まれている必要がある)
+@import 'components/base';
+
+// 3位: その他
+@import 'components/header';
+@import 'components/footer';
+@import 'components/intro';
+@import 'components/welcome'; // ここに追加
+@import 'components/reservation'; // ここに追加
+</file>
+
+<file path="resources/views/welcome.blade.php">
+@extends('layouts.soya')
+
+@section('title', 'Söya. | prod. bistronippon 北と北')
+
+@section('content')
+    {{-- 1. Intro Splash --}}
+    @include('parts.intro')
+
+    {{-- 2. Main Content --}}
+    <div class="main-container">
+        <div class="content-wrapper">
+            <div class="architectural-line d-none d-md-block"></div>
+
+            <div class="row align-items-center">
+                <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
+                    <p class="collab-text animate__animated animate__fadeIn">
+                        Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span> Menzah 9
+                    </p>
+                    <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
+
+                    <h2 class="brand-subtitle" id="subtitle">
+                        {{-- JSで動的に挿入 --}}
+                    </h2>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="story-text" id="story-content">
+                        {{-- JSで動的に挿入 --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script type="module">
+        $(function() {
+            // --- 1. Content Data ---
+            const contentData = {
+                'en': {
+                    subtitle: `North and North<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
+                    body: `
+                        <p><strong>"Söya." bears a double essence.</strong></p>
+                        <p>Firstly, it pays homage to <strong>Cape Soya</strong>, the northernmost point of Japan. Like Tunisia, the northern tip of Africa, we bridge these two ends of the world.</p>
+                        <p>Secondly, it signifies <strong>Soya</strong> (Soybean), the soul of Japanese cuisine and the source of Umami.</p>
+                        <p>The final period <strong>"."</strong> marks a destination where you can casually stop by in your daily life.</p>
+                        <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
+                        <p>Tokyo’s food scene evolves every time I visit.</p>
+                        <p>We’ve casually updated Bistro Nippon’s recipes to capture that "Tokyo Current" vibe.</p>
+                        <p>Located in Menzah 9, <strong>Söya.</strong> is your new everyday spot for handmade ramen.</p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">Opening this Spring.</p>
+                    `,
+                    footer: "Follow us on Instagram"
+                },
+                'fr': {
+                    subtitle: `Nord et Nord<br><span style="display:block; margin-top:10px;"><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Actuel</span>`,
+                    body: `
+                        <p><strong>"Söya." porte une double essence.</strong></p>
+                        <p>Premièrement, un hommage au <strong>Cap Soya</strong>, l'extrême nord du Japon. Comme la Tunisie, nous relions deux extrémités du monde.</p>
+                        <p>Deuxièmement, le <strong>Soya</strong> (Soja), l'âme de la cuisine japonaise et la source de l'Umami.</p>
+                        <p>Le point final <strong>"."</strong> marque une destination où vous pouvez faire une halte spontanée dans votre quotidien.</p>
+                        <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
+                        <p>Les tendances culinaires à Tokyo évoluent à chaque visite.</p>
+                        <p>Nous avons remis au goût du jour les ramens du Bistro Nippon, avec une touche "Tokyo Actuel" décontractée.</p>
+                        <p>Situé à Menzah 9, <strong>Söya.</strong> est votre nouvelle adresse quotidienne pour des ramens faits main.</p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">Ouverture ce printemps.</p>
+                    `,
+                    footer: "Suivez-nous sur Instagram"
+                },
+                'jp': {
+                    subtitle: `北と北<br><span style="font-weight:300; opacity:0.7; margin-right:6px;">×</span>Tokyo Current`,
+                    body: `
+                        <p><strong>「Söya.」が宿す、二つの本質。</strong></p>
+                        <p>一つは、日本の最北端<strong>「宗谷岬」</strong>へのオマージュ。アフリカの最北端・チュニジアと同じく、世界の「北と北」を結びます。</p>
+                        <p>もう一つは、日本食の魂であり、旨味の源である<strong>「大豆（Soya）」</strong>。</p>
+                        <p>名前の最後にあるピリオド<strong>「.」</strong>は日常の中でふらっと立ち止まれる目的地。</p>
+                        <hr style="border:0; border-top:1px solid rgba(0,0,0,0.1); margin: 30px 0;">
+                        <p>毎年帰るたびに新しい発見がある、東京の食トレンド。</p>
+                        <p>Bistro Nipponのラーメンを、今の東京っぽくさらりとアップデートしました。</p>
+                        <p>Menzah 9にできる『Söya.』は、そんな普段使いの手打ちラーメン屋です。</p>
+                        <p style="margin-top:20px; font-weight:600; font-size: 0.9em; letter-spacing: 0.1em;">この春、お待ちしています。</p>
+                    `,
+                    footer: "Instagramをフォローする"
+                }
+            };
+
+            const $story = $('#story-content');
+            const $subtitle = $('#subtitle');
+            const $footerText = $('#footer-text');
+            const $overlay = $('#intro-overlay');
+            const $mainElements = $('.main-container, .global-nav, .site-footer');
+
+            // --- 2. Language Setup ---
+            const browserLang = navigator.language || navigator.userLanguage;
+            const langCode = browserLang.substring(0, 2).toLowerCase();
+            let currentLang = (langCode === 'ja') ? 'jp' : (langCode === 'fr' ? 'fr' : 'en');
+
+            const updateContent = (lang) => {
+                $subtitle.html(contentData[lang].subtitle).css('opacity', 1);
+                $story.html(contentData[lang].body).css('opacity', 1);
+                $footerText.text(contentData[lang].footer);
+                $('.lang-btn').removeClass('active');
+                $(`.lang-btn[data-lang="${lang}"]`).addClass('active');
+            };
+
+            updateContent(currentLang);
+
+            // --- 3. Intro Animation ---
+            setTimeout(() => $('#intro-1').addClass('fade-up'), 500);
+            setTimeout(() => $('#intro-2').addClass('fade-up'), 1500);
+            setTimeout(() => $('#intro-3').addClass('fade-up'), 2500);
+            setTimeout(() => $('#intro-action').addClass('fade-up'), 3500);
+
+            $('#enter-btn').on('click', function() {
+                $overlay.addClass('fade-out');
+                setTimeout(() => {
+                    $mainElements.css('opacity', 1);
+                }, 800);
+            });
+
+            // --- 4. Language Switch ---
+            $(document).on('click', '.lang-btn', function() {
+                const lang = $(this).data('lang');
+                $story.css('opacity', 0);
+                $subtitle.css('opacity', 0);
+                setTimeout(() => updateContent(lang), 400);
+            });
+        });
+    </script>
+@endpush
+</file>
+
+</files>

@@ -1,0 +1,212 @@
+/* resources/sass/components/_header.scss */
+
+/* --- Tokyo Current: Soy Sauce Bottle Gimmick (Level 2) --- */
+
+.global-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 11000;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none; // ヘッダーの余白はクリック透過
+
+    .nav-left, .nav-right {
+        pointer-events: auto; // ロゴとボタンはクリック有効
+    }
+
+    @media (max-width: 768px) {
+        padding: 15px 20px;
+    }
+}
+
+.menu-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 60px;
+    height: 90px;
+    position: relative;
+    z-index: 10002;
+    color: #000; // デフォルトの線画カラー
+
+    .bottle-wrapper {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible; // タレが枠外に出ても切れないように
+        }
+    }
+
+    // --- 各パーツの初期設定とトランジション ---
+
+    // 1. ボトル全体
+    .bottle-group {
+        transform-origin: 50% 80%; // ボトルの底の方を中心に回転
+        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6); // 弾力のある動き
+    }
+
+    // 2. キャップ
+    .bottle-cap {
+        transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    // 3. 中身（満タン分）
+    .bottle-liquid-full {
+        transition: opacity 0.4s ease;
+    }
+
+    // 4. メニュー線（ハンバーガー）
+    .bottle-menu-lines {
+        transition: stroke 0.3s ease;
+    }
+
+    // 5. 注がれるタレ
+    .sauce-stream {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100; // 最初は隠す
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    // 6. 落ちる雫
+    .sauce-drop {
+        opacity: 0;
+        transform: translateY(0);
+    }
+
+    // --- ACTIVE: 醤油注ぎモード発動 ---
+    &.is-active {
+        // A. ボトルを大胆に傾ける (-135度)
+        .bottle-group {
+            transform: rotate(-135deg) translate(-10px, -15px);
+        }
+
+        // B. キャップがあの「赤」になる
+        .bottle-cap {
+            fill: #e60012; // Kikkoman Red
+            stroke: #e60012;
+        }
+
+        // C. 中身の醤油が満タンになる（黒くなる）
+        .bottle-liquid-full {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        // D. ★メニュー線が白く反転（黒い醤油の中でも見えるように）
+        .bottle-menu-lines {
+            stroke: #fff;
+            transition-delay: 0.1s; // 液体が入るのと同期
+        }
+
+        // E. 注ぎ口からタレ発射
+        .sauce-stream {
+            opacity: 1;
+            stroke-dashoffset: 0;
+            // 傾き終わった頃にドバっと出る
+            transition: stroke-dashoffset 0.4s ease-in 0.3s, opacity 0.1s 0.3s;
+        }
+
+        // F. 雫の無限ループ
+        .sauce-drop {
+            opacity: 1;
+            animation: drip-drop 1.5s cubic-bezier(0.5, 0, 1, 1) infinite 0.7s;
+        }
+    }
+}
+
+/* --- 滴下アニメーション（物理挙動） --- */
+@keyframes drip-drop {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    20% { transform: translateY(15px) scale(0.8, 1.2); } // 伸びる
+    50% { transform: translateY(50px) scale(0.6, 1.4); } // 加速
+    90% { transform: translateY(90px) scale(0.5, 1.5); opacity: 1; }
+    100% { transform: translateY(110px) scale(2, 0.1); opacity: 0; } // 着地して消滅
+}
+
+/* --- Full Screen Menu Style --- */
+.global-nav {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 10500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // 液体のような出現アニメーション
+    transform: translateY(-100%) scaleY(0.8);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
+    opacity: 0;
+    visibility: hidden;
+
+    &.is-open {
+        transform: translateY(0) scaleY(1);
+        opacity: 1;
+        visibility: visible;
+        animation: menu-wobble 1s ease-in-out forwards;
+    }
+
+    .nav-links {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+
+        li {
+            margin: 25px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+    }
+
+    // リンクの出現遅延（カスケード表示）
+    &.is-open li {
+        opacity: 1;
+        transform: translateY(0);
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) { transition-delay: #{0.3 + ($i * 0.1)}s; }
+        }
+    }
+
+    .nav-item {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #000;
+        text-decoration: none;
+        letter-spacing: -0.02em;
+        position: relative;
+        display: inline-block;
+
+        // ホバー時の下線アニメーション
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 0; height: 1px;
+            background: #e60012; // メニューの下線も「赤」に合わせる
+            transition: width 0.4s ease;
+        }
+
+        &:hover {
+            color: #e60012;
+            &::after { width: 100%; }
+        }
+    }
+}
+
+// メニュー背景の揺らぎ
+@keyframes menu-wobble {
+    0% { transform: translateY(0) skewY(0); }
+    20% { transform: translateY(0) skewY(2deg); }
+    40% { transform: translateY(0) skewY(-1deg); }
+    60% { transform: translateY(0) skewY(0.5deg); }
+    100% { transform: translateY(0) skewY(0); }
+}

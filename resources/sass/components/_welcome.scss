@@ -1,0 +1,91 @@
+/* resources/sass/components/_welcome.scss */
+
+.main-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; // JSでフェードインさせるため
+    transition: opacity 2s ease;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        padding-top: 20vh;
+    }
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+}
+
+h1.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: $d-gray;
+    line-height: 1;
+
+    @media (max-width: 768px) {
+        font-size: 3.2rem;
+        text-align: center;
+    }
+}
+
+.brand-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $text-sub;
+    margin-bottom: 3.5rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; width: 40px;
+        height: 1px;
+        background-color: $text-sub;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        display: block;
+        text-align: center;
+        &::after { left: 50%; transform: translateX(-50%); }
+    }
+}
+
+.story-text {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    line-height: 2.2;
+    color: $d-gray;
+    text-align: justify;
+    opacity: 1 !important; // ここが効いていない可能性が高い
+    font-weight: 300;
+
+    strong { font-weight: 500; color: #000; }
+    hr { margin: 30px 0; border-top: 1px solid $line-color; }
+
+    @media (max-width: 768px) {
+        text-align: left;
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+}
+
+.architectural-line {
+    position: absolute;
+    left: -40px; top: -50px; bottom: -50px;
+    width: 1px;
+    background: $line-color;
+    @media (max-width: 768px) { display: none; }
+}
