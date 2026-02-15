@@ -16,11 +16,11 @@
             </div>
             <div class="info-item">
                 <span class="info-label">Hours</span>
-                <p class="info-value">Mon–Sat: 11:30 – 22:00</p>
+                <p class="info-value">[...]]</p>
             </div>
             <div class="info-item">
                 <span class="info-label">Contact</span>
-                <p class="info-value">+216 55 778 656</p>
+                <p class="info-value">+216 [...]</p>
             </div>
         </div>
 
