@@ -16,7 +16,7 @@
             </div>
             <div class="info-item">
                 <span class="info-label">Hours</span>
-                <p class="info-value">[...]]</p>
+                <p class="info-value">[...]</p>
             </div>
             <div class="info-item">
                 <span class="info-label">Contact</span>

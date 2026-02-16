@@ -91,7 +91,7 @@
 
                     <button type="button" id="whatsappBtn" class="btn-whatsapp">
                         <div class="btn-content">
-                            <img src="{{ asset('hokkaido.png') }}" alt="Hokkaido" class="hokkaido-icon">
+                            <img src="{{ asset('hokkaido_2.png') }}" alt="Hokkaido" class="hokkaido-icon">
                             <span class="btn-text">SEND REQUEST</span>
                         </div>
                     </button>
