@@ -36,9 +36,7 @@
     {{-- メニューの中身は変更なし --}}
     <ul class="nav-links">
         <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
-        @env('local')
-            <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
-        @endenv
+        <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
         <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" class="nav-item">Instagram</a></li>
     </ul>
 </nav>
