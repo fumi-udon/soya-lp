@@ -28,8 +28,7 @@ return [
 
     // ★修正: 本番環境（production）の時だけURLを固定し、開発環境は null (自動) にする
     //'asset_url' => env('APP_ENV') === 'production' ? 'https://soya.bistronippon.tn' : null,
-    //'asset_url' => 'https://soya.bistronippon.tn/vendor',
-    'asset_url' => 'https://soya.bistronippon.tn/vendor/livewire',
+    'asset_url' => 'https://cdn.jsdelivr.net/npm/livewire@3/dist',
 
     /*
     |---------------------------------------------------------------------------
