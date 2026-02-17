@@ -1,0 +1,41 @@
+models:
+  Category:
+    name: string index
+    slug: string unique
+    image: string nullable
+    description: text nullable # AI/SEO用
+    is_active: boolean default:true
+    sort_order: integer default:0
+    seo_title: string nullable
+    seo_description: string nullable
+    relationships:
+      hasMany: Product
+
+  Product:
+    category_id: id foreign
+    name: string index
+    staff_name: string nullable # キッチン用名称
+    slug: string unique
+    price: decimal:10,3 nullable # 3桁（DT）対応
+    description: longtext nullable # リッチテキスト用
+    image: string nullable
+    ingredients: text nullable # 原材料（AI学習用）
+    is_active: boolean default:true
+    order_type: enum:kitchen,counter default:kitchen
+    sort_order: integer default:0
+    relationships:
+      belongsTo: Category
+      hasMany: ProductVariant
+
+  ProductVariant:
+    product_id: id foreign
+    name: string # 例: Chicken, Spicy Level 3
+    staff_name: string nullable
+    price_adjustment: decimal:10,3 default:0 # 追加料金
+    is_required: boolean default:false # 必須選択項目か
+    sort_order: integer default:0
+    relationships:
+      belongsTo: Product
+
+# コントローラーはFilamentで管理するため生成しない
+controllers:

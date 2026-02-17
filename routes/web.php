@@ -23,3 +23,7 @@ Route::get('/reservation', function () {
     // ここでは簡易的に 1 (通常営業) としています。
     return view('reservation', ['status' => 1, 'message' => '']);
 })->name('reservation');
+
+use App\Http\Controllers\MenuController;
+
+Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');

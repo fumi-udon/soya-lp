@@ -1,0 +1,25 @@
+Name,Price,Category Slug,Description,Image,Variants
+Magret de Canard Rôti,19,entrees-tapas,"Magret de Canard Grillé 60g, Sauce Teriyaki",test.jpg,
+Poulet Paiko,19,entrees-tapas,"Poulet frit avec une sauce à la japonaise",test.jpg,
+Soupe Miso Fruits de Mer,17,entrees-tapas,"Soupe miso aux fruits de mer et algues wakamé",test.jpg,
+Soupe Miso Wakamé,8,entrees-tapas,"Soupe miso aux algues vertes wakamé",test.jpg,
+Tofu Caprese,12,entrees-tapas,"Tofu mariné pendant 24h, texture crémeuse",test.jpg,
+Harusame & kikurage,14,entrees-tapas,"Vermicelles de soja transparents, champignons noirs",test.jpg,
+Wakamé Zestée,12,entrees-tapas,"Algues et champignons noirs, légumes, huile de sésame et citron",test.jpg,
+Croquettes (2 pcs),8,entrees-tapas,"Croquettes de pommes de terre, sauce teriyaki maison",test.jpg,
+Donburi au Bœuf,35,donburi-riz,"Grande portion de riz, bœuf grillé 150g, légumes",test.jpg,
+Katsu Don (Poulet),28,donburi-riz,"Grande portion de riz, poulet frit, oignon, omelette",test.jpg,
+Onigiri (1 pièce),0,donburi-riz,"",test.jpg,"Fromage:6:1,Poulet:7:1"
+Riz Blanc,4,donburi-riz,"",test.jpg,
+Ramen Tantan Épicé,0,ramen,"Bouillon riche sésame et miso pimenté, bœuf haché",test.jpg,"Wakamé:31.5:1,Poulet Frit:33:1,Bœuf (150g):43:1,Spicy:1:0"
+Ramen Tokyo Soja,0,ramen,"Bouillon classique et léger à la sauce soja, œuf",test.jpg,"Poulet & Légumes:29:1,Poulet Frit:33:1,Bœuf (150g):43:1,Spicy:1:0"
+Udon Forestier,0,udon,"Nouilles nappées d'une crème d'épinards, champignons",test.jpg,"Algues Nori:29:1,Fruits de Mer:39:1"
+Udon Gingembre,0,udon,"Bouillon chaud gingembre et sauce soja, poireaux",test.jpg,"Algues Mixtes:30:1,Fruits de Mer:39:1"
+Udon Poulet Katsu,28,udon,"Nouilles épaisses avec poulet frit, sauce teriyaki",test.jpg,
+Yakisoba Nippon,0,yakisoba,"Nouilles fines sautées aux légumes émincés",test.jpg,"Algues & Légumes:28:1,Poulet Paiko:33:1,Fruits de Mer:39:1"
+Set Riz Sauté / Nouilles,15,menu-enfant,"Mini portion (riz ou nouilles) + poulet frit",test.jpg,
+Gelée d'Amande Annin,9,desserts-thes,"",test.jpg,
+Pudding Matcha,9,desserts-thes,"",test.jpg,
+Thé vert Sencha (600ml),9,desserts-thes,"",test.jpg,
+Citronnade Chaude,9,desserts-thes,"",test.jpg,
+Eau (1.5L) / Soda,4,desserts-thes,"",test.jpg,

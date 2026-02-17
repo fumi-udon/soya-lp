@@ -44,7 +44,16 @@ The content is organized as follows:
 <directory_structure>
 app/Console/Kernel.php
 app/Exceptions/Handler.php
+app/Filament/Resources/CategoryResource.php
+app/Filament/Resources/CategoryResource/Pages/CreateCategory.php
+app/Filament/Resources/CategoryResource/Pages/EditCategory.php
+app/Filament/Resources/CategoryResource/Pages/ListCategories.php
+app/Filament/Resources/ProductResource.php
+app/Filament/Resources/ProductResource/Pages/CreateProduct.php
+app/Filament/Resources/ProductResource/Pages/EditProduct.php
+app/Filament/Resources/ProductResource/Pages/ListProducts.php
 app/Http/Controllers/Controller.php
+app/Http/Controllers/MenuController.php
 app/Http/Kernel.php
 app/Http/Middleware/Authenticate.php
 app/Http/Middleware/EncryptCookies.php
@@ -55,11 +64,15 @@ app/Http/Middleware/TrustHosts.php
 app/Http/Middleware/TrustProxies.php
 app/Http/Middleware/ValidateSignature.php
 app/Http/Middleware/VerifyCsrfToken.php
+app/Models/Category.php
+app/Models/Product.php
+app/Models/ProductVariant.php
 app/Models/User.php
 app/Providers/AppServiceProvider.php
 app/Providers/AuthServiceProvider.php
 app/Providers/BroadcastServiceProvider.php
 app/Providers/EventServiceProvider.php
+app/Providers/Filament/AdminPanelProvider.php
 app/Providers/RouteServiceProvider.php
 config/app.php
 config/auth.php
@@ -77,11 +90,17 @@ config/services.php
 config/session.php
 config/view.php
 database/.gitignore
+database/factories/CategoryFactory.php
+database/factories/ProductFactory.php
+database/factories/ProductVariantFactory.php
 database/factories/UserFactory.php
 database/migrations/2014_10_12_000000_create_users_table.php
 database/migrations/2014_10_12_100000_create_password_resets_table.php
 database/migrations/2019_08_19_000000_create_failed_jobs_table.php
 database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
+database/migrations/2026_02_16_124825_create_categories_table.php
+database/migrations/2026_02_16_124826_create_products_table.php
+database/migrations/2026_02_16_124827_create_product_variants_table.php
 database/seeders/DatabaseSeeder.php
 resources/js/app.js
 resources/js/bootstrap.js
@@ -93,7 +112,9 @@ resources/sass/components/_intro.scss
 resources/sass/components/_reservation.scss
 resources/sass/components/_variables.scss
 resources/sass/components/_welcome.scss
+resources/sass/menu.scss
 resources/views/layouts/soya.blade.php
+resources/views/menu.blade.php
 resources/views/parts/footer.blade.php
 resources/views/parts/header.blade.php
 resources/views/parts/intro.blade.php
@@ -108,962 +129,1408 @@ routes/web.php
 <files>
 This section contains the contents of the repository's files.
 
-<file path="resources/sass/components/_base.scss">
-// --- Base Styles ---
-body {
-    background-color: $bg-color;
-    color: $text-main;
-    font-family: 'Montserrat', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
+<file path="app/Filament/Resources/CategoryResource.php">
+<?php
 
-// --- Concrete Texture ---
-.concrete-bg {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
-    background:
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, rgba(240,240,240,0.1) 100%),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-    background-color: $bg-color;
-    background-blend-mode: overlay;
-    animation: grainMovement 8s steps(10) infinite;
-}
+namespace App\Filament\Resources;
 
-@keyframes grainMovement {
-    0%, 100% { transform: translate(0, 0); }
-    10% { transform: translate(-1%, -1%); }
-    30% { transform: translate(1%, 1%); }
-    50% { transform: translate(-0.5%, 1.5%); }
-    70% { transform: translate(1.5%, -0.5%); }
-    90% { transform: translate(-1%, 0.5%); }
-}
+use App\Filament\Resources\CategoryResource\Pages;
+use App\Filament\Resources\CategoryResource\RelationManagers;
+use App\Models\Category;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-// --- Common Animations ---
-.fade-up { animation: floatUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.fade-out { animation: fadeOut 1.2s ease forwards; }
+class CategoryResource extends Resource
+{
+    protected static ?string $model = Category::class;
 
-@keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-</file>
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-<file path="resources/sass/components/_footer.scss">
-.site-footer {
-    width: 100%;
-    padding: 40px 20px;
-    background: transparent;
-    border-top: 1px solid rgba(163, 184, 201, 0.2);
-    margin-top: 40px;
-    opacity: 1 !important; // 強制表示
-
-    .footer-container {
-        max-width: 500px;
-        margin: 0 auto;
-        text-align: center;
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('slug')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\FileUpload::make('image')
+                    ->image(),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull(),
+                Forms\Components\Toggle::make('is_active')
+                    ->required(),
+                Forms\Components\TextInput::make('sort_order')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                Forms\Components\TextInput::make('seo_title')
+                    ->maxLength(255)
+                    ->default(null),
+                Forms\Components\TextInput::make('seo_description')
+                    ->maxLength(255)
+                    ->default(null),
+            ]);
     }
 
-    .insta-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 20px;
-        border: 1px solid $c-blue;
-        text-decoration: none;
-        transition: 0.3s;
-
-        .bi-instagram {
-            color: $c-blue;
-            font-size: 1.1rem;
-            display: inline-block;
-        }
-
-        .btn-label {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.65rem;
-            letter-spacing: 0.1em;
-            color: $d-gray;
-            text-transform: uppercase;
-        }
-
-        &:active {
-            background-color: $c-blue;
-            .bi-instagram, .btn-label { color: #fff; }
-        }
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('slug')
+                    ->searchable(),
+                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('sort_order')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('seo_title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('seo_description')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 
-    .store-info-grid {
-        margin: 30px 0;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-
-        .info-label {
-            display: block;
-            font-size: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: $c-blue;
-            margin-bottom: 2px;
-            font-weight: 600;
-        }
-
-        .info-value {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.85rem;
-            color: $d-gray;
-            margin: 0;
-        }
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
     }
 
-    .team-credit {
-        margin-top: 30px;
-        font-size: 0.5rem;
-        letter-spacing: 0.2em;
-        color: #bbb;
-        text-transform: uppercase;
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListCategories::route('/'),
+            'create' => Pages\CreateCategory::route('/create'),
+            'edit' => Pages\EditCategory::route('/{record}/edit'),
+        ];
     }
 }
 </file>
 
-<file path="resources/sass/components/_header.scss">
-/* --- Tokyo Current: Soy Sauce Bottle Gimmick --- */
+<file path="app/Filament/Resources/CategoryResource/Pages/CreateCategory.php">
+<?php
 
-.global-header {
-    position: fixed;
-    top: 0; left: 0; width: 100%;
-    z-index: 11000;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-    .nav-left, .nav-right { pointer-events: auto; }
-    @media (max-width: 768px) { padding: 15px 20px; }
-}
+namespace App\Filament\Resources\CategoryResource\Pages;
 
-.menu-trigger {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    width: 60px;
-    height: 90px; // 縦長ボトル用
-    position: relative;
-    z-index: 10002;
-    color: #000; // 通常時の線の色
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
 
-    .bottle-wrapper {
-        display: block;
-        width: 100%;
-        height: 100%;
-        svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-    }
-
-    // --- 初期状態 ---
-    .bottle-group {
-        transform-origin: 50% 80%; // ボトルの底の方を中心に回転
-        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-    }
-
-    .bottle-cap {
-        transition: fill 0.3s ease, stroke 0.3s ease;
-    }
-
-    .bottle-liquid {
-        transition: opacity 0.4s ease;
-    }
-
-    .sauce-stream {
-        stroke-dasharray: 100;
-        stroke-dashoffset: 100;
-        opacity: 0;
-        transition: all 0.3s ease;
-    }
-
-    .sauce-drop {
-        opacity: 0;
-        transform: translateY(0);
-    }
-
-    // --- ACTIVE: 醤油注ぎモード発動 ---
-    &.is-active {
-        // 1. ボトルを大胆に傾ける (-135度で左上の注ぎ口が下を向く)
-        .bottle-group {
-            transform: rotate(-135deg) translate(-10px, -15px);
-        }
-
-        // 2. キャップがあの「赤」になる
-        .bottle-cap {
-            fill: #e60012; // Kikkoman Red
-            stroke: #e60012; // 線も赤くして一体化
-        }
-
-        // 3. 中身の醤油が満タンになる（黒くなる）
-        .bottle-liquid {
-            opacity: 1;
-            transition-delay: 0.1s;
-        }
-
-        // 4. ボディの線も少し薄くして液体を際立たせる（任意）
-        .bottle-body {
-            stroke: #2c1a16;
-        }
-
-        // 5. 注ぎ口からタレ発射
-        .sauce-stream {
-            opacity: 1;
-            stroke-dashoffset: 0;
-            // 傾き終わった頃にドバっと出る
-            transition: stroke-dashoffset 0.4s ease-in 0.3s, opacity 0.1s 0.3s;
-        }
-
-        // 6. 雫のループ
-        .sauce-drop {
-            opacity: 1;
-            animation: drip-drop 1.5s cubic-bezier(0.5, 0, 1, 1) infinite 0.7s;
-        }
-    }
-}
-
-// 滴下アニメーション（前回と同じ物理挙動）
-@keyframes drip-drop {
-    0% { transform: translateY(0) scale(1); opacity: 1; }
-    20% { transform: translateY(15px) scale(0.8, 1.2); } // 伸びる
-    50% { transform: translateY(50px) scale(0.6, 1.4); } // 加速
-    90% { transform: translateY(90px) scale(0.5, 1.5); opacity: 1; }
-    100% { transform: translateY(110px) scale(2, 0.1); opacity: 0; } // 着地して消滅
-}
-
-// フルスクリーンメニュー（既存維持）
-.global-nav {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100vh;
-    background: rgba(255, 255, 255, 0.98);
-    z-index: 10500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(-100%) scaleY(0.8);
-    transform-origin: top;
-    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
-    opacity: 0;
-    visibility: hidden;
-
-    &.is-open {
-        transform: translateY(0) scaleY(1);
-        opacity: 1;
-        visibility: visible;
-        animation: menu-wobble 1s ease-in-out forwards;
-    }
-
-    .nav-links {
-        list-style: none;
-        padding: 0;
-        text-align: center;
-        li {
-            margin: 25px 0;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.5s ease;
-        }
-    }
-
-    &.is-open li {
-        opacity: 1;
-        transform: translateY(0);
-        @for $i from 1 through 5 {
-            &:nth-child(#{$i}) { transition-delay: #{0.3 + ($i * 0.1)}s; }
-        }
-    }
-
-    .nav-item {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.5rem;
-        color: #000;
-        text-decoration: none;
-        letter-spacing: -0.02em;
-        position: relative;
-        display: inline-block;
-        &::after {
-            content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 1px;
-            background: #e60012; // メニューの下線も赤に合わせてみる？
-            transition: width 0.4s ease;
-        }
-        &:hover {
-            color: #e60012;
-            &::after { width: 100%; }
-        }
-    }
-}
-
-@keyframes menu-wobble {
-    0% { transform: translateY(0) skewY(0); }
-    20% { transform: translateY(0) skewY(2deg); }
-    40% { transform: translateY(0) skewY(-1deg); }
-    60% { transform: translateY(0) skewY(0.5deg); }
-    100% { transform: translateY(0) skewY(0); }
+class CreateCategory extends CreateRecord
+{
+    protected static string $resource = CategoryResource::class;
 }
 </file>
 
-<file path="resources/sass/components/_intro.scss">
-#intro-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: $bg-color;
-    padding: 2rem;
-}
+<file path="app/Filament/Resources/CategoryResource/Pages/EditCategory.php">
+<?php
 
-.intro-content { margin-bottom: 4rem; }
+namespace App\Filament\Resources\CategoryResource\Pages;
 
-.intro-text {
-    font-family: 'Noto Serif JP', serif;
-    color: $text-main;
-    opacity: 0;
-    transform: translateY(20px);
-    margin-bottom: 2rem;
-}
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
 
-.intro-small {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.25em;
-    color: $text-sub;
-    text-transform: uppercase;
-}
+class EditCategory extends EditRecord
+{
+    protected static string $resource = CategoryResource::class;
 
-.intro-main {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
-    letter-spacing: 0.02em;
-    font-weight: 400;
-    line-height: 1.4;
-
-    @media (max-width: 768px) { font-size: 1.8rem; }
-}
-
-.intro-date {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    border-top: 1px solid $text-sub;
-    padding: 15px 0 0 0;
-    display: inline-block;
-    color: $text-sub;
-    line-height: 1.8;
-}
-
-.jp-decoration {
-    display: block;
-    margin-top: 15px;
-    font-family: 'Noto Serif JP', serif;
-    font-size: 0.75rem;
-    color: rgba(0,0,0,0.3);
-    letter-spacing: 0.8em;
-    text-indent: 0.8em;
-}
-
-/* Enter Button Animation */
-.intro-action { opacity: 0; transform: translateY(10px); }
-
-.enter-btn {
-    background: none; border: none; cursor: pointer;
-    padding: 10px 20px;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 8px;
-
-    .btn-text {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.75rem;
-        letter-spacing: 0.3em;
-        text-transform: uppercase;
-    }
-    .btn-line {
-        width: 30px; height: 1px; background-color: $text-main;
-        animation: blinkLine 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
-    }
-}
-
-@keyframes blinkLine {
-    0%   { opacity: 0.2; transform: scaleX(0.8); }
-    50%  { opacity: 1;   transform: scaleX(1); }
-    100% { opacity: 0.2; transform: scaleX(0.8); }
-}
-</file>
-
-<file path="resources/sass/components/_reservation.scss">
-/* --- Tokyo Current: High-End Minimal & Ramen Dynamics --- */
-
-// 1. 全画面背景のスライダー（モノトーン・シズル）
-.gallery-wrapper {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100vh;
-    z-index: 1;
-    overflow: hidden;
-    opacity: 0.35; // フォームを際立たせるために沈める
-    pointer-events: none;
-
-    .photo-scroller {
-        display: flex;
-        width: calc(300px * 20);
-        animation: scroll 60s linear infinite; // JSでこの速度を動的に変える
-    }
-
-    .photo-item {
-        width: 300px;
-        height: 100vh;
-        background-size: cover;
-        background-position: center;
-        filter: grayscale(100%) contrast(1.1); // 東京のストリート感
-        border-right: 1px solid rgba(255,255,255,0.05);
-        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-}
-
-// 2. メインレイアウト
-.main-content {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 80px 20px;
-}
-
-// 3. ガラスレイヤーのフォームコンテナ
-.content-container {
-    width: 100%;
-    max-width: 460px;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(40px) saturate(150%); // 東京の夜のような屈折
-    -webkit-backdrop-filter: blur(40px) saturate(150%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 60px 40px;
-    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
-    transform: perspective(1000px) rotateX(1deg);
-}
-
-// 4. タイポグラフィ
-.brand-header {
-    margin-bottom: 50px;
-    h1 {
-        font-family: 'Playfair Display', serif;
-        font-size: 3.8rem;
-        color: #000;
-        letter-spacing: -0.05em;
-        line-height: 0.8;
-        span { color: $c-blue; }
-    }
-    .sub {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.55rem;
-        letter-spacing: 0.5em;
-        margin-top: 15px;
-        color: #888;
-        text-transform: uppercase;
-    }
-}
-
-// 5. フォーム要素と「麺」のアニメーション
-.form-group {
-    position: relative;
-    margin-bottom: 35px;
-
-    .label-min {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 0.55rem;
-        letter-spacing: 0.25em;
-        color: #aaa;
-        margin-bottom: 12px;
-        display: block;
-    }
-
-    // 麺の演出：フォーカス時に伸びる黄金色のライン
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 0%;
-        height: 2px;
-        background: #f1c40f; // 黄金色の麺カラー
-        box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
-        // 麺の弾力を表現するカスタムベジェ
-        transition: width 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
-        z-index: 2;
-    }
-
-    &:focus-within::after {
-        width: 100%;
-    }
-}
-
-.input-soya {
-    width: 100%;
-    border: none;
-    border-bottom: 1px solid rgba(0,0,0,0.05); // ベースの細い線
-    background: transparent;
-    padding: 12px 0;
-    font-size: 0.9rem;
-    letter-spacing: 0.1em;
-    color: #000;
-    border-radius: 0;
-    outline: none;
-    transition: all 0.5s ease;
-
-    &::placeholder {
-        font-size: 0.75rem;
-        color: #ddd;
-        transition: opacity 0.3s;
-    }
-
-    &:focus {
-        padding-left: 8px; // わずかな動的変化
-        &::placeholder { opacity: 0; }
-    }
-}
-
-// 6. 送信ボタン（麺のコシを感じるバウンド）
-.btn-whatsapp {
-    background: #000;
-    color: #fff;
-    width: 100%;
-    padding: 24px;
-    border: none;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); // 弾力
-
-    &:hover {
-        background: #222;
-        letter-spacing: 0.5em;
-        transform: translateY(-2px);
-    }
-
-    &:active {
-        transform: scale(0.96);
-    }
-}
-
-// 7. ラマダン休業通知（ミニマル）
-.holiday-notice {
-    h2 {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.2rem;
-        letter-spacing: -0.02em;
-        color: #000;
-    }
-}
-
-// 8. 背景スクロールアニメーション
-@keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-300px * 10)); }
-}
-
-/* モバイル対応：さらに削ぎ落とす */
-@media (max-width: 768px) {
-    .content-container {
-        padding: 40px 25px;
-        backdrop-filter: blur(20px);
-    }
-    .brand-header h1 {
-        font-size: 2.8rem;
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
     }
 }
 </file>
 
-<file path="resources/sass/components/_variables.scss">
-/* resources/sass/components/_variables.scss */
+<file path="app/Filament/Resources/CategoryResource/Pages/ListCategories.php">
+<?php
 
-// --- Colors ---
-$c-blue: #a3b8c9;    // コンクリートブルー
-$c-gray: #e0e0e0;    // ライトグレー
-$d-gray: #4a4a4a;    // ディープグレー
-$bg-color: #f4f5f7;  // 背景色
+namespace App\Filament\Resources\CategoryResource\Pages;
 
-// --- Text Colors (エラー解消のために追加) ---
-$text-main: #3a3a3a;
-$text-sub: #9ea1a3;
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
 
-// --- Lines ---
-$line-color: rgba(0, 0, 0, 0.08);
-</file>
+class ListCategories extends ListRecords
+{
+    protected static string $resource = CategoryResource::class;
 
-<file path="resources/sass/components/_welcome.scss">
-/* resources/sass/components/_welcome.scss */
-
-.main-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-    opacity: 0; // JSでフェードインさせるため
-    transition: opacity 2s ease;
-
-    @media (max-width: 768px) {
-        align-items: flex-start;
-        padding-top: 20vh;
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
     }
-}
-
-.content-wrapper {
-    max-width: 800px;
-    width: 100%;
-    position: relative;
-}
-
-h1.brand-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 4rem;
-    font-weight: 400;
-    letter-spacing: -0.03em;
-    margin-bottom: 1.5rem;
-    color: $d-gray;
-    line-height: 1;
-
-    @media (max-width: 768px) {
-        font-size: 3.2rem;
-        text-align: center;
-    }
-}
-
-.brand-subtitle {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
-    color: $text-sub;
-    margin-bottom: 3.5rem;
-    padding-bottom: 0.5rem;
-    position: relative;
-    display: inline-block;
-
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0; left: 0; width: 40px;
-        height: 1px;
-        background-color: $text-sub;
-    }
-
-    @media (max-width: 768px) {
-        font-size: 0.7rem;
-        display: block;
-        text-align: center;
-        &::after { left: 50%; transform: translateX(-50%); }
-    }
-}
-
-.story-text {
-    font-family: 'Playfair Display', 'Noto Serif JP', serif;
-    font-size: 1.05rem;
-    line-height: 2.2;
-    color: $d-gray;
-    text-align: justify;
-    opacity: 1 !important; // ここが効いていない可能性が高い
-    font-weight: 300;
-
-    strong { font-weight: 500; color: #000; }
-    hr { margin: 30px 0; border-top: 1px solid $line-color; }
-
-    @media (max-width: 768px) {
-        text-align: left;
-        font-size: 1rem;
-        padding: 0 10px;
-    }
-}
-
-.architectural-line {
-    position: absolute;
-    left: -40px; top: -50px; bottom: -50px;
-    width: 1px;
-    background: $line-color;
-    @media (max-width: 768px) { display: none; }
 }
 </file>
 
-<file path="resources/views/layouts/soya.blade.php">
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<file path="app/Filament/Resources/ProductResource.php">
+<?php
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Söya. | prod. bistronippon')</title>
+namespace App\Filament\Resources;
 
-    @stack('meta')
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
-    @stack('page-styles')
-</head>
+use App\Filament\Resources\ProductResource\Pages;
+use App\Models\Product;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Repeater;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
-<body>
-    <div class="concrete-bg"></div>
+class ProductResource extends Resource
+{
+    protected static ?string $model = Product::class;
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-    {{-- ここにヘッダーを追加します --}}
-    @include('parts.header')
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Basic Information')->schema([
+                    Select::make('category_id')
+                        ->relationship('category', 'name')
+                        ->required(),
 
-    <main>
-        @yield('content')
-    </main>
+                    TextInput::make('name')
+                        ->required()
+                        ->label('Product Name (Public)')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-    @include('parts.footer')
-    @stack('scripts')
-</body>
+                    TextInput::make('slug')
+                        ->required()
+                        ->unique(Product::class, 'slug', ignoreRecord: true)
+                        ->helperText('URLに使用されます（自動生成されます）'),
 
-</html>
+                    TextInput::make('staff_name')
+                        ->label('Staff Name (Kitchen)'),
+
+                    TextInput::make('price')
+                        ->numeric()
+                        ->suffix('DT'),
+
+                    Select::make('order_type')
+                        ->options(['kitchen' => 'Kitchen', 'counter' => 'Counter'])
+                        ->default('kitchen'),
+
+                    Toggle::make('is_active')
+                        ->label('Available')
+                        ->default(true),
+                ])->columns(2),
+
+                Section::make('Presentation')->schema([
+                    FileUpload::make('image')
+                        ->image()
+                        ->directory('products'),
+                    RichEditor::make('description')
+                        ->columnSpanFull(),
+                    TextInput::make('ingredients')
+                        ->label('Ingredients (for AI recommendations)'),
+                ])->collapsed(),
+
+                Section::make('Options & Toppings')
+                    ->description('Add variations like noodle types or extra toppings.')
+                    ->schema([
+                        Repeater::make('productVariants')
+                            ->relationship()
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->placeholder('e.g. Extra Egg'),
+                                TextInput::make('staff_name')
+                                    ->label('Kitchen Code'),
+                                TextInput::make('price_adjustment')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->label('+ Price (DT)'),
+                                Toggle::make('is_required')
+                                    ->label('Selection Required?')
+                            ])->columns(4)
+                    ]),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')->circular(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\TextColumn::make('category.name')->sortable(),
+                Tables\Columns\TextColumn::make('price')->sortable(),
+                Tables\Columns\IconColumn::make('is_active')->boolean(),
+            ])
+            ->filters([])
+            ->actions([Tables\Actions\EditAction::make()])
+            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+}
 </file>
 
-<file path="resources/views/parts/header.blade.php">
-<header class="global-header">
-    <div class="nav-left">
-        <a href="{{ url('/') }}" class="logo-link">
-            <img src="{{ asset('logo.svg') }}" alt="Söya." style="height: 32px;">
-        </a>
-    </div>
+<file path="app/Filament/Resources/ProductResource/Pages/CreateProduct.php">
+<?php
 
-    <div class="nav-right">
-        <button class="menu-trigger" id="menuTrigger">
-            <span class="bottle-wrapper">
-                <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+namespace App\Filament\Resources\ProductResource\Pages;
 
-                    <path class="sauce-stream" d="M35,55 L35,140" stroke="#2c1a16" stroke-width="6"
-                        stroke-linecap="round" fill="none" />
+use App\Filament\Resources\ProductResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
 
-                    <circle class="sauce-drop" cx="35" cy="140" r="3" fill="#2c1a16" />
-
-                    <g class="bottle-group">
-                        <path class="bottle-body"
-                            d="M25,50 L75,50 L80,110 C80,125 70,135 50,135 C30,135 20,125 20,110 L25,50 Z"
-                            stroke="currentColor" stroke-width="3" fill="none" />
-
-                        <path class="bottle-liquid"
-                            d="M27,60 L73,60 L78,110 C78,122 68,130 50,130 C32,130 22,122 22,110 L27,60 Z"
-                            fill="#2c1a16" stroke="none" opacity="0" />
-
-                        <path class="bottle-cap" d="M25,50 L75,50 L70,25 L30,25 L25,50 Z M20,30 L30,25 L30,35 Z"
-                            stroke="currentColor" stroke-width="3" fill="#fff" />
-                    </g>
-                </svg>
-            </span>
-        </button>
-    </div>
-</header>
-
-<nav class="global-nav" id="globalNav">
-    {{-- メニューの中身は変更なし --}}
-    <ul class="nav-links">
-        <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
-        <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
-        <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" class="nav-item">Instagram</a></li>
-    </ul>
-</nav>
+class CreateProduct extends CreateRecord
+{
+    protected static string $resource = ProductResource::class;
+}
 </file>
 
-<file path="resources/views/reservation.blade.php">
-@extends('layouts.soya')
+<file path="app/Filament/Resources/ProductResource/Pages/EditProduct.php">
+<?php
 
-@section('title', 'Reservation | Söya.')
+namespace App\Filament\Resources\ProductResource\Pages;
 
-@php
-    /* |--------------------------------------------------------------------------
-       | RAMADAN SETTINGS (2026/02/15 - 03/12)
-       |-------------------------------------------------------------------------- */
-    $holiday = [
-        'is_active' => true,
-        'start' => '2026-02-15',
-        'end' => '2026-03-12',
-        'title' => 'RAMADAN BREAK',
-        'message' => "We are currently closed for the holy month of Ramadan.\nPreparing for our Grand Opening.",
-        'period_txt' => 'Feb 15 – March 12, 2026',
+use App\Filament\Resources\ProductResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditProduct extends EditRecord
+{
+    protected static string $resource = ProductResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/ProductResource/Pages/ListProducts.php">
+<?php
+
+namespace App\Filament\Resources\ProductResource\Pages;
+
+use App\Filament\Resources\ProductResource;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use Filament\Actions;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
+class ListProducts extends ListRecords
+{
+    protected static string $resource = ProductResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+
+            // CSVインポート
+            Actions\Action::make('importCsv')
+                ->label('Import CSV (Fix Paths)')
+                ->icon('heroicon-o-arrow-up-tray')
+                ->color('success')
+                ->form([
+                    FileUpload::make('csv_file')
+                        ->label('Upload CSV File')
+                        ->disk('local')
+                        ->directory('csv-imports')
+                        ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    set_time_limit(300);
+                    $file = storage_path('app/' . $data['csv_file']);
+                    $this->importProducts($file);
+                    Notification::make()->title('Import & Path Fix Completed!')->success()->send();
+                }),
+
+            // 全削除
+            Actions\Action::make('deleteAll')
+                ->label('Delete ALL')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('⚠️ DANGER ZONE')
+                ->modalDescription('Type "delete" to confirm.')
+                ->form([
+                    TextInput::make('confirmation')
+                        ->label('Confirmation')
+                        ->placeholder('delete')
+                        ->required()
+                        ->rules(['required', 'in:delete']),
+                ])
+                ->action(function () {
+                    DB::transaction(function () {
+                        ProductVariant::query()->delete();
+                        Product::query()->delete();
+                    });
+                    Notification::make()->title('Deleted all products.')->danger()->send();
+                }),
+        ];
+    }
+
+    protected function importProducts(string $filePath)
+    {
+        $handle = fopen($filePath, 'r');
+        if ($handle === false) return;
+
+        fgetcsv($handle); // ヘッダー・スキップ
+
+        // 画像処理（最適化機能は一旦おいておき、まずはパス修復を優先します）
+        $targetDir = 'products';
+
+        DB::transaction(function () use ($handle, $targetDir) {
+            while (($row = fgetcsv($handle)) !== false) {
+                if (empty($row[0])) continue;
+
+                $name = $row[0];
+                $price = is_numeric($row[1]) ? $row[1] : 0;
+                $categorySlug = $row[2];
+                $description = $row[3] ?? '';
+                $imageName = $row[4] ?? null;
+                $variantsString = $row[5] ?? '';
+
+                // ★ここが修正ポイント：パスの自動補正
+                // 画像名があって、まだ 'products/' が付いていないなら付ける
+                if ($imageName && !Str::startsWith($imageName, 'products/')) {
+                    $imageName = 'products/' . $imageName;
+                }
+
+                // カテゴリ登録
+                $category = Category::firstOrCreate(
+                    ['slug' => Str::slug($categorySlug)],
+                    ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
+                );
+
+                // 商品検索
+                $product = Product::where('name', $name)->first();
+
+                $productData = [
+                    'category_id' => $category->id,
+                    'price' => $price,
+                    'description' => $description,
+                    'image' => $imageName, // 補正済みのパスを入れる
+                ];
+
+                if ($product) {
+                    $product->update($productData);
+                    // バリアント再登録のため削除
+                    $product->productVariants()->delete();
+                } else {
+                    $productData['name'] = $name;
+                    $productData['slug'] = Str::slug($name);
+                    $productData['is_active'] = true;
+                    $productData['order_type'] = 'kitchen';
+                    $product = Product::create($productData);
+                }
+
+                // バリアント登録
+                if (!empty($variantsString)) {
+                    $variantItems = explode(',', $variantsString);
+                    foreach ($variantItems as $item) {
+                        $parts = explode(':', trim($item));
+                        if (count($parts) < 2) continue;
+                        $product->productVariants()->create([
+                            'name' => trim($parts[0]),
+                            'price_adjustment' => is_numeric($parts[1]) ? $parts[1] : 0,
+                            'is_required' => isset($parts[2]) ? (bool)$parts[2] : false,
+                        ]);
+                    }
+                }
+            }
+        });
+
+        fclose($handle);
+    }
+}
+</file>
+
+<file path="app/Http/Controllers/MenuController.php">
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use Illuminate\Http\Request;
+
+class MenuController extends Controller
+{
+    public function index()
+    {
+        // 公開中のカテゴリと商品を、トッピング情報（productVariants）と一緒に取得
+        $categories = Category::with(['products' => function ($query) {
+            $query->where('is_active', true)
+                ->with('productVariants')
+                ->orderBy('sort_order');
+        }])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+
+        return view('menu', compact('categories'));
+    }
+}
+</file>
+
+<file path="app/Models/Category.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Category extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'slug',
+        'image',
+        'description',
+        'is_active',
+        'sort_order',
+        'seo_title',
+        'seo_description',
     ];
 
-    $isClosed = $holiday['is_active'] && now()->between($holiday['start'], $holiday['end']);
-@endphp
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'is_active' => 'boolean',
+    ];
 
-@section('content')
-    {{-- 1. 背景：モノトーンの動的スライダー --}}
-    <div class="gallery-wrapper">
-        <div class="photo-scroller">
-            @for ($j = 0; $j < 2; $j++)
-                @for ($i = 1; $i <= 10; $i++)
-                    <div class="photo-item" style="background-image: url('{{ asset('res_' . $i . '.png') }}')"></div>
-                @endfor
-            @endfor
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+}
+</file>
+
+<file path="app/Models/Product.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'category_id',
+        'name',
+        'staff_name',
+        'slug',
+        'price',
+        'description',
+        'image',
+        'ingredients',
+        'is_active',
+        'order_type',
+        'sort_order',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'category_id' => 'integer',
+        'price' => 'decimal:3',
+        'is_active' => 'boolean',
+    ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    // public function category()
+    // {
+    //     return $this->belongsTo(Category::class);
+    // }
+
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+}
+</file>
+
+<file path="app/Models/ProductVariant.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ProductVariant extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'product_id',
+        'name',
+        'staff_name',
+        'price_adjustment',
+        'is_required',
+        'sort_order',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'product_id' => 'integer',
+        'price_adjustment' => 'decimal:3',
+        'is_required' => 'boolean',
+    ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    // public function product()
+    // {
+    //     return $this->belongsTo(Product::class);
+    // }
+}
+</file>
+
+<file path="app/Providers/Filament/AdminPanelProvider.php">
+<?php
+
+namespace App\Providers\Filament;
+
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->login()
+            ->colors([
+                'primary' => Color::Amber,
+            ])
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
+                Pages\Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ]);
+    }
+}
+</file>
+
+<file path="database/factories/CategoryFactory.php">
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use App\Models\Category;
+
+class CategoryFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Category::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => $this->faker->name,
+            'slug' => $this->faker->slug,
+            'image' => $this->faker->word,
+            'description' => $this->faker->text,
+            'is_active' => $this->faker->boolean,
+            'sort_order' => $this->faker->numberBetween(-10000, 10000),
+            'seo_title' => $this->faker->word,
+            'seo_description' => $this->faker->word,
+        ];
+    }
+}
+</file>
+
+<file path="database/factories/ProductFactory.php">
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use App\Models\Category;
+use App\Models\Product;
+
+class ProductFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Product::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'category_id' => Category::factory(),
+            'name' => $this->faker->name,
+            'staff_name' => $this->faker->word,
+            'slug' => $this->faker->slug,
+            'price' => $this->faker->randomFloat(3, 0, 9999999.999),
+            'description' => $this->faker->text,
+            'image' => $this->faker->word,
+            'ingredients' => $this->faker->text,
+            'is_active' => $this->faker->boolean,
+            'order_type' => $this->faker->randomElement(["kitchen","counter"]),
+            'sort_order' => $this->faker->numberBetween(-10000, 10000),
+        ];
+    }
+}
+</file>
+
+<file path="database/factories/ProductVariantFactory.php">
+<?php
+
+namespace Database\Factories;
+
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use App\Models\Product;
+use App\Models\ProductVariant;
+
+class ProductVariantFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = ProductVariant::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'product_id' => Product::factory(),
+            'name' => $this->faker->name,
+            'staff_name' => $this->faker->word,
+            'price_adjustment' => $this->faker->randomFloat(3, 0, 9999999.999),
+            'is_required' => $this->faker->boolean,
+            'sort_order' => $this->faker->numberBetween(-10000, 10000),
+        ];
+    }
+}
+</file>
+
+<file path="database/migrations/2026_02_16_124825_create_categories_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->index();
+            $table->string('slug')->unique();
+            $table->string('image')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->string('seo_title')->nullable();
+            $table->string('seo_description')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('categories');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_16_124826_create_products_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('category_id')->constrained();
+            $table->string('name')->index();
+            $table->string('staff_name')->nullable();
+            $table->string('slug')->unique();
+            $table->decimal('price', 10, 3)->nullable();
+            $table->longText('description')->nullable();
+            $table->string('image')->nullable();
+            $table->text('ingredients')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->enum('order_type', ["kitchen","counter"])->default('kitchen');
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('products');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_16_124827_create_product_variants_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::disableForeignKeyConstraints();
+
+        Schema::create('product_variants', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained();
+            $table->string('name');
+            $table->string('staff_name')->nullable();
+            $table->decimal('price_adjustment', 10, 3)->default(0);
+            $table->boolean('is_required')->default(false);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
+
+        Schema::enableForeignKeyConstraints();
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('product_variants');
+    }
+};
+</file>
+
+<file path="resources/sass/menu.scss">
+/* resources/sass/menu.scss */
+
+/* --- 1. Base Settings --- */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+.serif { font-family: 'Playfair Display', serif; }
+
+/* --- 2. Navigation & Header --- */
+.category-nav {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.category-nav::-webkit-scrollbar {
+    display: none;
+}
+
+/* 常駐戻るボタン */
+.nav-back-fixed {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    mix-blend-mode: difference;
+    color: #fff;
+
+    &:hover {
+        opacity: 1;
+        transform: translateX(-2px);
+    }
+
+    .nav-back-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+}
+
+/* --- 3. Gimmicks (Animations) --- */
+
+/* カテゴリ点滅 */
+@keyframes flashRed {
+    0%, 100% { color: #1a1a1a; text-shadow: none; transform: scale(1); }
+    50% { color: #e60012; text-shadow: 0 0 8px rgba(230, 0, 18, 0.4); transform: scale(1.1); }
+}
+
+.nav-link.active {
+    animation: flashRed 0.8s infinite ease-in-out;
+    border-bottom: 2px solid #e60012;
+    padding-bottom: 2px;
+    font-weight: 700;
+}
+
+/* 醤油の雨 */
+#soy-rain-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 9999;
+}
+
+.soy-drop {
+    position: absolute; top: -20px; width: 10px; height: 15px;
+    background: #2c1a16;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    opacity: 0.8;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+}
+
+@keyframes dripDown {
+    0% { top: -20px; opacity: 1; transform: rotate(45deg) scale(1); }
+    100% { top: 110vh; opacity: 0; transform: rotate(45deg) scale(0.8); }
+}
+
+.animate-drip {
+    animation: dripDown 1.2s linear forwards;
+}
+
+/* --- 4. Modal Styles --- */
+#product-modal {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+
+    &.hidden { visibility: hidden; opacity: 0; }
+    &.active { visibility: visible; opacity: 1; }
+
+    > div {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    &.hidden > div { transform: translateY(100%); }
+    &.active > div { transform: translateY(0); }
+}
+
+/* --- 5. Character & UI Gimmicks --- */
+
+/* お叱り醤油ちゃん (出現) */
+@keyframes pyonJump {
+    0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
+    40% { transform: translate(-50%, -20px) scale(1.1); opacity: 1; }
+    60% { transform: translate(-50%, 10px) scale(0.95); }
+    80% { transform: translate(-50%, -5px) scale(1.05); }
+    100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+
+/* ★修正: 揺れを控えめに、上品に (Gentle Shake) */
+@keyframes shakeGentle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+.soy-appear {
+    display: flex !important;
+    animation: pyonJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.soy-shake {
+    animation: shakeGentle 2.0s ease-in-out infinite; /* ゆっくり揺らす */
+}
+
+/* 赤いキャップ回転 */
+@keyframes rollHappy {
+    0% { transform: translateX(-20px) rotate(-180deg); opacity: 0; }
+    100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+}
+
+.animate-roll {
+    animation: rollHappy 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ★追加: 必須項目のパルス強調 (Attention Pulse) */
+@keyframes pulseAttention {
+    0% { color: #9ca3af; /* text-gray-400 */ transform: scale(1); }
+    50% { color: #e60012; transform: scale(1.05); text-shadow: 0 0 5px rgba(230, 0, 18, 0.2); }
+    100% { color: #9ca3af; transform: scale(1); }
+}
+
+.required-pulse {
+    display: inline-block;
+    animation: pulseAttention 2s infinite ease-in-out;
+    transform-origin: left center;
+}
+</file>
+
+<file path="resources/views/menu.blade.php">
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu | Söya.</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    @vite(['resources/sass/menu.scss'])
+
+    <style>
+        /* 左上の常駐戻るボタン */
+        .nav-back-fixed {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+            mix-blend-mode: difference;
+            color: #fff;
+        }
+
+        .nav-back-fixed:hover {
+            opacity: 1;
+            transform: translateX(-2px);
+        }
+
+        .nav-back-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+
+<body class="pb-32">
+
+    <a href="{{ url('/') }}" class="nav-back-fixed">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span class="nav-back-text">Söya.</span>
+    </a>
+
+    <div id="soy-rain-container"></div>
+
+    <div
+        class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
+        <header class="pt-3 pb-1 px-4 text-center">
+            <a href="{{ url('/') }}" class="inline-block hover:opacity-70 transition-opacity">
+                <h1 class="serif text-xl font-bold tracking-tight text-[#1a1a1a]">Söya<span
+                        class="text-[#e60012]">.</span></h1>
+            </a>
+        </header>
+        <div class="flex gap-6 px-4 py-3 overflow-x-auto category-nav items-center">
+            @foreach ($categories as $category)
+                <a href="#cat-{{ $category->id }}"
+                    class="nav-link whitespace-nowrap text-[10px] font-bold tracking-[0.15em] uppercase text-gray-400 transition-all duration-200"
+                    data-target="cat-{{ $category->id }}">
+                    {{ $category->name }}
+                </a>
+            @endforeach
         </div>
     </div>
 
-    <div class="main-content">
-        {{-- 2. ガラスコンテナ --}}
-        <div class="content-container animate__animated animate__fadeInUp">
-
-            @if ($isClosed)
-                {{-- A. 休業告知モード --}}
-                <div class="holiday-notice text-center">
-                    <h2 class="animate__animated animate__fadeIn">{{ $holiday['title'] }}</h2>
-                    <p class="mt-4"
-                        style="font-family: 'Noto Serif JP', serif; font-weight: 300; line-height: 2.2; color: #4a4a4a;">
-                        {!! nl2br(e($holiday['message'])) !!}
-                    </p>
-                    <div class="mt-5 pt-4" style="border-top: 1px solid rgba(0,0,0,0.05);">
-                        <span class="small"
-                            style="letter-spacing: 0.3em; color: #a3b8c9;">{{ $holiday['period_txt'] }}</span>
+    <main class="px-0 mt-2 max-w-xl mx-auto">
+        @foreach ($categories as $category)
+            <section id="cat-{{ $category->id }}" class="section-spy pt-6 pb-2">
+                <div class="px-4 mb-2 flex items-center gap-2 sticky top-[80px] z-30 pointer-events-none">
+                    <div class="bg-gray-100/90 backdrop-blur px-3 py-1 rounded-full border border-gray-200">
+                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900">{{ $category->name }}
+                        </h2>
                     </div>
                 </div>
-            @else
-                {{-- B. 予約フォームモード --}}
-                <div class="brand-header text-center">
-                    <h1>Res<span>.</span></h1>
-                    <p class="sub">TOKYO CURRENT</p>
+                <div class="bg-white border-t border-b border-gray-100 divide-y divide-gray-100">
+                    @foreach ($category->products as $product)
+                        <div onclick="openProductModal({{ $product->id }})"
+                            class="relative flex items-center gap-3 p-3 active:bg-gray-50 transition-colors cursor-pointer group h-[88px]">
+
+                            <div
+                                class="w-16 h-16 shrink-0 bg-gray-50 rounded-md overflow-hidden relative border border-gray-100">
+                                @if ($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div
+                                        class="w-full h-full flex items-center justify-center text-[8px] text-gray-300">
+                                        NO IMG</div>
+                                @endif
+                            </div>
+
+                            <div class="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
+                                <h3 class="serif text-[15px] font-bold leading-tight text-gray-900 mb-1 truncate pr-2">
+                                    {{ $product->name }}
+                                </h3>
+                                <p class="text-[10px] text-gray-400 line-clamp-1 leading-tight mb-1">
+                                    {!! strip_tags($product->description) !!}
+                                </p>
+                                @if ($product->productVariants->count() > 0)
+                                    <span
+                                        class="inline-flex items-center px-1.5 py-0.5 rounded-[4px] text-[8px] font-medium bg-gray-50 text-gray-500 border border-gray-100 self-start">
+                                        {{ $product->productVariants->count() }} Styles
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="flex flex-col justify-between items-end h-full py-1 pl-2 shrink-0">
+                                <span class="font-bold text-[13px] text-gray-900">
+                                    {{ number_format($product->price, 3) }}
+                                    @if ($product->productVariants->where('is_required', true)->count() > 0)
+                                        <span class="text-[9px] text-gray-400 font-normal">~</span>
+                                    @endif
+                                </span>
+                                <button
+                                    class="w-7 h-7 rounded-full bg-[#f4f5f7] text-[#1a1a1a] flex items-center justify-center shadow-sm group-hover:bg-[#1a1a1a] group-hover:text-white transition-colors duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        @endforeach
+    </main>
+
+    <div id="cart-bar"
+        class="fixed bottom-6 left-4 right-4 bg-[#1a1a1a] text-white py-3 px-5 rounded-full flex justify-between items-center shadow-[0_10px_40px_rgba(0,0,0,0.4)] z-[1000] hidden animate-[fadeInUp_0.3s_ease-out]">
+        <div class="flex flex-col">
+            <span class="text-[8px] tracking-widest text-gray-400 uppercase">Total</span>
+            <div class="font-bold text-base leading-none">
+                <span id="cart-total">0.000</span> <span class="text-[10px] font-normal">DT</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="bg-gray-800 px-3 py-1 rounded-full text-[10px] font-medium text-gray-300">
+                <span id="cart-count">0</span> items
+            </div>
+            <button onclick="alert('Order function coming soon!')"
+                class="bg-white text-black px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-200 transition">
+                Check Out
+            </button>
+        </div>
+    </div>
+
+    <div id="product-modal"
+        class="fixed inset-0 bg-black/60 backdrop-blur-[3px] z-[2000] hidden items-end justify-center sm:items-center">
+        <div
+            class="bg-white w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col relative">
+
+            <div class="p-6 pb-2 shrink-0 relative z-10 bg-white">
+                <button onclick="closeModal()"
+                    class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors">✕</button>
+                <h2 id="modal-product-name" class="serif text-2xl font-bold pr-10 leading-none mb-2"></h2>
+                <div class="mt-3 space-y-2">
+                    <p id="modal-description" class="text-xs text-gray-500 leading-relaxed font-medium"></p>
+                    <p id="modal-ingredients"
+                        class="text-[9px] text-gray-400 uppercase tracking-wider border-l-2 border-[#e60012] pl-2"></p>
+                </div>
+            </div>
+
+            <div id="modal-options" class="p-6 pt-2 overflow-y-auto grow bg-white"></div>
+
+            <div class="p-5 pt-0 border-t border-gray-50 shrink-0 bg-white relative z-20">
+
+                <div id="soy-character"
+                    class="hidden absolute -top-20 left-1/2 flex-col items-center pointer-events-none z-30"
+                    style="transform: translateX(-50%);">
+                    <div
+                        class="bg-[#e60012] text-white text-[10px] font-bold py-1 px-3 rounded-full mb-2 shadow-lg whitespace-nowrap animate-bounce">
+                        Please select a style.
+                    </div>
+                    <svg width="50" height="80" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
+                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
+                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
+                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
+                        <circle cx="30" cy="50" r="5" fill="#e60012" />
+                    </svg>
                 </div>
 
-                <form id="resForm" class="animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
-                    <div class="form-group">
-                        <label class="label-min">GUEST NAME</label>
-                        <input type="text" id="name" class="input-soya" placeholder="TYPE YOUR NAME" required>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-7">
-                            <div class="form-group">
-                                <label class="label-min">SELECT DATE</label>
-                                <input type="date" id="date" class="input-soya" required>
-                            </div>
-                        </div>
-                        <div class="col-5">
-                            <div class="form-group">
-                                <label class="label-min">TIME</label>
-                                <select id="time" class="input-soya" required>
-                                    <option value="">--:--</option>
-                                    <option value="12:00">12:00</option>
-                                    <option value="19:00">19:00</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="label-min">PARTY SIZE</label>
-                        <select id="guests" class="input-soya">
-                            @for ($i = 1; $i <= 6; $i++)
-                                <option value="{{ $i }}">{{ $i }} {{ $i > 1 ? 'PEOPLE' : 'PERSON' }}
-                                </option>
-                            @endfor
-                        </select>
-                    </div>
-
-                    <button type="button" id="whatsappBtn" class="btn-whatsapp">
-                        SEND REQUEST
-                    </button>
-                </form>
-            @endif
-
-            {{-- 3. フッター --}}
-            <div class="text-center mt-5">
-                <a href="{{ url('/') }}" class="back-link"
-                    style="font-size: 0.55rem; color: #aaa; letter-spacing: 0.2em; text-decoration: none; text-transform: uppercase;">
-                    TERMINAL / BACK TO HOME
-                </a>
+                <button id="add-to-cart-btn" onclick="confirmProduct()"
+                    class="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold tracking-[0.15em] text-xs hover:bg-[#e60012] transition-colors shadow-lg flex justify-center items-center gap-2">
+                    ADD TO ORDER
+                </button>
             </div>
         </div>
     </div>
-@endsection
 
-@push('scripts')
-    <script type="module">
-        $(function() {
-            const $whatsappBtn = $('#whatsappBtn');
-            const $inputs = $('.input-soya');
-            const $scroller = $('.photo-scroller');
+    <script>
+        window.ALL_PRODUCTS = @json($categories->flatMap->products);
+        const openProductModal = (id) => App.openModal(id);
+        const closeModal = () => App.close();
+        const confirmProduct = () => App.confirm();
 
-            // --- 1. 麺の躍動感演出 ---
-            $inputs.on('focus', function() {
-                $scroller.css('animation-duration', '20s'); // 背景加速
-            }).on('blur', function() {
-                $scroller.css('animation-duration', '60s'); // 減速
+        // Soy Rain Logic
+        let lastScrollY = 0;
+        let soyRainContainer = document.getElementById('soy-rain-container');
+        let dropCooldown = false;
+
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            const delta = Math.abs(currentScrollY - lastScrollY);
+            if (delta > 10 && !dropCooldown) {
+                createSoyDrop();
+                dropCooldown = true;
+                setTimeout(() => {
+                    dropCooldown = false;
+                }, 100);
+            }
+            lastScrollY = currentScrollY;
+        });
+
+        function createSoyDrop() {
+            const drop = document.createElement('div');
+            drop.className = 'soy-drop animate-drip';
+            drop.style.left = (Math.random() * window.innerWidth) + 'px';
+            drop.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 0.5})`;
+            soyRainContainer.appendChild(drop);
+            setTimeout(() => {
+                drop.remove();
+            }, 1200);
+        }
+
+        // Scroll Spy Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-spy');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => link.classList.remove('active'));
+                        const activeLink = document.querySelector(
+                            `.nav-link[href="#${entry.target.id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active');
+                            activeLink.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'center'
+                            });
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '-20% 0px -60% 0px'
             });
-
-            $whatsappBtn.on('mousedown', function() {
-                $(this).css('transform', 'scaleX(1.1) scaleY(0.8)'); // 麺のコシ（弾力）
-            }).on('mouseup mouseleave', function() {
-                $(this).css('transform', 'scale(1)');
-            });
-
-            // --- 2. 予約送信 & AIデータ構造化 ---
-            $whatsappBtn.on('click', function() {
-                const name = $('#name').val();
-                const date = $('#date').val();
-                const time = $('#time').val();
-                const guests = $('#guests').val();
-
-                if (!name || !date || !time) {
-                    alert('Please complete the form.');
-                    return;
-                }
-
-                const resData = {
-                    id: `RES-${Date.now()}`,
-                    timestamp: new Date().toISOString(),
-                    customer: name,
-                    booking_date: date,
-                    booking_time: time,
-                    party_size: guests,
-                    store: "Soya_Menzah9",
-                    ver: "2.0"
-                };
-
-                // ブラウザログ保存
-                const history = JSON.parse(localStorage.getItem('soya_res_logs') || '[]');
-                history.push(resData);
-                localStorage.setItem('soya_res_logs', JSON.stringify(history));
-
-                // AI解析・WhatsApp用 YAMLフォーマット
-                const text = `*NEW RESERVATION*
----
-ID: ${resData.id}
-NAME: ${resData.customer}
-DATE: ${resData.booking_date}
-TIME: ${resData.booking_time}
-GUESTS: ${resData.party_size}
----
-Generated by Söya-AI-Agent.
-Please send this without modification.`;
-
-                // GA4送信
-                if (typeof gtag === 'function') {
-                    gtag('event', 'generate_lead', {
-                        'value': guests
-                    });
-                }
-
-                window.open(`https://wa.me/216557786656?text=${encodeURIComponent(text)}`, '_blank');
-            });
-
-            // 日付制限
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            $('#date').attr('min', tomorrow.toISOString().split('T')[0]);
+            sections.forEach(section => observer.observe(section));
         });
     </script>
-@endpush
+    <script src="{{ asset('js/menu.js') }}"></script>
+</body>
+
+</html>
 </file>
 
 <file path="app/Console/Kernel.php">
@@ -1891,6 +2358,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
+        App\Providers\Filament\AdminPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
 
     ],
@@ -3457,41 +3925,6 @@ class DatabaseSeeder extends Seeder
 }
 </file>
 
-<file path="resources/js/app.js">
-import './bootstrap';
-import 'bootstrap';
-import jQuery from 'jquery';
-window.$ = window.jQuery = jQuery;
-import '../sass/app.scss';
-
-$(function() {
-    console.log("Tokyo Current: Söya. Engine Started");
-
-    const $menu = $('#globalNav');
-    const $trigger = $('#menuTrigger');
-
-    // メニュー開閉
-    $trigger.on('click', function() {
-        $(this).toggleClass('is-active');
-        $menu.toggleClass('is-open');
-
-        // 丼がカチャッと動く振動演出
-        if($(this).hasClass('is-active')) {
-            $(this).addClass('animate__animated animate__headShake');
-            setTimeout(() => {
-                $(this).removeClass('animate__animated animate__headShake');
-            }, 500);
-        }
-    });
-
-    // リンククリックで閉じる
-    $('.nav-item').on('click', function() {
-        $trigger.removeClass('is-active');
-        $menu.removeClass('is-open');
-    });
-});
-</file>
-
 <file path="resources/js/bootstrap.js">
 import _ from 'lodash';
 window._ = _;
@@ -3528,6 +3961,611 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
 // });
+</file>
+
+<file path="resources/sass/components/_base.scss">
+// --- Base Styles ---
+body {
+    background-color: $bg-color;
+    color: $text-main;
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+// --- Concrete Texture ---
+.concrete-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+    background:
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.8) 0%, rgba(240,240,240,0.1) 100%),
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+    background-color: $bg-color;
+    background-blend-mode: overlay;
+    animation: grainMovement 8s steps(10) infinite;
+}
+
+@keyframes grainMovement {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-1%, -1%); }
+    30% { transform: translate(1%, 1%); }
+    50% { transform: translate(-0.5%, 1.5%); }
+    70% { transform: translate(1.5%, -0.5%); }
+    90% { transform: translate(-1%, 0.5%); }
+}
+
+// --- Common Animations ---
+.fade-up { animation: floatUp 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.fade-out { animation: fadeOut 1.2s ease forwards; }
+
+@keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+</file>
+
+<file path="resources/sass/components/_footer.scss">
+.site-footer {
+    width: 100%;
+    padding: 40px 20px;
+    background: transparent;
+    border-top: 1px solid rgba(163, 184, 201, 0.2);
+    margin-top: 40px;
+    opacity: 1 !important; // 強制表示
+
+    .footer-container {
+        max-width: 500px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .insta-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 20px;
+        border: 1px solid $c-blue;
+        text-decoration: none;
+        transition: 0.3s;
+
+        .bi-instagram {
+            color: $c-blue;
+            font-size: 1.1rem;
+            display: inline-block;
+        }
+
+        .btn-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            color: $d-gray;
+            text-transform: uppercase;
+        }
+
+        &:active {
+            background-color: $c-blue;
+            .bi-instagram, .btn-label { color: #fff; }
+        }
+    }
+
+    .store-info-grid {
+        margin: 30px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .info-label {
+            display: block;
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: $c-blue;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.85rem;
+            color: $d-gray;
+            margin: 0;
+        }
+    }
+
+    .team-credit {
+        margin-top: 30px;
+        font-size: 0.5rem;
+        letter-spacing: 0.2em;
+        color: #bbb;
+        text-transform: uppercase;
+    }
+}
+</file>
+
+<file path="resources/sass/components/_intro.scss">
+#intro-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: $bg-color;
+    padding: 2rem;
+}
+
+.intro-content { margin-bottom: 4rem; }
+
+.intro-text {
+    font-family: 'Noto Serif JP', serif;
+    color: $text-main;
+    opacity: 0;
+    transform: translateY(20px);
+    margin-bottom: 2rem;
+}
+
+.intro-small {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: $text-sub;
+    text-transform: uppercase;
+}
+
+.intro-main {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+    line-height: 1.4;
+
+    @media (max-width: 768px) { font-size: 1.8rem; }
+}
+
+.intro-date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    border-top: 1px solid $text-sub;
+    padding: 15px 0 0 0;
+    display: inline-block;
+    color: $text-sub;
+    line-height: 1.8;
+}
+
+.jp-decoration {
+    display: block;
+    margin-top: 15px;
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.75rem;
+    color: rgba(0,0,0,0.3);
+    letter-spacing: 0.8em;
+    text-indent: 0.8em;
+}
+
+/* Enter Button Animation */
+.intro-action { opacity: 0; transform: translateY(10px); }
+
+.enter-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 10px 20px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+
+    .btn-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+    }
+    .btn-line {
+        width: 30px; height: 1px; background-color: $text-main;
+        animation: blinkLine 2s infinite cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+@keyframes blinkLine {
+    0%   { opacity: 0.2; transform: scaleX(0.8); }
+    50%  { opacity: 1;   transform: scaleX(1); }
+    100% { opacity: 0.2; transform: scaleX(0.8); }
+}
+</file>
+
+<file path="resources/sass/components/_reservation.scss">
+/* resources/sass/components/_reservation.scss */
+
+/* --- Tokyo Current: High-End Minimal & Ramen Dynamics --- */
+
+// 1. 全画面背景のスライダー（モノトーン・シズル）
+.gallery-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    z-index: 1;
+    overflow: hidden;
+    opacity: 0.35; // フォームを際立たせるために沈める
+    pointer-events: none;
+
+    .photo-scroller {
+        display: flex;
+        width: calc(300px * 20);
+        animation: scroll 60s linear infinite; // JSでこの速度を動的に変える
+    }
+
+    .photo-item {
+        width: 300px;
+        height: 100vh;
+        background-size: cover;
+        background-position: center;
+        filter: grayscale(100%) contrast(1.1); // 東京のストリート感
+        border-right: 1px solid rgba(255,255,255,0.05);
+        transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+}
+
+// 2. メインレイアウト
+.main-content {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+// 3. ガラスレイヤーのフォームコンテナ
+.content-container {
+    width: 100%;
+    max-width: 460px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(40px) saturate(150%); // 東京の夜のような屈折
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 60px 40px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+    transform: perspective(1000px) rotateX(1deg);
+}
+
+// 4. タイポグラフィ
+.brand-header {
+    margin-bottom: 50px;
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.8rem;
+        color: #000;
+        letter-spacing: -0.05em;
+        line-height: 0.8;
+        span { color: #a3b8c9; } // Concrete Blue
+    }
+    .sub {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.5em;
+        margin-top: 15px;
+        color: #888;
+        text-transform: uppercase;
+    }
+}
+
+// 5. フォーム要素と「麺」のアニメーション
+.form-group {
+    position: relative;
+    margin-bottom: 35px;
+
+    .label-min {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.55rem;
+        letter-spacing: 0.25em;
+        color: #aaa;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    // 麺の演出：フォーカス時に伸びる黄金色のライン
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 2px;
+        background: #f1c40f; // 黄金色の麺カラー
+        box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        // 麺の弾力を表現するカスタムベジェ
+        transition: width 0.9s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        z-index: 2;
+    }
+
+    &:focus-within::after {
+        width: 100%;
+    }
+}
+
+.input-soya {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.05); // ベースの細い線
+    background: transparent;
+    padding: 12px 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    color: #000;
+    border-radius: 0;
+    outline: none;
+    transition: all 0.5s ease;
+
+    &::placeholder {
+        font-size: 0.75rem;
+        color: #ddd;
+        transition: opacity 0.3s;
+    }
+
+    &:focus {
+        padding-left: 8px; // わずかな動的変化
+        &::placeholder { opacity: 0; }
+    }
+}
+
+// 6. 送信ボタン（北海道×キッコーマン×コンクリート）
+// ここだけのローカル変数定義
+$k-red: #e60012;     // Kikkoman Red
+$k-gray: #d4d8db;    // Concrete Gray
+$k-text: #2c2c2c;    // Dark Text
+$k-white: #ffffff;
+
+.btn-whatsapp {
+    // ベース：静的なコンクリート
+    background-color: $k-gray;
+    color: $k-text;
+    width: 100%;
+    padding: 22px 0;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    margin-top: 30px;
+
+    // コンクリートの質量感
+    box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+
+    // コンテンツレイアウト
+    .btn-content {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 15px; // ロゴを見やすく
+    }
+
+    // 北海道ロゴ：最初から主張する
+    .hokkaido-icon {
+        height: 24px;
+        width: auto;
+        opacity: 0.85; // 最初からくっきり
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 0.85rem;
+        letter-spacing: 0.25em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: $k-text;
+        transition: color 0.3s ease;
+    }
+
+    // --- Hover Action: 粋な変化 ---
+    &:hover {
+        background-color: darken($k-gray, 5%); // 石が濡れたような濃さに
+        box-shadow: 0 8px 25px rgba(230, 0, 18, 0.15); // 影だけ「ほんのり赤いオーラ」
+
+        // 文字だけが鮮烈な赤になる
+        .btn-text {
+            color: $k-red;
+        }
+
+        // 北海道ロゴが嬉しそうに動く
+        .hokkaido-icon {
+            opacity: 1;
+            transform: scale(1.15) rotate(-3deg);
+        }
+    }
+
+    // --- Click Action: 旨味プルプル ---
+    &:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+
+        .btn-content {
+            animation: purupuru 0.3s linear infinite;
+        }
+    }
+}
+
+// 7. ラマダン休業通知（ミニマル）
+.holiday-notice {
+    h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.2rem;
+        letter-spacing: -0.02em;
+        color: #000;
+    }
+}
+
+// 8. アニメーション定義
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-300px * 10)); }
+}
+
+// 震えるアニメーション（ゼリーのような弾力）
+@keyframes purupuru {
+    0%   { transform: translate(0, 0) rotate(0deg); }
+    20%  { transform: translate(-2px, 0) rotate(-2deg); }
+    40%  { transform: translate(2px, 0) rotate(2deg); }
+    60%  { transform: translate(-2px, 0) rotate(-1deg); }
+    80%  { transform: translate(2px, 0) rotate(1deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .content-container {
+        padding: 40px 25px;
+        backdrop-filter: blur(20px);
+    }
+    .brand-header h1 {
+        font-size: 2.8rem;
+    }
+}
+</file>
+
+<file path="resources/sass/components/_variables.scss">
+/* resources/sass/components/_variables.scss */
+
+// --- Colors ---
+$c-blue: #a3b8c9;    // コンクリートブルー
+$c-gray: #e0e0e0;    // ライトグレー
+$d-gray: #4a4a4a;    // ディープグレー
+$bg-color: #f4f5f7;  // 背景色
+
+// --- Text Colors (エラー解消のために追加) ---
+$text-main: #3a3a3a;
+$text-sub: #9ea1a3;
+
+// --- Lines ---
+$line-color: rgba(0, 0, 0, 0.08);
+</file>
+
+<file path="resources/sass/components/_welcome.scss">
+/* resources/sass/components/_welcome.scss */
+
+.main-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    opacity: 0; // JSでフェードインさせるため
+    transition: opacity 2s ease;
+
+    @media (max-width: 768px) {
+        align-items: flex-start;
+        padding-top: 20vh;
+    }
+}
+
+.content-wrapper {
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+}
+
+h1.brand-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+    color: $d-gray;
+    line-height: 1;
+
+    @media (max-width: 768px) {
+        font-size: 3.2rem;
+        text-align: center;
+    }
+}
+
+.brand-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: $text-sub;
+    margin-bottom: 3.5rem;
+    padding-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; width: 40px;
+        height: 1px;
+        background-color: $text-sub;
+    }
+
+    @media (max-width: 768px) {
+        font-size: 0.7rem;
+        display: block;
+        text-align: center;
+        &::after { left: 50%; transform: translateX(-50%); }
+    }
+}
+
+.story-text {
+    font-family: 'Playfair Display', 'Noto Serif JP', serif;
+    font-size: 1.05rem;
+    line-height: 2.2;
+    color: $d-gray;
+    text-align: justify;
+    opacity: 1 !important; // ここが効いていない可能性が高い
+    font-weight: 300;
+
+    strong { font-weight: 500; color: #000; }
+    hr { margin: 30px 0; border-top: 1px solid $line-color; }
+
+    @media (max-width: 768px) {
+        text-align: left;
+        font-size: 1rem;
+        padding: 0 10px;
+    }
+}
+
+.architectural-line {
+    position: absolute;
+    left: -40px; top: -50px; bottom: -50px;
+    width: 1px;
+    background: $line-color;
+    @media (max-width: 768px) { display: none; }
+}
+</file>
+
+<file path="resources/views/layouts/soya.blade.php">
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@yield('title', 'Söya. | prod. bistronippon')</title>
+
+    @stack('meta')
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @stack('page-styles')
+</head>
+
+<body>
+    <div class="concrete-bg"></div>
+
+    {{-- ここにヘッダーを追加します --}}
+    @include('parts.header')
+
+    <main>
+        @yield('content')
+    </main>
+
+    @include('parts.footer')
+    @stack('scripts')
+</body>
+
+</html>
 </file>
 
 <file path="routes/api.php">
@@ -3595,6 +4633,447 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 </file>
 
+<file path="resources/js/app.js">
+import './bootstrap';
+import 'bootstrap';
+import jQuery from 'jquery';
+window.$ = window.jQuery = jQuery;
+import '../sass/app.scss';
+
+$(function() {
+    console.log("Tokyo Current: Söya. Engine Started");
+
+    const $menu = $('#globalNav');
+    const $trigger = $('#menuTrigger');
+
+    // メニュー開閉
+    $trigger.on('click', function() {
+        $(this).toggleClass('is-active');
+        $menu.toggleClass('is-open');
+
+        // 丼がカチャッと動く振動演出
+        if($(this).hasClass('is-active')) {
+            $(this).addClass('animate__animated animate__headShake');
+            setTimeout(() => {
+                $(this).removeClass('animate__animated animate__headShake');
+            }, 500);
+        }
+    });
+
+    // リンククリックで閉じる
+    $('.nav-item').on('click', function() {
+        $trigger.removeClass('is-active');
+        $menu.removeClass('is-open');
+    });
+});
+</file>
+
+<file path="resources/sass/components/_header.scss">
+/* resources/sass/components/_header.scss */
+
+/* --- Tokyo Current: Soy Sauce Bottle Gimmick (Level 2) --- */
+
+.global-header {
+    position: fixed;
+    top: 0; left: 0; width: 100%;
+    z-index: 11000;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    pointer-events: none; // ヘッダーの余白はクリック透過
+
+    .nav-left, .nav-right {
+        pointer-events: auto; // ロゴとボタンはクリック有効
+    }
+
+    @media (max-width: 768px) {
+        padding: 15px 20px;
+    }
+}
+
+.menu-trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 60px;
+    height: 90px;
+    position: relative;
+    z-index: 10002;
+    color: #000; // デフォルトの線画カラー
+
+    .bottle-wrapper {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible; // タレが枠外に出ても切れないように
+        }
+    }
+
+    // --- 各パーツの初期設定とトランジション ---
+
+    // 1. ボトル全体
+    .bottle-group {
+        transform-origin: 50% 80%; // ボトルの底の方を中心に回転
+        transition: transform 0.6s cubic-bezier(0.68, -0.6, 0.32, 1.6); // 弾力のある動き
+    }
+
+    // 2. キャップ
+    .bottle-cap {
+        transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    // 3. 中身（満タン分）
+    .bottle-liquid-full {
+        transition: opacity 0.4s ease;
+    }
+
+    // 4. メニュー線（ハンバーガー）
+    .bottle-menu-lines {
+        transition: stroke 0.3s ease;
+    }
+
+    // 5. 注がれるタレ
+    .sauce-stream {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100; // 最初は隠す
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    // 6. 落ちる雫
+    .sauce-drop {
+        opacity: 0;
+        transform: translateY(0);
+    }
+
+    // --- ACTIVE: 醤油注ぎモード発動 ---
+    &.is-active {
+        // A. ボトルを大胆に傾ける (-135度)
+        .bottle-group {
+            transform: rotate(-135deg) translate(-10px, -15px);
+        }
+
+        // B. キャップがあの「赤」になる
+        .bottle-cap {
+            fill: #e60012; // Kikkoman Red
+            stroke: #e60012;
+        }
+
+        // C. 中身の醤油が満タンになる（黒くなる）
+        .bottle-liquid-full {
+            opacity: 1;
+            transition-delay: 0.1s;
+        }
+
+        // D. ★メニュー線が白く反転（黒い醤油の中でも見えるように）
+        .bottle-menu-lines {
+            stroke: #fff;
+            transition-delay: 0.1s; // 液体が入るのと同期
+        }
+
+        // E. 注ぎ口からタレ発射
+        .sauce-stream {
+            opacity: 1;
+            stroke-dashoffset: 0;
+            // 傾き終わった頃にドバっと出る
+            transition: stroke-dashoffset 0.4s ease-in 0.3s, opacity 0.1s 0.3s;
+        }
+
+        // F. 雫の無限ループ
+        .sauce-drop {
+            opacity: 1;
+            animation: drip-drop 1.5s cubic-bezier(0.5, 0, 1, 1) infinite 0.7s;
+        }
+    }
+}
+
+/* --- 滴下アニメーション（物理挙動） --- */
+@keyframes drip-drop {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    20% { transform: translateY(15px) scale(0.8, 1.2); } // 伸びる
+    50% { transform: translateY(50px) scale(0.6, 1.4); } // 加速
+    90% { transform: translateY(90px) scale(0.5, 1.5); opacity: 1; }
+    100% { transform: translateY(110px) scale(2, 0.1); opacity: 0; } // 着地して消滅
+}
+
+/* --- Full Screen Menu Style --- */
+.global-nav {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100vh;
+    background: rgba(255, 255, 255, 0.98);
+    z-index: 10500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // 液体のような出現アニメーション
+    transform: translateY(-100%) scaleY(0.8);
+    transform-origin: top;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1), opacity 0.5s;
+    opacity: 0;
+    visibility: hidden;
+
+    &.is-open {
+        transform: translateY(0) scaleY(1);
+        opacity: 1;
+        visibility: visible;
+        animation: menu-wobble 1s ease-in-out forwards;
+    }
+
+    .nav-links {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+
+        li {
+            margin: 25px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.5s ease;
+        }
+    }
+
+    // リンクの出現遅延（カスケード表示）
+    &.is-open li {
+        opacity: 1;
+        transform: translateY(0);
+        @for $i from 1 through 5 {
+            &:nth-child(#{$i}) { transition-delay: #{0.3 + ($i * 0.1)}s; }
+        }
+    }
+
+    .nav-item {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        color: #000;
+        text-decoration: none;
+        letter-spacing: -0.02em;
+        position: relative;
+        display: inline-block;
+
+        // ホバー時の下線アニメーション
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: -5px; left: 0; width: 0; height: 1px;
+            background: #e60012; // メニューの下線も「赤」に合わせる
+            transition: width 0.4s ease;
+        }
+
+        &:hover {
+            color: #e60012;
+            &::after { width: 100%; }
+        }
+    }
+}
+
+// メニュー背景の揺らぎ
+@keyframes menu-wobble {
+    0% { transform: translateY(0) skewY(0); }
+    20% { transform: translateY(0) skewY(2deg); }
+    40% { transform: translateY(0) skewY(-1deg); }
+    60% { transform: translateY(0) skewY(0.5deg); }
+    100% { transform: translateY(0) skewY(0); }
+}
+</file>
+
+<file path="resources/views/reservation.blade.php">
+@extends('layouts.soya')
+
+@section('title', 'Reservation | Söya.')
+
+@php
+    /* |--------------------------------------------------------------------------
+       | RAMADAN SETTINGS (2026/02/15 - 03/12)
+       |-------------------------------------------------------------------------- */
+    $holiday = [
+        'is_active' => true,
+        'start' => '2026-02-18',
+        'end' => '2026-03-12',
+        'title' => 'RAMADAN BREAK',
+        'message' => "We are currently closed for the holy month of Ramadan.\nPreparing for our Grand Opening.",
+        'period_txt' => 'Feb 15 – March 12, 2026',
+    ];
+
+    $isClosed = $holiday['is_active'] && now()->between($holiday['start'], $holiday['end']);
+@endphp
+
+@section('content')
+    {{-- 1. 背景：モノトーンの動的スライダー --}}
+    <div class="gallery-wrapper">
+        <div class="photo-scroller">
+            @for ($j = 0; $j < 2; $j++)
+                @for ($i = 1; $i <= 10; $i++)
+                    <div class="photo-item" style="background-image: url('{{ asset('res_' . $i . '.png') }}')"></div>
+                @endfor
+            @endfor
+        </div>
+    </div>
+
+    <div class="main-content">
+        {{-- 2. ガラスコンテナ --}}
+        <div class="content-container animate__animated animate__fadeInUp">
+
+            @if ($isClosed)
+                {{-- A. 休業告知モード --}}
+                <div class="holiday-notice text-center">
+                    <h2 class="animate__animated animate__fadeIn">{{ $holiday['title'] }}</h2>
+                    <p class="mt-4"
+                        style="font-family: 'Noto Serif JP', serif; font-weight: 300; line-height: 2.2; color: #4a4a4a;">
+                        {!! nl2br(e($holiday['message'])) !!}
+                    </p>
+                    <div class="mt-5 pt-4" style="border-top: 1px solid rgba(0,0,0,0.05);">
+                        <span class="small"
+                            style="letter-spacing: 0.3em; color: #a3b8c9;">{{ $holiday['period_txt'] }}</span>
+                    </div>
+                </div>
+            @else
+                {{-- B. 予約フォームモード --}}
+                <div class="brand-header text-center">
+                    <h1>Res<span>.</span></h1>
+                    <p class="sub">TOKYO CURRENT</p>
+                </div>
+
+                <form id="resForm" class="animate__animated animate__fadeIn" style="animation-delay: 0.5s;">
+                    <div class="form-group">
+                        <label class="label-min">GUEST NAME</label>
+                        <input type="text" id="name" class="input-soya" placeholder="TYPE YOUR NAME" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-7">
+                            <div class="form-group">
+                                <label class="label-min">SELECT DATE</label>
+                                <input type="date" id="date" class="input-soya" required>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                            <div class="form-group">
+                                <label class="label-min">TIME</label>
+                                <select id="time" class="input-soya" required>
+                                    <option value="">--:--</option>
+                                    <option value="12:00">12:00</option>
+                                    <option value="19:00">19:00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label-min">PARTY SIZE</label>
+                        <select id="guests" class="input-soya">
+                            @for ($i = 1; $i <= 6; $i++)
+                                <option value="{{ $i }}">{{ $i }} {{ $i > 1 ? 'PEOPLE' : 'PERSON' }}
+                                </option>
+                            @endfor
+                        </select>
+                    </div>
+
+                    <button type="button" id="whatsappBtn" class="btn-whatsapp">
+                        <div class="btn-content">
+                            <img src="{{ asset('hokkaido_2.png') }}" alt="Hokkaido" class="hokkaido-icon">
+                            <span class="btn-text">SEND REQUEST</span>
+                        </div>
+                    </button>
+                </form>
+            @endif
+
+            {{-- 3. フッター --}}
+            <div class="text-center mt-5">
+                <a href="{{ url('/') }}" class="back-link"
+                    style="font-size: 0.55rem; color: #aaa; letter-spacing: 0.2em; text-decoration: none; text-transform: uppercase;">
+                    TERMINAL / BACK TO HOME
+                </a>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script type="module">
+        $(function() {
+            const $whatsappBtn = $('#whatsappBtn');
+            const $inputs = $('.input-soya');
+            const $scroller = $('.photo-scroller');
+
+            // --- 1. 麺の躍動感演出 ---
+            $inputs.on('focus', function() {
+                $scroller.css('animation-duration', '20s'); // 背景加速
+            }).on('blur', function() {
+                $scroller.css('animation-duration', '60s'); // 減速
+            });
+
+            $whatsappBtn.on('mousedown', function() {
+                $(this).css('transform', 'scaleX(1.1) scaleY(0.8)'); // 麺のコシ（弾力）
+            }).on('mouseup mouseleave', function() {
+                $(this).css('transform', 'scale(1)');
+            });
+
+            // --- 2. 予約送信 & AIデータ構造化 ---
+            $whatsappBtn.on('click', function() {
+                const name = $('#name').val();
+                const date = $('#date').val();
+                const time = $('#time').val();
+                const guests = $('#guests').val();
+
+                if (!name || !date || !time) {
+                    alert('Please complete the form.');
+                    return;
+                }
+
+                const resData = {
+                    id: `RES-${Date.now()}`,
+                    timestamp: new Date().toISOString(),
+                    customer: name,
+                    booking_date: date,
+                    booking_time: time,
+                    party_size: guests,
+                    store: "Soya_Menzah9",
+                    ver: "2.0"
+                };
+
+                // ブラウザログ保存
+                const history = JSON.parse(localStorage.getItem('soya_res_logs') || '[]');
+                history.push(resData);
+                localStorage.setItem('soya_res_logs', JSON.stringify(history));
+
+                // AI解析・WhatsApp用 YAMLフォーマット
+                const text = `*NEW RESERVATION*
+---
+ID: ${resData.id}
+NAME: ${resData.customer}
+DATE: ${resData.booking_date}
+TIME: ${resData.booking_time}
+GUESTS: ${resData.party_size}
+---
+Generated by Söya-AI-Agent.
+Please send this without modification.`;
+
+                // GA4送信
+                if (typeof gtag === 'function') {
+                    gtag('event', 'generate_lead', {
+                        'value': guests
+                    });
+                }
+
+                window.open(`https://wa.me/216557786656?text=${encodeURIComponent(text)}`, '_blank');
+            });
+
+            // 日付制限
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            $('#date').attr('min', tomorrow.toISOString().split('T')[0]);
+        });
+    </script>
+@endpush
+</file>
+
 <file path="routes/web.php">
 <?php
 
@@ -3621,41 +5100,10 @@ Route::get('/reservation', function () {
     // ここでは簡易的に 1 (通常営業) としています。
     return view('reservation', ['status' => 1, 'message' => '']);
 })->name('reservation');
-</file>
 
-<file path="resources/views/parts/footer.blade.php">
-<footer class="site-footer">
-    <div class="footer-container">
-        <div class="insta-cta-wrapper">
-            <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-btn">
-                <span class="btn-icon">
-                    <i class="bi bi-instagram"></i>
-                </span>
-                <span class="btn-label" id="footer-text">Follow us @soya.tunis</span>
-            </a>
-        </div>
+use App\Http\Controllers\MenuController;
 
-        <div class="store-info-grid">
-            <div class="info-item">
-                <span class="info-label">Address</span>
-                <p class="info-value">Menzah 9, Tunis, Tunisia</p>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Hours</span>
-                <p class="info-value">Mon–Sat: 11:30 – 22:00</p>
-            </div>
-            <div class="info-item">
-                <span class="info-label">Contact</span>
-                <p class="info-value">+216 55 778 656</p>
-            </div>
-        </div>
-
-        <div class="team-credit">
-            <span class="credit-label">Produced by</span>
-            <span class="credit-name">Bistro Nippon Team</span>
-        </div>
-    </div>
-</footer>
+Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 </file>
 
 <file path="resources/views/parts/intro.blade.php">
@@ -3682,6 +5130,88 @@ Route::get('/reservation', function () {
         </button>
     </div>
 </div>
+</file>
+
+<file path="resources/views/parts/footer.blade.php">
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="insta-cta-wrapper">
+            <a href="https://www.instagram.com/soya.tunis/" target="_blank" class="insta-btn">
+                <span class="btn-icon">
+                    <i class="bi bi-instagram"></i>
+                </span>
+                <span class="btn-label" id="footer-text">Follow us @soya.tunis</span>
+            </a>
+        </div>
+
+        <div class="store-info-grid">
+            <div class="info-item">
+                <span class="info-label">Address</span>
+                <p class="info-value">Menzah 9, Tunis, Tunisia</p>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Hours</span>
+                <p class="info-value">[...]</p>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Contact</span>
+                <p class="info-value">+216 [...]</p>
+            </div>
+        </div>
+
+        <div class="team-credit">
+            <span class="credit-label">Produced by</span>
+            <span class="credit-name">Bistro Nippon Team</span>
+        </div>
+    </div>
+</footer>
+</file>
+
+<file path="resources/views/parts/header.blade.php">
+<header class="global-header">
+
+    <div class="nav-right">
+        <button class="menu-trigger" id="menuTrigger">
+            <span class="bottle-wrapper">
+                <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+
+                    <path class="sauce-stream" d="M35,55 L35,140" stroke="#2c1a16" stroke-width="6" stroke-linecap="round"
+                        fill="none" />
+                    <circle class="sauce-drop" cx="35" cy="140" r="3" fill="#2c1a16" />
+
+                    <g class="bottle-group">
+
+                        <path class="bottle-liquid-bottom"
+                            d="M22,110 L78,110 C78,122 68,130 50,130 C32,130 22,122 22,110 Z" fill="#2c1a16"
+                            stroke="none" />
+
+                        <path class="bottle-liquid-full"
+                            d="M27,60 L73,60 L78,110 C78,122 68,130 50,130 C32,130 22,122 22,110 L27,60 Z"
+                            fill="#2c1a16" stroke="none" opacity="0" />
+
+                        <path class="bottle-body"
+                            d="M25,50 L75,50 L80,110 C80,125 70,135 50,135 C30,135 20,125 20,110 L25,50 Z"
+                            stroke="currentColor" stroke-width="3" fill="none" />
+
+                        <path class="bottle-cap" d="M25,50 L75,50 L70,25 L30,25 L25,50 Z M20,30 L30,25 L30,35 Z"
+                            stroke="currentColor" stroke-width="3" fill="#fff" />
+                    </g>
+                </svg>
+            </span>
+        </button>
+    </div>
+</header>
+
+<nav class="global-nav" id="globalNav">
+    {{-- メニューの中身は変更なし --}}
+    <ul class="nav-links">
+        <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
+        @env('local')
+            <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
+        @endenv
+        <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" class="nav-item">Instagram</a></li>
+    </ul>
+</nav>
 </file>
 
 <file path="resources/sass/app.scss">
