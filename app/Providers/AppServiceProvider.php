@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // 本番環境（OVH）なら強制的にhttpsにする
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
