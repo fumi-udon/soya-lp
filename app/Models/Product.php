@@ -26,6 +26,8 @@ class Product extends Model
         'is_active',
         'order_type',
         'sort_order',
+        'tenant_id', // ★これを追加
+        'name',
     ];
 
     /**
@@ -53,5 +55,10 @@ class Product extends Model
     public function productVariants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+    // --- 追加 ---
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
     }
 }

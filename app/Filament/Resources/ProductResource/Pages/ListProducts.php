@@ -7,14 +7,13 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Filament\Actions;
+use Filament\Facades\Filament; // ★ 追加：現在の店舗を取得するため
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class ListProducts extends ListRecords
 {
@@ -45,7 +44,7 @@ class ListProducts extends ListRecords
                     Notification::make()->title('Import & Path Fix Completed!')->success()->send();
                 }),
 
-            // 全削除
+            // 現在の店舗の商品を全削除（他店舗には影響しないように修正）
             Actions\Action::make('deleteAll')
                 ->label('Delete ALL')
                 ->icon('heroicon-o-trash')
@@ -61,11 +60,13 @@ class ListProducts extends ListRecords
                         ->rules(['required', 'in:delete']),
                 ])
                 ->action(function () {
-                    DB::transaction(function () {
-                        ProductVariant::query()->delete();
-                        Product::query()->delete();
+                    $tenantId = Filament::getTenant()->id; // ★ 現在の店舗ID
+
+                    DB::transaction(function () use ($tenantId) {
+                        ProductVariant::where('tenant_id', $tenantId)->delete();
+                        Product::where('tenant_id', $tenantId)->delete();
                     });
-                    Notification::make()->title('Deleted all products.')->danger()->send();
+                    Notification::make()->title('Deleted all products for this store.')->danger()->send();
                 }),
         ];
     }
@@ -77,10 +78,10 @@ class ListProducts extends ListRecords
 
         fgetcsv($handle); // ヘッダー・スキップ
 
-        // 画像処理（最適化機能は一旦おいておき、まずはパス修復を優先します）
         $targetDir = 'products';
+        $tenantId = Filament::getTenant()->id; // ★ 現在選択している店舗IDを取得
 
-        DB::transaction(function () use ($handle, $targetDir) {
+        DB::transaction(function () use ($handle, $targetDir, $tenantId) {
             while (($row = fgetcsv($handle)) !== false) {
                 if (empty($row[0])) continue;
 
@@ -91,32 +92,30 @@ class ListProducts extends ListRecords
                 $imageName = $row[4] ?? null;
                 $variantsString = $row[5] ?? '';
 
-                // ★ここが修正ポイント：パスの自動補正
-                // 画像名があって、まだ 'products/' が付いていないなら付ける
                 if ($imageName && !Str::startsWith($imageName, 'products/')) {
                     $imageName = 'products/' . $imageName;
                 }
 
-                // カテゴリ登録
+                // ★ カテゴリ登録（現在の店舗IDを紐付け）
                 $category = Category::firstOrCreate(
-                    ['slug' => Str::slug($categorySlug)],
+                    ['slug' => Str::slug($categorySlug), 'tenant_id' => $tenantId],
                     ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
                 );
 
-                // 商品検索
-                $product = Product::where('name', $name)->first();
+                // ★ 商品検索（現在の店舗IDで絞り込み）
+                $product = Product::where('name', $name)->where('tenant_id', $tenantId)->first();
 
                 $productData = [
+                    'tenant_id' => $tenantId, // ★ 商品にも店舗IDを紐付け
                     'category_id' => $category->id,
                     'price' => $price,
                     'description' => $description,
-                    'image' => $imageName, // 補正済みのパスを入れる
+                    'image' => $imageName,
                 ];
 
                 if ($product) {
                     $product->update($productData);
-                    // バリアント再登録のため削除
-                    $product->productVariants()->delete();
+                    $product->productVariants()->delete(); // 一旦バリアントを削除して再登録
                 } else {
                     $productData['name'] = $name;
                     $productData['slug'] = Str::slug($name);
@@ -125,13 +124,14 @@ class ListProducts extends ListRecords
                     $product = Product::create($productData);
                 }
 
-                // バリアント登録
+                // ★ バリアント登録（店舗IDを紐付け）
                 if (!empty($variantsString)) {
                     $variantItems = explode(',', $variantsString);
                     foreach ($variantItems as $item) {
                         $parts = explode(':', trim($item));
                         if (count($parts) < 2) continue;
                         $product->productVariants()->create([
+                            'tenant_id' => $tenantId, // ★ トッピング等にも店舗IDを紐付け
                             'name' => trim($parts[0]),
                             'price_adjustment' => is_numeric($parts[1]) ? $parts[1] : 0,
                             'is_required' => isset($parts[2]) ? (bool)$parts[2] : false,

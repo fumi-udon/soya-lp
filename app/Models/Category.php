@@ -7,8 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
+
     use HasFactory;
 
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
     /**
      * The attributes that are mass assignable.
      *
@@ -23,6 +28,8 @@ class Category extends Model
         'sort_order',
         'seo_title',
         'seo_description',
+        'tenant_id', // ★これを追加
+        'name',
     ];
 
     /**

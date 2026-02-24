@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Models\Tenant;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,6 +31,10 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Amber,
             ])
+            // ★ マルチテナント設定を有効化 ★
+            ->tenant(Tenant::class)
+            // 管理画面のUI上からのテナント(店舗)新規作成・登録画面を無効化
+            ->tenantRegistration(false)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

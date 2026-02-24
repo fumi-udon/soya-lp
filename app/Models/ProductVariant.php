@@ -21,6 +21,8 @@ class ProductVariant extends Model
         'price_adjustment',
         'is_required',
         'sort_order',
+        'tenant_id', // ★これを追加
+        'name',
     ];
 
     /**
@@ -40,8 +42,8 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // public function product()
-    // {
-    //     return $this->belongsTo(Product::class);
-    // }
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
 }

@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -46,6 +49,20 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
+        return true;
+    }
+
+    // --- ここから追加: マルチテナント用メソッド ---
+
+    public function getTenants(Panel $panel): array|Collection
+    {
+        // 管理者はすべての店舗(Tenant)にアクセス可能とする
+        return Tenant::all();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        // 選択された店舗へのアクセス権限をチェック（今回は常にtrue）
         return true;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,6 @@ class OrderController extends Controller
 {
     public function store(Request $request)
     {
-        // バリデーション
         $validated = $request->validate([
             'customer_name' => 'required|string',
             'customer_phone' => 'required|string',
@@ -23,11 +23,18 @@ class OrderController extends Controller
             'items' => 'required|array',
         ]);
 
-        $order = DB::transaction(function () use ($validated) {
-            // ランダムな4桁の英数字を発行（例: 8F2A）
+        // 1. アクセスされたドメインから店舗(Tenant)を特定
+        $host = $request->getHost();
+        if (in_array($host, ['localhost', '127.0.0.1'])) {
+            $host = 'soya.bistronippon.tn';
+        }
+        $tenant = Tenant::where('domain', $host)->firstOrFail();
+
+        $order = DB::transaction(function () use ($validated, $tenant) {
             $orderNumber = strtoupper(Str::random(4));
 
             $order = Order::create([
+                'tenant_id' => $tenant->id, // ★店舗IDを保存
                 'order_number' => $orderNumber,
                 'customer_name' => $validated['customer_name'],
                 'customer_phone' => $validated['customer_phone'],
@@ -38,6 +45,7 @@ class OrderController extends Controller
 
             foreach ($validated['items'] as $item) {
                 OrderItem::create([
+                    'tenant_id' => $tenant->id, // ★店舗IDを保存
                     'order_id' => $order->id,
                     'product_id' => $item['productId'],
                     'product_name' => $item['name'],
@@ -48,7 +56,6 @@ class OrderController extends Controller
             return $order;
         });
 
-        // 生成したオーダー番号をフロントエンドに返す
         return response()->json(['success' => true, 'order_number' => $order->order_number]);
     }
 }
