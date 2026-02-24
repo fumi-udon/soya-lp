@@ -324,7 +324,7 @@ window.App = {
         }
     },
 
-    async submitOrder() {
+async submitOrder() {
         const nameInput = document.getElementById('order-name');
         const phoneInput = document.getElementById('order-phone');
         const name = nameInput ? nameInput.value.trim() : '';
@@ -334,7 +334,7 @@ window.App = {
         const notesInput = document.getElementById('order-notes');
         const notes = notesInput ? notesInput.value.trim() : '';
 
-        // ギミック: 名前か電話番号がないとお叱り醤油ちゃん(店主モード)出現
+        // ギミック: 名前か電話番号がないとお叱り出現
         if (!name || !phone) {
             const chara = document.getElementById('checkout-soy-character');
             if (chara) {
@@ -357,7 +357,6 @@ window.App = {
             return;
         }
 
-        // 送信ボタンの「タメ」演出
         const btn = document.getElementById('submit-order-btn');
         const originalBtnText = btn.innerHTML;
         btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> SENDING...`;
@@ -368,10 +367,8 @@ window.App = {
         this.state.cart.forEach(item => total += item.price);
 
         try {
-            // CSRFトークンの取得
             const csrfToken = document.querySelector('meta[name="csrf-token"]');
 
-            // 1. APIに投げてDB保存
             const response = await fetch('/api/orders', {
                 method: 'POST',
                 headers: {
@@ -393,14 +390,19 @@ window.App = {
 
             const orderNumber = result.order_number;
 
-            // 2. ブラウザに注文状態を記憶させる (2時間有効)
-            localStorage.setItem('soya_active_order', JSON.stringify({
+            // ★ テナント名と電話番号を Blade から取得（未設定時のフォールバックあり）
+            const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
+            const waNumber = window.TENANT_WA_NUMBER || '216557786656';
+            const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
+
+            // ブラウザに注文状態を記憶させる (2時間有効)
+            localStorage.setItem(storageKey, JSON.stringify({
                 orderNumber: orderNumber,
                 timestamp: Date.now()
             }));
 
-            // 3. WhatsApp用テキスト生成
-            let text = `*NEW ORDER - Söya Menzah9*\n`;
+            // ★ WhatsApp用テキスト生成 (店名を動的に)
+            let text = `*NEW ORDER - ${storeName}*\n`;
             text += `*Order ID:* #${orderNumber}\n`;
             text += `------------------------\n`;
             text += `*Guest:* ${name}\n`;
@@ -420,12 +422,11 @@ window.App = {
             text += `*Total:* ${total.toFixed(3)} DT\n\n`;
             text += `_Waiting for shop confirmation..._`;
 
-            // WhatsApp遷移
-            const waNumber = '216557786656';
-            const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(text)}`;
+            // ★ 指定のWhatsApp URLフォーマットで送信
+            const waUrl = `https://api.whatsapp.com/send/?phone=${waNumber}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
             window.open(waUrl, '_blank');
 
-            // 4. 後始末とステータスバー表示
+            // 後始末とステータスバー表示
             this.state.cart = [];
             this.updateCartBar();
             if (nameInput) nameInput.value = '';
@@ -449,7 +450,10 @@ window.App = {
     },
 
     checkActiveOrder() {
-        const orderData = JSON.parse(localStorage.getItem('soya_active_order'));
+        const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
+        const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
+        const orderData = JSON.parse(localStorage.getItem(storageKey));
+
         if (!orderData) return;
 
         const now = Date.now();
@@ -474,7 +478,10 @@ window.App = {
     },
 
     clearOrderStatus() {
-        localStorage.removeItem('soya_active_order');
+        const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
+        const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
+        localStorage.removeItem(storageKey);
+
         const statusBar = document.getElementById('order-status-bar');
         if (statusBar) {
             statusBar.classList.add('translate-y-full');
