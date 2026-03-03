@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use Illuminate\Http\Request;
+use App\Http\Controllers\MenuController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +25,17 @@ Route::get('/reservation', function () {
     return view('reservation', ['status' => 1, 'message' => '']);
 })->name('reservation');
 
-use App\Http\Controllers\MenuController;
 
+Route::get('/', function (Request $request) {
+    $host = $request->getHost();
+
+    // Bistro Nippon と Curry Kitano はトップ(/)で直接メニュー画面を表示
+    if (in_array($host, ['menu.bistronippon.tn', 'menu.currykitano.tn'])) {
+        return app()->call([MenuController::class, 'index']);
+    }
+
+    // Söya（soya.bistronippon.tn 等）は従来のトップページを表示
+    // ※ 'welcome' の部分は実際のSöyaトップページのblade名（indexなど）に合わせてください
+    return view('welcome');
+});
 Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
