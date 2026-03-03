@@ -31,7 +31,7 @@ Route::get('/', function (Request $request) {
 
     // Bistro Nippon と Curry Kitano はトップ(/)で直接メニュー画面を表示
     if (in_array($host, ['menu.bistronippon.tn', 'menu.currykitano.tn'])) {
-        return app()->call([MenuController::class, 'index']);
+        return app(MenuController::class)->index($request);
     }
 
     // Söya（soya.bistronippon.tn 等）は従来のトップページを表示
