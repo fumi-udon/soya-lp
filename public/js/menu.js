@@ -1,5 +1,5 @@
 /**
- * Söya. Modern Menu Logic (Full Version)
+ * Modern Menu Logic (Full Version - Updated)
  */
 window.App = {
     state: {
@@ -10,7 +10,7 @@ window.App = {
     },
 
     // ==========================================
-    // 1. PRODUCT MODAL LOGIC (商品選択)
+    // 1. PRODUCT MODAL LOGIC
     // ==========================================
     openModal(productId) {
         const product = window.ALL_PRODUCTS.find(p => p.id === productId);
@@ -20,7 +20,20 @@ window.App = {
         this.state.selectedType = null;
         this.state.selectedExtras = [];
 
-        // ギミックリセット
+        const imgEl = document.getElementById('modal-product-image');
+        const noImgEl = document.getElementById('modal-no-image');
+        if (imgEl && noImgEl) {
+            if (product.image) {
+                imgEl.src = '/storage/' + product.image;
+                imgEl.classList.remove('hidden');
+                noImgEl.classList.add('hidden');
+            } else {
+                imgEl.src = '';
+                imgEl.classList.add('hidden');
+                noImgEl.classList.remove('hidden');
+            }
+        }
+
         const chara = document.getElementById('soy-character');
         if (chara) {
             chara.classList.remove('soy-appear');
@@ -44,13 +57,12 @@ window.App = {
         const container = document.getElementById('modal-options');
         if (container) container.innerHTML = '';
 
-        // STYLE (必須)
         if (types.length > 0 && container) {
             const typeSection = document.createElement('div');
             typeSection.className = "mb-8";
             typeSection.innerHTML = `
                 <p id="style-label" class="text-[10px] font-bold tracking-[0.2em] uppercase text-gray-400 mb-4 transition-all required-pulse">
-                    Select Style <span class="text-[#e60012]">*</span>
+                    Select Style <span class="text-[var(--theme-primary)]">*</span>
                 </p>`;
 
             const grid = document.createElement('div');
@@ -75,7 +87,6 @@ window.App = {
             container.appendChild(typeSection);
         }
 
-        // TOPPINGS (任意)
         if (extras.length > 0 && container) {
             const extraSection = document.createElement('div');
             extraSection.className = "mb-4";
@@ -86,7 +97,7 @@ window.App = {
                 row.className = "extra-option flex justify-between items-center py-4 border-b border-gray-100 cursor-pointer group";
                 row.innerHTML = `
                     <div class="flex items-center gap-3">
-                        <div class="checkbox w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white transition-all group-hover:border-[#e60012]"></div>
+                        <div class="checkbox w-5 h-5 rounded border border-gray-300 flex items-center justify-center text-white transition-all group-hover:border-[var(--theme-primary)]"></div>
                         <span class="text-sm text-gray-600 group-hover:text-black transition-colors">${variant.name}</span>
                     </div>
                     <span class="text-xs text-gray-400 font-medium">+${parseFloat(variant.price_adjustment).toFixed(3)}</span>
@@ -133,7 +144,7 @@ window.App = {
         if (iconSlot) {
             iconSlot.className = "icon-slot w-5 h-5 flex items-center justify-center";
             iconSlot.innerHTML = `
-                <svg viewBox="0 0 24 24" class="w-5 h-5 text-[#e60012] animate-roll">
+                <svg viewBox="0 0 24 24" class="w-5 h-5 text-[var(--theme-primary)] animate-roll">
                     <path fill="currentColor" d="M12,2 C17.52,2 22,6.48 22,12 C22,17.52 17.52,22 12,22 C6.48,22 2,17.52 2,12 C2,6.48 6.48,2 12,2 Z M12,6 L12,18 M6,12 L18,12" />
                 </svg>
             `;
@@ -149,13 +160,17 @@ window.App = {
         if (index > -1) {
             this.state.selectedExtras.splice(index, 1);
             if (checkbox) {
-                checkbox.classList.remove('bg-[#e60012]', 'border-[#e60012]');
+                checkbox.style.backgroundColor = '';
+                checkbox.style.borderColor = '';
+                checkbox.classList.remove('bg-[var(--theme-primary)]', 'border-[var(--theme-primary)]');
                 checkbox.innerHTML = '';
             }
         } else {
             this.state.selectedExtras.push(variant);
             if (checkbox) {
-                checkbox.classList.add('bg-[#e60012]', 'border-[#e60012]');
+                checkbox.style.backgroundColor = 'var(--theme-primary)';
+                checkbox.style.borderColor = 'var(--theme-primary)';
+                checkbox.classList.add('bg-[var(--theme-primary)]', 'border-[var(--theme-primary)]');
                 checkbox.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>';
             }
         }
@@ -183,7 +198,7 @@ window.App = {
             const chara = document.getElementById('soy-character');
             if (chara) {
                 chara.classList.remove('soy-appear');
-                void chara.offsetWidth; // リフロー
+                void chara.offsetWidth;
                 chara.classList.add('soy-appear');
             }
             return;
@@ -240,7 +255,7 @@ window.App = {
     },
 
     // ==========================================
-    // 2. CHECKOUT LOGIC (決済・送信・トラッカー)
+    // 2. CHECKOUT LOGIC
     // ==========================================
     openCheckout() {
         if (this.state.cart.length === 0) return;
@@ -324,7 +339,7 @@ window.App = {
         }
     },
 
-async submitOrder() {
+    async submitOrder() {
         const nameInput = document.getElementById('order-name');
         const phoneInput = document.getElementById('order-phone');
         const name = nameInput ? nameInput.value.trim() : '';
@@ -334,7 +349,6 @@ async submitOrder() {
         const notesInput = document.getElementById('order-notes');
         const notes = notesInput ? notesInput.value.trim() : '';
 
-        // ギミック: 名前か電話番号がないとお叱り出現
         if (!name || !phone) {
             const chara = document.getElementById('checkout-soy-character');
             if (chara) {
@@ -342,7 +356,7 @@ async submitOrder() {
                 chara.classList.remove('soy-appear');
                 const msgBox = chara.querySelector('div');
                 if (msgBox) msgBox.innerText = !name ? "Tell me your name!" : "Phone is required!";
-                void chara.offsetWidth; // リフロー
+                void chara.offsetWidth;
                 chara.classList.add('soy-appear');
             }
             if (!name && nameInput) {
@@ -390,18 +404,15 @@ async submitOrder() {
 
             const orderNumber = result.order_number;
 
-            // ★ テナント名と電話番号を Blade から取得（未設定時のフォールバックあり）
             const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
             const waNumber = window.TENANT_WA_NUMBER || '216557786656';
             const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
 
-            // ブラウザに注文状態を記憶させる (2時間有効)
             localStorage.setItem(storageKey, JSON.stringify({
                 orderNumber: orderNumber,
                 timestamp: Date.now()
             }));
 
-            // ★ WhatsApp用テキスト生成 (店名を動的に)
             let text = `*NEW ORDER - ${storeName}*\n`;
             text += `*Order ID:* #${orderNumber}\n`;
             text += `------------------------\n`;
@@ -422,11 +433,9 @@ async submitOrder() {
             text += `*Total:* ${total.toFixed(3)} DT\n\n`;
             text += `_Waiting for shop confirmation..._`;
 
-            // ★ 指定のWhatsApp URLフォーマットで送信
             const waUrl = `https://api.whatsapp.com/send/?phone=${waNumber}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
             window.open(waUrl, '_blank');
 
-            // 後始末とステータスバー表示
             this.state.cart = [];
             this.updateCartBar();
             if (nameInput) nameInput.value = '';
@@ -459,21 +468,18 @@ async submitOrder() {
         const now = Date.now();
         const twoHours = 2 * 60 * 60 * 1000;
 
-        // 2時間以上経過していたら破棄
         if (now - orderData.timestamp > twoHours) {
             this.clearOrderStatus();
             return;
         }
 
-        const statusBar = document.getElementById('order-status-bar');
-        const orderNumberEl = document.getElementById('status-order-number');
-        if (statusBar && orderNumberEl) {
-            orderNumberEl.innerText = `#${orderData.orderNumber}`;
-            statusBar.classList.remove('hidden');
-            statusBar.classList.add('flex');
-            setTimeout(() => {
-                statusBar.classList.remove('translate-y-full');
-            }, 50);
+        const expNum = document.getElementById('expanded-order-number');
+        const minNum = document.getElementById('minimized-order-number');
+        if (expNum) expNum.innerText = orderData.orderNumber;
+        if (minNum) minNum.innerText = orderData.orderNumber;
+
+        if (typeof toggleOrderTracker === 'function') {
+            toggleOrderTracker(true);
         }
     },
 
@@ -482,13 +488,9 @@ async submitOrder() {
         const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
         localStorage.removeItem(storageKey);
 
-        const statusBar = document.getElementById('order-status-bar');
-        if (statusBar) {
-            statusBar.classList.add('translate-y-full');
-            setTimeout(() => {
-                statusBar.classList.add('hidden');
-                statusBar.classList.remove('flex');
-            }, 500);
-        }
+        const overlay = document.getElementById('order-tracker-overlay');
+        const minimized = document.getElementById('order-tracker-minimized');
+        if (overlay) { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }
+        if (minimized) { minimized.classList.add('hidden'); minimized.classList.remove('flex'); }
     }
 };

@@ -16,4 +16,9 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\Tenant::class);
     }
+    // 1. 顧客とのリレーション
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
 }
