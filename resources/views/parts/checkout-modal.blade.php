@@ -10,26 +10,33 @@
         </div>
 
         <div class="overflow-y-auto px-4 pt-4 pb-32">
-            <div id="checkout-soy-character"
-                class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
-                <div
-                    class="bg-[#e60012] text-white text-[10px] font-bold py-1.5 px-4 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
-                    Tell me your name!
+
+            {{-- Söya限定のキャラクター表示制御 --}}
+            @if ($features['has_mascot'] ?? false)
+                <div id="checkout-soy-character"
+                    class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
+                    <div
+                        class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1.5 px-4 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
+                        Tell me your name!
+                    </div>
+                    <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
+                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
+                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
+                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
+                        <circle cx="30" cy="50" r="5" fill="#e60012" />
+                        <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3"
+                            stroke-linecap="round" />
+                    </svg>
                 </div>
-                <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
-                    <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
-                    <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
-                    <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
-                    <circle cx="30" cy="50" r="5" fill="#e60012" />
-                    <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3" stroke-linecap="round" />
-                </svg>
-            </div>
+            @endif
 
             <div class="bg-white p-6 rounded-2xl shadow-sm relative border border-[#d1d8e0]"
                 style="background-image: radial-gradient(#eaedf0 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
 
                 <div class="text-center mb-6">
-                    <h2 class="serif text-2xl font-bold text-[#2c3034]">Söya.</h2>
+                    {{-- 店舗名を変数化 --}}
+                    <h2 class="serif text-2xl font-bold text-[#2c3034]">{{ $tenant->name ?? 'Store' }}<span
+                            class="text-[var(--theme-primary)]">.</span></h2>
                     <p class="font-mono text-[9px] text-[#8b949e] uppercase tracking-widest mt-1">Order Slip <span
                             class="mx-1">|</span> <span id="receipt-date"></span></p>
                     <div class="border-b-2 border-dashed border-[#eaedf0] mt-5"></div>
@@ -43,18 +50,18 @@
                 <div class="space-y-5 font-sans">
                     <div>
                         <label class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">Guest
-                            Name <span class="text-[#e60012]">*</span></label>
+                            Name <span class="text-[var(--theme-primary)]">*</span></label>
                         <input type="text" id="order-name"
-                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-[#e60012] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
                             placeholder="Your Name">
                     </div>
 
                     <div>
                         <label
                             class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">WhatsApp
-                            Number <span class="text-[#e60012]">*</span></label>
+                            Number <span class="text-[var(--theme-primary)]">*</span></label>
                         <input type="tel" id="order-phone"
-                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:border-[#e60012] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
                             placeholder="+216 ...">
                     </div>
                 </div>
@@ -68,8 +75,9 @@
                 <span class="font-mono font-bold text-3xl text-[#2c3034] leading-none"><span
                         id="checkout-total">0.000</span> <span class="text-sm font-sans text-[#8b949e]">DT</span></span>
             </div>
+            {{-- ボタンカラーをテナントのテーマカラーに連動 --}}
             <button id="submit-order-btn" onclick="App.submitOrder()"
-                class="w-full bg-[#e60012] text-white py-4 rounded-2xl font-bold tracking-[0.15em] text-[12px] hover:bg-[#cc0010] transition-colors shadow-[0_8px_20px_rgba(230,0,18,0.3)] flex justify-center items-center gap-2">
+                class="w-full bg-[var(--theme-primary)] text-white py-4 rounded-2xl font-bold tracking-[0.15em] text-[12px] transition-colors shadow-md hover:brightness-95 flex justify-center items-center gap-2">
                 SEND TO KITCHEN
             </button>
         </div>
