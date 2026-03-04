@@ -10,29 +10,29 @@ class MenuController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. アクセスされたドメインを取得
         $host = $request->getHost();
-
-        // ※ローカル環境（テスト用）の場合は強制的にSöyaのドメインとして扱う
         if (in_array($host, ['localhost', '127.0.0.1'])) {
             $host = 'soya.bistronippon.tn';
         }
 
-        // 2. ドメインから対象の店舗（Tenant）を特定
-        $tenant = Tenant::where('domain', $host)->firstOrFail();
-
-        // 3. その店舗（tenant_id）に紐づくカテゴリと商品だけを取得する
-        $categories = Category::where('tenant_id', $tenant->id)
-            ->with(['products' => function ($query) {
-                $query->where('is_active', true)
-                    ->with('productVariants')
-                    ->orderBy('sort_order');
-            }])
+        $tenant = \App\Models\Tenant::where('domain', $host)->firstOrFail();
+        $categories = \App\Models\Category::with(['products' => function ($q) {
+            $q->where('is_active', true)->with('productVariants');
+        }])->where('tenant_id', $tenant->id)
             ->where('is_active', true)
-            ->orderBy('sort_order')
             ->get();
 
-        // テナント情報（テーマカラーや店舗名など）も一緒に画面に渡す
-        return view('menu', compact('categories', 'tenant'));
+        // ★ ここを追加: 店舗固有のギミックをフラグ化してBladeに渡す
+        $features = [
+            'has_mascot' => $tenant->name === 'Söya',      // Söyaなら醤油ちゃんを表示
+            'has_rain_effect' => $tenant->name === 'Söya', // Söyaなら背景の雨エフェクトをON
+        ];
+        $homeUrl = match ($tenant->domain) {
+            'menu.bistronippon.tn' => 'https://bistronippon.tn',
+            'menu.currykitano.tn' => 'https://currykitano.tn',
+            default => url('/'), // soyaの場合は自身のルート(/)
+        };
+
+        return view('menu', compact('categories', 'tenant', 'features', 'homeUrl'));
     }
 }
