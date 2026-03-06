@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use Filament\Actions;
-use Filament\Facades\Filament; // ★ 追加：現在の店舗を取得するため
+use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -24,7 +24,6 @@ class ListProducts extends ListRecords
         return [
             Actions\CreateAction::make(),
 
-            // CSVインポート
             Actions\Action::make('importCsv')
                 ->label('Import CSV (Fix Paths)')
                 ->icon('heroicon-o-arrow-up-tray')
@@ -44,7 +43,6 @@ class ListProducts extends ListRecords
                     Notification::make()->title('Import & Path Fix Completed!')->success()->send();
                 }),
 
-            // 現在の店舗の商品を全削除（他店舗には影響しないように修正）
             Actions\Action::make('deleteAll')
                 ->label('Delete ALL')
                 ->icon('heroicon-o-trash')
@@ -60,7 +58,7 @@ class ListProducts extends ListRecords
                         ->rules(['required', 'in:delete']),
                 ])
                 ->action(function () {
-                    $tenantId = Filament::getTenant()->id; // ★ 現在の店舗ID
+                    $tenantId = Filament::getTenant()->id;
 
                     DB::transaction(function () use ($tenantId) {
                         ProductVariant::where('tenant_id', $tenantId)->delete();
@@ -76,10 +74,13 @@ class ListProducts extends ListRecords
         $handle = fopen($filePath, 'r');
         if ($handle === false) return;
 
-        fgetcsv($handle); // ヘッダー・スキップ
+        fgetcsv($handle);
 
-        $targetDir = 'products';
-        $tenantId = Filament::getTenant()->id; // ★ 現在選択している店舗IDを取得
+        $tenant = Filament::getTenant();
+        $tenantId = $tenant->id;
+
+        // ★修正: テナント名から保存先フォルダ名を決定 (例: products/BISTRONIPPON)
+        $targetDir = 'products/' . Str::upper(Str::slug($tenant->name, ''));
 
         DB::transaction(function () use ($handle, $targetDir, $tenantId) {
             while (($row = fgetcsv($handle)) !== false) {
@@ -92,21 +93,20 @@ class ListProducts extends ListRecords
                 $imageName = $row[4] ?? null;
                 $variantsString = $row[5] ?? '';
 
-                if ($imageName && !Str::startsWith($imageName, 'products/')) {
-                    $imageName = 'products/' . $imageName;
+                // ★修正: CSVに書かれたファイル名に、テナント専用ディレクトリのパスを結合
+                if ($imageName) {
+                    $imageName = $targetDir . '/' . basename($imageName);
                 }
 
-                // ★ カテゴリ登録（現在の店舗IDを紐付け）
                 $category = Category::firstOrCreate(
                     ['slug' => Str::slug($categorySlug), 'tenant_id' => $tenantId],
                     ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
                 );
 
-                // ★ 商品検索（現在の店舗IDで絞り込み）
                 $product = Product::where('name', $name)->where('tenant_id', $tenantId)->first();
 
                 $productData = [
-                    'tenant_id' => $tenantId, // ★ 商品にも店舗IDを紐付け
+                    'tenant_id' => $tenantId,
                     'category_id' => $category->id,
                     'price' => $price,
                     'description' => $description,
@@ -115,7 +115,7 @@ class ListProducts extends ListRecords
 
                 if ($product) {
                     $product->update($productData);
-                    $product->productVariants()->delete(); // 一旦バリアントを削除して再登録
+                    $product->productVariants()->delete();
                 } else {
                     $productData['name'] = $name;
                     $productData['slug'] = Str::slug($name);
@@ -124,14 +124,13 @@ class ListProducts extends ListRecords
                     $product = Product::create($productData);
                 }
 
-                // ★ バリアント登録（店舗IDを紐付け）
                 if (!empty($variantsString)) {
                     $variantItems = explode(',', $variantsString);
                     foreach ($variantItems as $item) {
                         $parts = explode(':', trim($item));
                         if (count($parts) < 2) continue;
                         $product->productVariants()->create([
-                            'tenant_id' => $tenantId, // ★ トッピング等にも店舗IDを紐付け
+                            'tenant_id' => $tenantId,
                             'name' => trim($parts[0]),
                             'price_adjustment' => is_numeric($parts[1]) ? $parts[1] : 0,
                             'is_required' => isset($parts[2]) ? (bool)$parts[2] : false,

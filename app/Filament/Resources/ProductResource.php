@@ -17,6 +17,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Facades\Filament; // ★追加
 
 class ProductResource extends Resource
 {
@@ -62,7 +63,8 @@ class ProductResource extends Resource
                 Section::make('Presentation')->schema([
                     FileUpload::make('image')
                         ->image()
-                        ->directory('products'),
+                        // ★修正: テナント名から大文字のフォルダ名を自動生成 (例: Söya -> SOYA, Bistro Nippon -> BISTRONIPPON)
+                        ->directory(fn() => 'products/' . Str::upper(Str::slug(Filament::getTenant()->name, ''))),
                     RichEditor::make('description')
                         ->columnSpanFull(),
                     TextInput::make('ingredients')
