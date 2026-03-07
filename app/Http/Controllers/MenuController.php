@@ -17,9 +17,12 @@ class MenuController extends Controller
 
         $tenant = \App\Models\Tenant::where('domain', $host)->firstOrFail();
         $categories = \App\Models\Category::with(['products' => function ($q) {
-            $q->where('is_active', true)->with('productVariants');
+            $q->where('is_active', true)
+                ->orderBy('sort_order', 'asc') // ★ 商品の並び順を適用
+                ->with('productVariants');
         }])->where('tenant_id', $tenant->id)
             ->where('is_active', true)
+            ->orderBy('sort_order', 'asc') // ★ カテゴリの並び順を適用
             ->get();
 
         // ★ ここを追加: 店舗固有のギミックをフラグ化してBladeに渡す
