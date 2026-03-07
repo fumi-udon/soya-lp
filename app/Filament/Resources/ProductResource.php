@@ -17,7 +17,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Facades\Filament; // ★追加
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 
 class ProductResource extends Resource
 {
@@ -30,7 +31,11 @@ class ProductResource extends Resource
             ->schema([
                 Section::make('Basic Information')->schema([
                     Select::make('category_id')
-                        ->relationship('category', 'name')
+                        ->relationship(
+                            name: 'category',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn(Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
+                        )
                         ->required(),
 
                     TextInput::make('name')
@@ -63,7 +68,6 @@ class ProductResource extends Resource
                 Section::make('Presentation')->schema([
                     FileUpload::make('image')
                         ->image()
-                        // ★修正: テナント名から大文字のフォルダ名を自動生成 (例: Söya -> SOYA, Bistro Nippon -> BISTRONIPPON)
                         ->directory(fn() => 'products/' . Str::upper(Str::slug(Filament::getTenant()->name, ''))),
                     RichEditor::make('description')
                         ->columnSpanFull(),
@@ -96,6 +100,7 @@ class ProductResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->reorderable('sort_order')
             ->columns([
                 Tables\Columns\ImageColumn::make('image')->circular(),
                 Tables\Columns\TextColumn::make('name')->searchable(),
@@ -106,7 +111,41 @@ class ProductResource extends Resource
             ])
             ->filters([])
             ->actions([Tables\Actions\EditAction::make()])
-            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+
+                    Tables\Actions\BulkAction::make('export_csv')
+                        ->label('Export CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $filename = 'products_export_' . date('YmdHis') . '.csv';
+
+                            return response()->streamDownload(function () use ($records) {
+                                $file = fopen('php://output', 'w');
+                                fputs($file, "\xEF\xBB\xBF");
+
+                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants']);
+
+                                foreach ($records as $product) {
+                                    $variants = $product->productVariants->map(function ($v) {
+                                        return "{$v->name}:{$v->price_adjustment}:" . ($v->is_required ? '1' : '0');
+                                    })->implode(',');
+
+                                    fputcsv($file, [
+                                        $product->name,
+                                        $product->price,
+                                        $product->category ? $product->category->slug : '',
+                                        $product->description,
+                                        $product->image ? basename($product->image) : '',
+                                        $variants
+                                    ]);
+                                }
+                                fclose($file);
+                            }, $filename);
+                        }),
+                ])
+            ]);
     }
 
     public static function getPages(): array
