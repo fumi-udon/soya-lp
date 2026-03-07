@@ -74,12 +74,11 @@ class ListProducts extends ListRecords
         $handle = fopen($filePath, 'r');
         if ($handle === false) return;
 
-        fgetcsv($handle);
+        fgetcsv($handle); // ヘッダー・スキップ
 
+        // ★ 1. テナント名からターゲットディレクトリを動的に生成
         $tenant = Filament::getTenant();
         $tenantId = $tenant->id;
-
-        // ★修正: テナント名から保存先フォルダ名を決定 (例: products/BISTRONIPPON)
         $targetDir = 'products/' . Str::upper(Str::slug($tenant->name, ''));
 
         DB::transaction(function () use ($handle, $targetDir, $tenantId) {
@@ -93,11 +92,12 @@ class ListProducts extends ListRecords
                 $imageName = $row[4] ?? null;
                 $variantsString = $row[5] ?? '';
 
-                // ★修正: CSVに書かれたファイル名に、テナント専用ディレクトリのパスを結合
+                // ★ 2. ファイル名にテナント専用ディレクトリのパスを正しく結合
                 if ($imageName) {
                     $imageName = $targetDir . '/' . basename($imageName);
                 }
 
+                // --- (以下、既存の $category = Category::firstOrCreate... の処理はそのまま) ---
                 $category = Category::firstOrCreate(
                     ['slug' => Str::slug($categorySlug), 'tenant_id' => $tenantId],
                     ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
