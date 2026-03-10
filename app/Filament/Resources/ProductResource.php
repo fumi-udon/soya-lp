@@ -63,6 +63,11 @@ class ProductResource extends Resource
                     Toggle::make('is_active')
                         ->label('Available')
                         ->default(true),
+
+                    TextInput::make('sort_order')
+                        ->numeric()
+                        ->default(0)
+                        ->label('Sort Order (0 is first)'),
                 ])->columns(2),
 
                 Section::make('Presentation')->schema([
@@ -107,6 +112,7 @@ class ProductResource extends Resource
                 Tables\Columns\TextColumn::make('slug'),
                 Tables\Columns\TextColumn::make('category.name')->sortable(),
                 Tables\Columns\TextColumn::make('price')->sortable(),
+                Tables\Columns\TextColumn::make('sort_order')->sortable(),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
             ])
             ->filters([])
@@ -125,7 +131,7 @@ class ProductResource extends Resource
                                 $file = fopen('php://output', 'w');
                                 fputs($file, "\xEF\xBB\xBF");
 
-                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants']);
+                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants', 'Sort Order']);
 
                                 foreach ($records as $product) {
                                     $variants = $product->productVariants->map(function ($v) {
@@ -138,7 +144,8 @@ class ProductResource extends Resource
                                         $product->category ? $product->category->slug : '',
                                         $product->description,
                                         $product->image ? basename($product->image) : '',
-                                        $variants
+                                        $variants,
+                                        $product->sort_order
                                     ]);
                                 }
                                 fclose($file);

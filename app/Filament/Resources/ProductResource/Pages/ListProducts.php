@@ -74,9 +74,8 @@ class ListProducts extends ListRecords
         $handle = fopen($filePath, 'r');
         if ($handle === false) return;
 
-        fgetcsv($handle); // ヘッダー・スキップ
+        fgetcsv($handle);
 
-        // ★ 1. テナント名からターゲットディレクトリを動的に生成
         $tenant = Filament::getTenant();
         $tenantId = $tenant->id;
         $targetDir = 'products/' . Str::upper(Str::slug($tenant->name, ''));
@@ -89,15 +88,14 @@ class ListProducts extends ListRecords
                 $price = is_numeric($row[1]) ? $row[1] : 0;
                 $categorySlug = $row[2];
                 $description = $row[3] ?? '';
-                $imageName = $row[4] ?? null;
+                $imageName = isset($row[4]) ? trim($row[4]) : null;
                 $variantsString = $row[5] ?? '';
+                $sortOrder = isset($row[6]) && is_numeric($row[6]) ? (int)$row[6] : 0;
 
-                // ★ 2. ファイル名にテナント専用ディレクトリのパスを正しく結合
                 if ($imageName) {
                     $imageName = $targetDir . '/' . basename($imageName);
                 }
 
-                // --- (以下、既存の $category = Category::firstOrCreate... の処理はそのまま) ---
                 $category = Category::firstOrCreate(
                     ['slug' => Str::slug($categorySlug), 'tenant_id' => $tenantId],
                     ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
@@ -111,6 +109,7 @@ class ListProducts extends ListRecords
                     'price' => $price,
                     'description' => $description,
                     'image' => $imageName,
+                    'sort_order' => $sortOrder,
                 ];
 
                 if ($product) {
