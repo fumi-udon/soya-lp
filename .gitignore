@@ -17,3 +17,4 @@ yarn-error.log
 /.idea
 /.vscode
 repomix-output.xml
+docker-compose.yml
