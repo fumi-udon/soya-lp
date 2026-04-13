@@ -167,7 +167,7 @@
             </div>
             <button onclick="App.openCheckout()"
                 class="group flex items-center gap-2 bg-[var(--theme-primary)] text-white px-6 py-3.5 rounded-full text-[11px] font-bold tracking-[0.2em] uppercase hover:brightness-90 shadow-md active:scale-95 transition-all">
-                <span style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Check Out</span>
+                <span style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">TO CART</span>
                 <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
                     style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
@@ -180,6 +180,28 @@
 
     <div id="product-modal"
         class="fixed inset-0 bg-[#110A08]/80 backdrop-blur-sm z-[2000] hidden items-end justify-center sm:items-center">
+
+        {{--
+            soy-character はモーダルカードの overflow-hidden に巻き込まれないよう
+            カード div の兄要素として #product-modal 直下に配置する。
+            left-1/2 + pyonJump アニメーション内の translate(-50%,Y) で水平中央揃えを維持。
+        --}}
+        <div id="soy-character"
+            class="hidden absolute bottom-20 left-1/2 flex-col items-center pointer-events-none z-[2050]">
+            <div
+                class="bg-[var(--theme-primary)] text-white text-sm font-bold py-2 px-5 rounded-full mb-2 shadow-xl whitespace-nowrap">
+                Please select a style ↑
+            </div>
+            <svg width="44" height="66" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
+                <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
+                <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
+                <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
+                <circle cx="30" cy="50" r="5" fill="#e60012" />
+                <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3"
+                    stroke-linecap="round" />
+            </svg>
+        </div>
+
         <div
             class="bg-[var(--theme-bg)] w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col relative">
 
@@ -210,16 +232,6 @@
 
             <div
                 class="p-3 border-t border-[#A3B8C9]/30 shrink-0 bg-white relative z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
-               
-                    <div id="soy-character"
-                        class="hidden absolute -top-16 left-1/2 flex-col items-center pointer-events-none z-30"
-                        style="transform: translateX(-50%);">
-                        <div
-                            class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1 px-3 rounded-full mb-1 shadow-sm whitespace-nowrap animate-bounce">
-                            Please select a style.
-                        </div>
-                    </div>
-                
                 <button id="add-to-cart-btn" onclick="confirmProduct()"
                     class="w-full bg-[var(--theme-primary)] text-white py-3 rounded-xl font-bold tracking-[0.15em] text-[12px] hover:brightness-95 transition-all shadow-md flex justify-center items-center gap-2">
                     ADD TO ORDER — <span id="add-to-cart-price">0.000</span> DT

@@ -171,7 +171,7 @@ window.App = {
 
         const styleLabel = document.getElementById('style-label');
         if (styleLabel) {
-            styleLabel.classList.remove('required-pulse');
+            styleLabel.classList.remove('required-pulse', 'style-label--error');
             styleLabel.classList.add('text-gray-900');
         }
 
@@ -241,12 +241,40 @@ window.App = {
         const hasTypes = this.state.currentProduct.product_variants.some(v => v.is_required);
 
         if (hasTypes && !this.state.selectedType) {
+            // 1. Soy character popup
             const chara = document.getElementById('soy-character');
             if (chara) {
                 chara.classList.remove('soy-appear');
                 void chara.offsetWidth;
                 chara.classList.add('soy-appear');
             }
+
+            // 2. Flash each type-option border red (3 × 0.45s = 1.35s + buffer)
+            document.querySelectorAll('.type-option').forEach(el => {
+                el.classList.remove('type-option--error');
+                void el.offsetWidth;
+                el.classList.add('type-option--error');
+            });
+            setTimeout(() => {
+                document.querySelectorAll('.type-option').forEach(el => el.classList.remove('type-option--error'));
+            }, 1500);
+
+            // 3. Shake style label + turn red, then restore pulse
+            const styleLabel = document.getElementById('style-label');
+            if (styleLabel) {
+                styleLabel.classList.remove('required-pulse', 'style-label--error');
+                void styleLabel.offsetWidth;
+                styleLabel.classList.add('style-label--error');
+                setTimeout(() => {
+                    styleLabel.classList.remove('style-label--error');
+                    styleLabel.classList.add('required-pulse');
+                }, 1500);
+            }
+
+            // 4. Scroll modal-options to top so the style section is always visible
+            const opts = document.getElementById('modal-options');
+            if (opts) opts.scrollTop = 0;
+
             return;
         }
 

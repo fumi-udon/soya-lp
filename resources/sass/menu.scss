@@ -167,6 +167,35 @@ body {
     animation: pulseAttention 2s infinite ease-in-out;
     transform-origin: left center;
 }
+
+/* --- Error: type-option border flash (3 pulses) --- */
+@keyframes borderPulseError {
+    0%, 100% { border-color: #e5e7eb; box-shadow: none; }
+    50% {
+        border-color: #e60012;
+        box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.18);
+        background-color: rgba(230, 0, 18, 0.03);
+    }
+}
+
+.type-option--error {
+    animation: borderPulseError 0.45s ease-in-out 3 forwards !important;
+    border-width: 2px !important;
+}
+
+/* --- Error: style label shake --- */
+@keyframes shakeLabel {
+    0%, 100% { transform: translateX(0) scale(1); }
+    20%, 60% { transform: translateX(-4px) scale(1.02); }
+    40%, 80% { transform: translateX(4px) scale(1.02); }
+}
+
+.style-label--error {
+    animation: shakeLabel 0.4s ease-in-out forwards !important;
+    color: #e60012 !important;
+    transform-origin: left center;
+}
+
 /* --- Checkout Stamp Animation --- */
 @keyframes stampIn {
     0% { transform: scale(3) rotate(-15deg); opacity: 0; }

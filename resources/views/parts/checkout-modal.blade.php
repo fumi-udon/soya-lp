@@ -75,7 +75,7 @@
             {{-- ボタンカラーをテナントのテーマカラーに連動 --}}
             <button id="submit-order-btn" onclick="App.submitOrder()"
                 class="w-full bg-[var(--theme-primary)] text-white py-4 rounded-2xl font-bold tracking-[0.15em] text-[12px] transition-colors shadow-md hover:brightness-95 flex justify-center items-center gap-2">
-                SEND TO KITCHEN
+                ORDER NOW !!
             </button>
         </div>
     </div>
