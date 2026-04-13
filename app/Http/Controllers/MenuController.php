@@ -25,10 +25,10 @@ class MenuController extends Controller
             ->orderBy('sort_order', 'asc') // ★ カテゴリの並び順を適用
             ->get();
 
-        // ★ ここを追加: 店舗固有のギミックをフラグ化してBladeに渡す
+        // ★ ギミック
         $features = [
-            'has_mascot' => $tenant->name === 'Söya',      // Söyaなら醤油ちゃんを表示
-            'has_rain_effect' => $tenant->name === 'Söya', // Söyaなら背景の雨エフェクトをON
+            'has_mascot' => true,
+            'has_rain_effect' => true,
         ];
         $homeUrl = match ($tenant->domain) {
             'menu.bistronippon.tn' => 'https://bistronippon.tn',

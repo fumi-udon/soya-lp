@@ -42,365 +42,144 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-app/Console/Kernel.php
-app/Exceptions/Handler.php
-app/Filament/Resources/CategoryResource.php
-app/Filament/Resources/CategoryResource/Pages/CreateCategory.php
-app/Filament/Resources/CategoryResource/Pages/EditCategory.php
-app/Filament/Resources/CategoryResource/Pages/ListCategories.php
-app/Filament/Resources/ProductResource.php
-app/Filament/Resources/ProductResource/Pages/CreateProduct.php
-app/Filament/Resources/ProductResource/Pages/EditProduct.php
-app/Filament/Resources/ProductResource/Pages/ListProducts.php
-app/Http/Controllers/Api/OrderController.php
-app/Http/Controllers/Controller.php
-app/Http/Controllers/MenuController.php
-app/Http/Kernel.php
-app/Http/Middleware/Authenticate.php
-app/Http/Middleware/EncryptCookies.php
-app/Http/Middleware/PreventRequestsDuringMaintenance.php
-app/Http/Middleware/RedirectIfAuthenticated.php
-app/Http/Middleware/TrimStrings.php
-app/Http/Middleware/TrustHosts.php
-app/Http/Middleware/TrustProxies.php
-app/Http/Middleware/ValidateSignature.php
-app/Http/Middleware/VerifyCsrfToken.php
-app/Models/Category.php
-app/Models/Order.php
-app/Models/OrderItem.php
-app/Models/Product.php
-app/Models/ProductVariant.php
-app/Models/User.php
-app/Providers/AppServiceProvider.php
-app/Providers/AuthServiceProvider.php
-app/Providers/BroadcastServiceProvider.php
-app/Providers/EventServiceProvider.php
-app/Providers/Filament/AdminPanelProvider.php
-app/Providers/RouteServiceProvider.php
-config/app.php
-config/auth.php
-config/broadcasting.php
-config/cache.php
-config/cors.php
-config/database.php
-config/filesystems.php
-config/hashing.php
-config/livewire.php
-config/logging.php
-config/mail.php
-config/queue.php
-config/sanctum.php
-config/services.php
-config/session.php
-config/view.php
-database/.gitignore
-database/factories/CategoryFactory.php
-database/factories/ProductFactory.php
-database/factories/ProductVariantFactory.php
-database/factories/UserFactory.php
-database/migrations/2014_10_12_000000_create_users_table.php
-database/migrations/2014_10_12_100000_create_password_resets_table.php
-database/migrations/2019_08_19_000000_create_failed_jobs_table.php
-database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
-database/migrations/2026_02_16_124825_create_categories_table.php
-database/migrations/2026_02_16_124826_create_products_table.php
-database/migrations/2026_02_16_124827_create_product_variants_table.php
-database/migrations/2026_02_21_023643_create_orders_table.php
-database/migrations/2026_02_21_023645_create_order_items_table.php
-database/seeders/DatabaseSeeder.php
-resources/js/app.js
-resources/js/bootstrap.js
-resources/sass/app.scss
-resources/sass/components/_base.scss
-resources/sass/components/_footer.scss
-resources/sass/components/_header.scss
-resources/sass/components/_intro.scss
-resources/sass/components/_reservation.scss
-resources/sass/components/_variables.scss
-resources/sass/components/_welcome.scss
-resources/sass/menu.scss
-resources/views/layouts/soya.blade.php
-resources/views/menu.blade.php
-resources/views/parts/checkout-modal.blade.php
-resources/views/parts/footer.blade.php
-resources/views/parts/header.blade.php
-resources/views/parts/intro.blade.php
-resources/views/reservation.blade.php
-resources/views/welcome.blade.php
-routes/api.php
-routes/channels.php
-routes/console.php
-routes/web.php
+app/
+  Console/
+    Kernel.php
+  Exceptions/
+    Handler.php
+  Filament/
+    Resources/
+      CategoryResource/
+        Pages/
+          CreateCategory.php
+          EditCategory.php
+          ListCategories.php
+      OrderResource/
+        Pages/
+          CreateOrder.php
+          EditOrder.php
+          ListOrders.php
+      ProductResource/
+        Pages/
+          CreateProduct.php
+          EditProduct.php
+          ListProducts.php
+      CategoryResource.php
+      OrderResource.php
+      ProductResource.php
+  Http/
+    Controllers/
+      Api/
+        OrderController.php
+      Controller.php
+      MenuController.php
+    Middleware/
+      Authenticate.php
+      EncryptCookies.php
+      PreventRequestsDuringMaintenance.php
+      RedirectIfAuthenticated.php
+      TrimStrings.php
+      TrustHosts.php
+      TrustProxies.php
+      ValidateSignature.php
+      VerifyCsrfToken.php
+    Kernel.php
+  Models/
+    Category.php
+    Customer.php
+    Order.php
+    OrderItem.php
+    Product.php
+    ProductVariant.php
+    Tenant.php
+    User.php
+  Providers/
+    Filament/
+      AdminPanelProvider.php
+    AppServiceProvider.php
+    AuthServiceProvider.php
+    BroadcastServiceProvider.php
+    EventServiceProvider.php
+    RouteServiceProvider.php
+config/
+  app.php
+  auth.php
+  broadcasting.php
+  cache.php
+  cors.php
+  database.php
+  filesystems.php
+  hashing.php
+  livewire.php
+  logging.php
+  mail.php
+  queue.php
+  sanctum.php
+  services.php
+  session.php
+  view.php
+database/
+  factories/
+    CategoryFactory.php
+    ProductFactory.php
+    ProductVariantFactory.php
+    UserFactory.php
+  migrations/
+    2014_10_12_000000_create_users_table.php
+    2014_10_12_100000_create_password_resets_table.php
+    2019_08_19_000000_create_failed_jobs_table.php
+    2019_12_14_000001_create_personal_access_tokens_table.php
+    2026_02_16_124825_create_categories_table.php
+    2026_02_16_124826_create_products_table.php
+    2026_02_16_124827_create_product_variants_table.php
+    2026_02_21_023643_create_orders_table.php
+    2026_02_21_023645_create_order_items_table.php
+    2026_02_21_041122_create_tenants_table.php
+    2026_02_21_041124_add_tenant_id_to_tables.php
+    2026_02_21_043555_update_slug_unique_for_tenants.php
+    2026_02_24_083313_add_marketing_columns_to_tenants.php
+    2026_03_04_062405_create_customers_table.php
+    2026_03_04_062807_add_customer_id_to_orders_table.php
+    2026_03_04_082453_add_is_test_to_orders_table.php
+  seeders/
+    DatabaseSeeder.php
+    TenantSeeder.php
+  .gitignore
+resources/
+  js/
+    app.js
+    bootstrap.js
+  sass/
+    components/
+      _base.scss
+      _footer.scss
+      _header.scss
+      _intro.scss
+      _reservation.scss
+      _variables.scss
+      _welcome.scss
+    app.scss
+    menu.scss
+  views/
+    layouts/
+      soya.blade.php
+    parts/
+      checkout-modal.blade.php
+      footer.blade.php
+      header.blade.php
+      intro.blade.php
+    menu.blade.php
+    reservation.blade.php
+    welcome.blade.php
+routes/
+  api.php
+  channels.php
+  console.php
+  web.php
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="app/Http/Controllers/Api/OrderController.php">
-<?php
-
-namespace App\Http\Controllers\Api;
-
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderItem;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-
-class OrderController extends Controller
-{
-    public function store(Request $request)
-    {
-        // バリデーション
-        $validated = $request->validate([
-            'customer_name' => 'required|string',
-            'customer_phone' => 'required|string',
-            'order_type' => 'required|string',
-            'notes' => 'nullable|string',
-            'total_price' => 'required|numeric',
-            'items' => 'required|array',
-        ]);
-
-        $order = DB::transaction(function () use ($validated) {
-            // ランダムな4桁の英数字を発行（例: 8F2A）
-            $orderNumber = strtoupper(Str::random(4));
-
-            $order = Order::create([
-                'order_number' => $orderNumber,
-                'customer_name' => $validated['customer_name'],
-                'customer_phone' => $validated['customer_phone'],
-                'order_type' => $validated['order_type'],
-                'notes' => $validated['notes'],
-                'total_price' => $validated['total_price'],
-            ]);
-
-            foreach ($validated['items'] as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['productId'],
-                    'product_name' => $item['name'],
-                    'price' => $item['price'],
-                    'variants' => $item['variants'],
-                ]);
-            }
-            return $order;
-        });
-
-        // 生成したオーダー番号をフロントエンドに返す
-        return response()->json(['success' => true, 'order_number' => $order->order_number]);
-    }
-}
-</file>
-
-<file path="app/Models/Order.php">
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Order extends Model
-{
-    protected $guarded = [];
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
-}
-</file>
-
-<file path="app/Models/OrderItem.php">
-<?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class OrderItem extends Model
-{
-    protected $guarded = [];
-    protected $casts = ['variants' => 'array'];
-}
-</file>
-
-<file path="database/migrations/2026_02_21_023643_create_orders_table.php">
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-
-    // xxxx_create_orders_table.php
-    public function up()
-    {
-        Schema::create('orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('order_number')->unique(); // #A12B などの短い番号
-            $table->string('customer_name');
-            $table->string('customer_phone'); // WhatsApp番号（マーケティング用）
-            $table->string('order_type');
-            $table->text('notes')->nullable();
-            $table->decimal('total_price', 10, 3);
-            $table->string('status')->default('pending'); // pending, confirmed...
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('orders');
-    }
-};
-</file>
-
-<file path="database/migrations/2026_02_21_023645_create_order_items_table.php">
-<?php
-
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
-return new class extends Migration
-{
-    // xxxx_create_order_items_table.php
-    public function up()
-    {
-        Schema::create('order_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
-            $table->string('product_name');
-            $table->decimal('price', 10, 3);
-            $table->integer('quantity')->default(1);
-            $table->json('variants')->nullable(); // トッピング詳細
-            $table->timestamps();
-        });
-    }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('order_items');
-    }
-};
-</file>
-
-<file path="resources/views/parts/checkout-modal.blade.php">
-<div id="checkout-modal" class="fixed inset-0 bg-black/60 backdrop-blur-[3px] z-[2000] hidden flex-col justify-end">
-    <div id="checkout-sheet"
-        class="bg-[#f4f5f7] w-full max-w-lg mx-auto rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.2)] flex flex-col relative transition-transform duration-300 translate-y-full max-h-[90vh]">
-
-        <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-4 mb-2"></div>
-
-        <div class="absolute top-4 right-4 z-20">
-            <button onclick="App.closeCheckout()"
-                class="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 text-gray-500 hover:bg-black/10 transition-colors">✕</button>
-        </div>
-
-        <div class="overflow-y-auto px-4 pt-4 pb-32">
-            <div id="checkout-soy-character"
-                class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
-                <div
-                    class="bg-[#e60012] text-white text-[10px] font-bold py-1 px-3 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
-                    Tell me your name!
-                </div>
-                <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
-                    <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
-                    <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
-                    <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
-                    <circle cx="30" cy="50" r="5" fill="#e60012" />
-                    <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3" stroke-linecap="round" />
-                </svg>
-            </div>
-
-            <div class="bg-white p-6 rounded-t-xl shadow-sm relative border border-gray-200"
-                style="background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
-
-                <div class="text-center mb-6">
-                    <h2 class="serif text-2xl font-bold text-[#1a1a1a]">Söya.</h2>
-                    <p class="font-mono text-[9px] text-gray-500 uppercase tracking-widest mt-1">Order Slip <span
-                            class="mx-1">|</span> <span id="receipt-date"></span></p>
-                    <div class="border-b-2 border-dashed border-gray-200 mt-5"></div>
-                </div>
-
-                <div id="checkout-items" class="font-mono text-sm text-gray-900 space-y-4 mb-6 min-h-[100px]">
-                </div>
-
-                <div class="border-b-2 border-dashed border-gray-200 mb-6"></div>
-
-                <div class="space-y-5 font-sans">
-                    <div>
-                        <label class="block text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-2">Guest
-                            Name <span class="text-[#e60012]">*</span></label>
-                        <input type="text" id="order-name"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#1a1a1a] focus:bg-white transition-all font-bold"
-                            placeholder="Your Name">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-2">WhatsApp
-                            Number <span class="text-[#e60012]">*</span></label>
-                        <input type="tel" id="order-phone"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#1a1a1a] focus:bg-white transition-all font-bold"
-                            placeholder="+216 ...">
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-2">Dining
-                            Option <span class="text-[#e60012]">*</span></label>
-                        <div class="flex gap-2">
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="order_type" value="Takeaway" class="peer hidden" checked>
-                                <div
-                                    class="text-center py-3 border border-gray-200 rounded-lg text-xs font-bold text-gray-400 peer-checked:bg-[#1a1a1a] peer-checked:text-white peer-checked:border-[#1a1a1a] transition-all">
-                                    Takeaway</div>
-                            </label>
-                            <label class="flex-1 cursor-pointer">
-                                <input type="radio" name="order_type" value="Dine-in" class="peer hidden">
-                                <div
-                                    class="text-center py-3 border border-gray-200 rounded-lg text-xs font-bold text-gray-400 peer-checked:bg-[#1a1a1a] peer-checked:text-white peer-checked:border-[#1a1a1a] transition-all">
-                                    Dine-in</div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-2">Notes</label>
-                        <textarea id="order-notes" rows="2"
-                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#1a1a1a] focus:bg-white transition-all"
-                            placeholder="Any special requests?"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="h-4 bg-white mx-0 relative"
-                style="background-image: radial-gradient(circle at 10px 0, transparent 10px, white 11px); background-size: 20px 20px; background-repeat: repeat-x;">
-            </div>
-        </div>
-
-        <div class="absolute bottom-0 left-0 right-0 p-5 bg-[#f4f5f7] border-t border-gray-200">
-            <div class="flex justify-between items-end mb-4 px-2">
-                <span class="text-[10px] font-bold tracking-widest uppercase text-gray-500">Total Due</span>
-                <span class="font-mono font-bold text-2xl text-gray-900 leading-none"><span
-                        id="checkout-total">0.000</span> <span class="text-xs font-sans text-gray-500">DT</span></span>
-            </div>
-            <button id="submit-order-btn" onclick="App.submitOrder()"
-                class="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold tracking-[0.15em] text-xs hover:bg-[#e60012] transition-colors shadow-lg flex justify-center items-center gap-2">
-                SEND TO KITCHEN
-            </button>
-        </div>
-    </div>
-</div>
-</file>
 
 <file path="app/Console/Kernel.php">
 <?php
@@ -486,6 +265,138 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/CategoryResource/Pages/CreateCategory.php">
+<?php
+
+namespace App\Filament\Resources\CategoryResource\Pages;
+
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateCategory extends CreateRecord
+{
+    protected static string $resource = CategoryResource::class;
+}
+</file>
+
+<file path="app/Filament/Resources/CategoryResource/Pages/EditCategory.php">
+<?php
+
+namespace App\Filament\Resources\CategoryResource\Pages;
+
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditCategory extends EditRecord
+{
+    protected static string $resource = CategoryResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/CategoryResource/Pages/ListCategories.php">
+<?php
+
+namespace App\Filament\Resources\CategoryResource\Pages;
+
+use App\Filament\Resources\CategoryResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
+
+class ListCategories extends ListRecords
+{
+    protected static string $resource = CategoryResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/OrderResource/Pages/CreateOrder.php">
+<?php
+
+namespace App\Filament\Resources\OrderResource\Pages;
+
+use App\Filament\Resources\OrderResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateOrder extends CreateRecord
+{
+    protected static string $resource = OrderResource::class;
+}
+</file>
+
+<file path="app/Filament/Resources/OrderResource/Pages/ListOrders.php">
+<?php
+
+namespace App\Filament\Resources\OrderResource\Pages;
+
+use App\Filament\Resources\OrderResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ListRecords;
+
+class ListOrders extends ListRecords
+{
+    protected static string $resource = OrderResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        // 管理画面からの手動作成ボタンを無効化
+        return [];
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/ProductResource/Pages/CreateProduct.php">
+<?php
+
+namespace App\Filament\Resources\ProductResource\Pages;
+
+use App\Filament\Resources\ProductResource;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+
+class CreateProduct extends CreateRecord
+{
+    protected static string $resource = ProductResource::class;
+}
+</file>
+
+<file path="app/Filament/Resources/ProductResource/Pages/EditProduct.php">
+<?php
+
+namespace App\Filament\Resources\ProductResource\Pages;
+
+use App\Filament\Resources\ProductResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditProduct extends EditRecord
+{
+    protected static string $resource = ProductResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\DeleteAction::make(),
+        ];
     }
 }
 </file>
@@ -599,372 +510,6 @@ class CategoryResource extends Resource
 }
 </file>
 
-<file path="app/Filament/Resources/CategoryResource/Pages/CreateCategory.php">
-<?php
-
-namespace App\Filament\Resources\CategoryResource\Pages;
-
-use App\Filament\Resources\CategoryResource;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
-
-class CreateCategory extends CreateRecord
-{
-    protected static string $resource = CategoryResource::class;
-}
-</file>
-
-<file path="app/Filament/Resources/CategoryResource/Pages/EditCategory.php">
-<?php
-
-namespace App\Filament\Resources\CategoryResource\Pages;
-
-use App\Filament\Resources\CategoryResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
-
-class EditCategory extends EditRecord
-{
-    protected static string $resource = CategoryResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
-}
-</file>
-
-<file path="app/Filament/Resources/CategoryResource/Pages/ListCategories.php">
-<?php
-
-namespace App\Filament\Resources\CategoryResource\Pages;
-
-use App\Filament\Resources\CategoryResource;
-use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
-
-class ListCategories extends ListRecords
-{
-    protected static string $resource = CategoryResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-        ];
-    }
-}
-</file>
-
-<file path="app/Filament/Resources/ProductResource.php">
-<?php
-
-namespace App\Filament\Resources;
-
-use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Product;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Repeater;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-
-class ProductResource extends Resource
-{
-    protected static ?string $model = Product::class;
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Section::make('Basic Information')->schema([
-                    Select::make('category_id')
-                        ->relationship('category', 'name')
-                        ->required(),
-
-                    TextInput::make('name')
-                        ->required()
-                        ->label('Product Name (Public)')
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
-
-                    TextInput::make('slug')
-                        ->required()
-                        ->unique(Product::class, 'slug', ignoreRecord: true)
-                        ->helperText('URLに使用されます（自動生成されます）'),
-
-                    TextInput::make('staff_name')
-                        ->label('Staff Name (Kitchen)'),
-
-                    TextInput::make('price')
-                        ->numeric()
-                        ->suffix('DT'),
-
-                    Select::make('order_type')
-                        ->options(['kitchen' => 'Kitchen', 'counter' => 'Counter'])
-                        ->default('kitchen'),
-
-                    Toggle::make('is_active')
-                        ->label('Available')
-                        ->default(true),
-                ])->columns(2),
-
-                Section::make('Presentation')->schema([
-                    FileUpload::make('image')
-                        ->image()
-                        ->directory('products'),
-                    RichEditor::make('description')
-                        ->columnSpanFull(),
-                    TextInput::make('ingredients')
-                        ->label('Ingredients (for AI recommendations)'),
-                ])->collapsed(),
-
-                Section::make('Options & Toppings')
-                    ->description('Add variations like noodle types or extra toppings.')
-                    ->schema([
-                        Repeater::make('productVariants')
-                            ->relationship()
-                            ->schema([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->placeholder('e.g. Extra Egg'),
-                                TextInput::make('staff_name')
-                                    ->label('Kitchen Code'),
-                                TextInput::make('price_adjustment')
-                                    ->numeric()
-                                    ->default(0)
-                                    ->label('+ Price (DT)'),
-                                Toggle::make('is_required')
-                                    ->label('Selection Required?')
-                            ])->columns(4)
-                    ]),
-            ]);
-    }
-
-    public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                Tables\Columns\ImageColumn::make('image')->circular(),
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('slug'),
-                Tables\Columns\TextColumn::make('category.name')->sortable(),
-                Tables\Columns\TextColumn::make('price')->sortable(),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-            ])
-            ->filters([])
-            ->actions([Tables\Actions\EditAction::make()])
-            ->bulkActions([Tables\Actions\BulkActionGroup::make([Tables\Actions\DeleteBulkAction::make()])]);
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
-        ];
-    }
-}
-</file>
-
-<file path="app/Filament/Resources/ProductResource/Pages/CreateProduct.php">
-<?php
-
-namespace App\Filament\Resources\ProductResource\Pages;
-
-use App\Filament\Resources\ProductResource;
-use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
-
-class CreateProduct extends CreateRecord
-{
-    protected static string $resource = ProductResource::class;
-}
-</file>
-
-<file path="app/Filament/Resources/ProductResource/Pages/EditProduct.php">
-<?php
-
-namespace App\Filament\Resources\ProductResource\Pages;
-
-use App\Filament\Resources\ProductResource;
-use Filament\Actions;
-use Filament\Resources\Pages\EditRecord;
-
-class EditProduct extends EditRecord
-{
-    protected static string $resource = ProductResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\DeleteAction::make(),
-        ];
-    }
-}
-</file>
-
-<file path="app/Filament/Resources/ProductResource/Pages/ListProducts.php">
-<?php
-
-namespace App\Filament\Resources\ProductResource\Pages;
-
-use App\Filament\Resources\ProductResource;
-use App\Models\Category;
-use App\Models\Product;
-use App\Models\ProductVariant;
-use Filament\Actions;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ListRecords;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-
-class ListProducts extends ListRecords
-{
-    protected static string $resource = ProductResource::class;
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\CreateAction::make(),
-
-            // CSVインポート
-            Actions\Action::make('importCsv')
-                ->label('Import CSV (Fix Paths)')
-                ->icon('heroicon-o-arrow-up-tray')
-                ->color('success')
-                ->form([
-                    FileUpload::make('csv_file')
-                        ->label('Upload CSV File')
-                        ->disk('local')
-                        ->directory('csv-imports')
-                        ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
-                        ->required(),
-                ])
-                ->action(function (array $data) {
-                    set_time_limit(300);
-                    $file = storage_path('app/' . $data['csv_file']);
-                    $this->importProducts($file);
-                    Notification::make()->title('Import & Path Fix Completed!')->success()->send();
-                }),
-
-            // 全削除
-            Actions\Action::make('deleteAll')
-                ->label('Delete ALL')
-                ->icon('heroicon-o-trash')
-                ->color('danger')
-                ->requiresConfirmation()
-                ->modalHeading('⚠️ DANGER ZONE')
-                ->modalDescription('Type "delete" to confirm.')
-                ->form([
-                    TextInput::make('confirmation')
-                        ->label('Confirmation')
-                        ->placeholder('delete')
-                        ->required()
-                        ->rules(['required', 'in:delete']),
-                ])
-                ->action(function () {
-                    DB::transaction(function () {
-                        ProductVariant::query()->delete();
-                        Product::query()->delete();
-                    });
-                    Notification::make()->title('Deleted all products.')->danger()->send();
-                }),
-        ];
-    }
-
-    protected function importProducts(string $filePath)
-    {
-        $handle = fopen($filePath, 'r');
-        if ($handle === false) return;
-
-        fgetcsv($handle); // ヘッダー・スキップ
-
-        // 画像処理（最適化機能は一旦おいておき、まずはパス修復を優先します）
-        $targetDir = 'products';
-
-        DB::transaction(function () use ($handle, $targetDir) {
-            while (($row = fgetcsv($handle)) !== false) {
-                if (empty($row[0])) continue;
-
-                $name = $row[0];
-                $price = is_numeric($row[1]) ? $row[1] : 0;
-                $categorySlug = $row[2];
-                $description = $row[3] ?? '';
-                $imageName = $row[4] ?? null;
-                $variantsString = $row[5] ?? '';
-
-                // ★ここが修正ポイント：パスの自動補正
-                // 画像名があって、まだ 'products/' が付いていないなら付ける
-                if ($imageName && !Str::startsWith($imageName, 'products/')) {
-                    $imageName = 'products/' . $imageName;
-                }
-
-                // カテゴリ登録
-                $category = Category::firstOrCreate(
-                    ['slug' => Str::slug($categorySlug)],
-                    ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
-                );
-
-                // 商品検索
-                $product = Product::where('name', $name)->first();
-
-                $productData = [
-                    'category_id' => $category->id,
-                    'price' => $price,
-                    'description' => $description,
-                    'image' => $imageName, // 補正済みのパスを入れる
-                ];
-
-                if ($product) {
-                    $product->update($productData);
-                    // バリアント再登録のため削除
-                    $product->productVariants()->delete();
-                } else {
-                    $productData['name'] = $name;
-                    $productData['slug'] = Str::slug($name);
-                    $productData['is_active'] = true;
-                    $productData['order_type'] = 'kitchen';
-                    $product = Product::create($productData);
-                }
-
-                // バリアント登録
-                if (!empty($variantsString)) {
-                    $variantItems = explode(',', $variantsString);
-                    foreach ($variantItems as $item) {
-                        $parts = explode(':', trim($item));
-                        if (count($parts) < 2) continue;
-                        $product->productVariants()->create([
-                            'name' => trim($parts[0]),
-                            'price_adjustment' => is_numeric($parts[1]) ? $parts[1] : 0,
-                            'is_required' => isset($parts[2]) ? (bool)$parts[2] : false,
-                        ]);
-                    }
-                }
-            }
-        });
-
-        fclose($handle);
-    }
-}
-</file>
-
 <file path="app/Http/Controllers/Controller.php">
 <?php
 
@@ -978,103 +523,6 @@ use Illuminate\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-}
-</file>
-
-<file path="app/Http/Controllers/MenuController.php">
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Models\Category;
-use Illuminate\Http\Request;
-
-class MenuController extends Controller
-{
-    public function index()
-    {
-        // 公開中のカテゴリと商品を、トッピング情報（productVariants）と一緒に取得
-        $categories = Category::with(['products' => function ($query) {
-            $query->where('is_active', true)
-                ->with('productVariants')
-                ->orderBy('sort_order');
-        }])
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
-
-        return view('menu', compact('categories'));
-    }
-}
-</file>
-
-<file path="app/Http/Kernel.php">
-<?php
-
-namespace App\Http;
-
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
-
-class Kernel extends HttpKernel
-{
-    /**
-     * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
-     *
-     * @var array<int, class-string|string>
-     */
-    protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
-        \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-    ];
-
-    /**
-     * The application's route middleware groups.
-     *
-     * @var array<string, array<int, class-string|string>>
-     */
-    protected $middlewareGroups = [
-        'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
-
-        'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
-    ];
-
-    /**
-     * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or used individually.
-     *
-     * @var array<string, class-string|string>
-     */
-    protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'signed' => \App\Http\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-    ];
 }
 </file>
 
@@ -1267,52 +715,77 @@ class VerifyCsrfToken extends Middleware
 }
 </file>
 
-<file path="app/Models/Category.php">
+<file path="app/Http/Kernel.php">
 <?php
 
-namespace App\Models;
+namespace App\Http;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
-class Category extends Model
+class Kernel extends HttpKernel
 {
-    use HasFactory;
-
     /**
-     * The attributes that are mass assignable.
+     * The application's global HTTP middleware stack.
      *
-     * @var array
+     * These middleware are run during every request to your application.
+     *
+     * @var array<int, class-string|string>
      */
-    protected $fillable = [
-        'name',
-        'slug',
-        'image',
-        'description',
-        'is_active',
-        'sort_order',
-        'seo_title',
-        'seo_description',
+    protected $middleware = [
+        // \App\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Illuminate\Http\Middleware\HandleCors::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
     /**
-     * The attributes that should be cast to native types.
+     * The application's route middleware groups.
      *
-     * @var array
+     * @var array<string, array<int, class-string|string>>
      */
-    protected $casts = [
-        'id' => 'integer',
-        'is_active' => 'boolean',
+    protected $middlewareGroups = [
+        'web' => [
+            \App\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            \App\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
+
+        'api' => [
+            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            'throttle:api',
+            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        ],
     ];
 
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
+    /**
+     * The application's route middleware.
+     *
+     * These middleware may be assigned to groups or used individually.
+     *
+     * @var array<string, class-string|string>
+     */
+    protected $routeMiddleware = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'signed' => \App\Http\Middleware\ValidateSignature::class,
+        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    ];
 }
 </file>
 
-<file path="app/Models/Product.php">
+<file path="app/Models/Customer.php">
 <?php
 
 namespace App\Models;
@@ -1320,105 +793,23 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Customer extends Model
 {
     use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'category_id',
-        'name',
-        'staff_name',
-        'slug',
-        'price',
-        'description',
-        'image',
-        'ingredients',
-        'is_active',
-        'order_type',
-        'sort_order',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'category_id' => 'integer',
-        'price' => 'decimal:3',
-        'is_active' => 'boolean',
-    ];
-
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    // public function category()
-    // {
-    //     return $this->belongsTo(Category::class);
-    // }
-
-    public function productVariants()
-    {
-        return $this->hasMany(ProductVariant::class);
-    }
+    protected $guarded = []; // 追加
 }
 </file>
 
-<file path="app/Models/ProductVariant.php">
+<file path="app/Models/Tenant.php">
 <?php
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductVariant extends Model
+class Tenant extends Model
 {
-    use HasFactory;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'product_id',
-        'name',
-        'staff_name',
-        'price_adjustment',
-        'is_required',
-        'sort_order',
-    ];
-
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'product_id' => 'integer',
-        'price_adjustment' => 'decimal:3',
-        'is_required' => 'boolean',
-    ];
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
-    }
-
-    // public function product()
-    // {
-    //     return $this->belongsTo(Product::class);
-    // }
+    protected $guarded = [];
 }
 </file>
 
@@ -1520,67 +911,6 @@ class EventServiceProvider extends ServiceProvider
     public function shouldDiscoverEvents()
     {
         return false;
-    }
-}
-</file>
-
-<file path="app/Providers/Filament/AdminPanelProvider.php">
-<?php
-
-namespace App\Providers\Filament;
-
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-
-class AdminPanelProvider extends PanelProvider
-{
-    public function panel(Panel $panel): Panel
-    {
-        return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
-            ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
     }
 }
 </file>
@@ -2957,10 +2287,6 @@ return [
 ];
 </file>
 
-<file path="database/.gitignore">
-*.sqlite*
-</file>
-
 <file path="database/factories/CategoryFactory.php">
 <?php
 
@@ -3412,6 +2738,308 @@ return new class extends Migration
 };
 </file>
 
+<file path="database/migrations/2026_02_21_023643_create_orders_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+
+    // xxxx_create_orders_table.php
+    public function up()
+    {
+        Schema::create('orders', function (Blueprint $table) {
+            $table->id();
+            $table->string('order_number')->unique(); // #A12B などの短い番号
+            $table->string('customer_name');
+            $table->string('customer_phone'); // WhatsApp番号（マーケティング用）
+            $table->string('order_type');
+            $table->text('notes')->nullable();
+            $table->decimal('total_price', 10, 3);
+            $table->string('status')->default('pending'); // pending, confirmed...
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('orders');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_21_023645_create_order_items_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    // xxxx_create_order_items_table.php
+    public function up()
+    {
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('order_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('product_name');
+            $table->decimal('price', 10, 3);
+            $table->integer('quantity')->default(1);
+            $table->json('variants')->nullable(); // トッピング詳細
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('order_items');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_21_041122_create_tenants_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('tenants', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('domain')->unique(); // 例: order.bistronippon.tn
+            $table->string('theme_primary')->default('#e60012');
+            $table->string('theme_bg')->default('#eaedf0');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('tenants');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_21_041124_add_tenant_id_to_tables.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up()
+    {
+        $tables = ['categories', 'products', 'product_variants', 'orders', 'order_items'];
+
+        foreach ($tables as $table) {
+            Schema::table($table, function (Blueprint $table_blueprint) {
+                $table_blueprint->foreignId('tenant_id')->nullable()->constrained()->cascadeOnDelete();
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('tables', function (Blueprint $table) {
+            //
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_21_043555_update_slug_unique_for_tenants.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        // カテゴリテーブルの制約を「全店舗でユニーク」から「店舗内でユニーク」に変更
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropUnique('categories_slug_unique');
+            $table->unique(['tenant_id', 'slug']);
+        });
+
+        // プロダクト（商品）テーブルも同様に変更
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropUnique('products_slug_unique');
+            $table->unique(['tenant_id', 'slug']);
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('categories', function (Blueprint $table) {
+            $table->dropUnique(['tenant_id', 'slug']);
+            $table->unique('slug');
+        });
+
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropUnique(['tenant_id', 'slug']);
+            $table->unique('slug');
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_02_24_083313_add_marketing_columns_to_tenants.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->string('whatsapp_number')->nullable()->after('domain'); // 注文・予約用
+            $table->string('store_code')->nullable()->after('whatsapp_number'); // システム連携用 (例: Bistro_Marsa)
+            $table->string('instagram_url')->nullable()->after('store_code'); // SNSリンク用
+            $table->string('address')->nullable()->after('instagram_url'); // 住所・マップ表示用
+            $table->string('google_analytics_id')->nullable()->after('address'); // GA4タグ用 (例: G-XXXXXXX)
+            $table->text('notice_message')->nullable()->after('google_analytics_id'); // 画面上部のお知らせバー用
+        });
+    }
+
+    public function down()
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->dropColumn([
+                'whatsapp_number',
+                'store_code',
+                'instagram_url',
+                'address',
+                'google_analytics_id',
+                'notice_message'
+            ]);
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_03_04_062405_create_customers_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('customers', function (Blueprint $table) {
+            $table->id();
+            $table->string('phone')->unique()->comment('WhatsApp/電話番号');
+            $table->string('name')->comment('顧客名');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('customers');
+    }
+};
+</file>
+
+<file path="database/migrations/2026_03_04_062807_add_customer_id_to_orders_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            // tenant_id の後ろに customer_id を追加
+            $table->foreignId('customer_id')->nullable()->after('tenant_id')->constrained('customers')->nullOnDelete();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropForeign(['customer_id']);
+            $table->dropColumn('customer_id');
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_03_04_082453_add_is_test_to_orders_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->boolean('is_test')->default(false)->after('status')->comment('テスト注文');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn('is_test');
+        });
+    }
+};
+</file>
+
 <file path="database/seeders/DatabaseSeeder.php">
 <?php
 
@@ -3437,6 +3065,51 @@ class DatabaseSeeder extends Seeder
         // ]);
     }
 }
+</file>
+
+<file path="database/seeders/TenantSeeder.php">
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Tenant;
+use Illuminate\Database\Seeder;
+
+class TenantSeeder extends Seeder
+{
+    public function run()
+    {
+        $tenants = [
+            [
+                'name' => 'Söya',
+                // 本番環境のSöya用ドメイン（またはローカルテスト用）
+                'domain' => 'soya.bistronippon.tn',
+                'theme_primary' => '#e60012', // キッコーマンレッド
+                'theme_bg' => '#eaedf0',      // コンクリートグレー
+            ],
+            [
+                'name' => 'Bistro Nippon',
+                'domain' => 'order.bistronippon.tn',
+                'theme_primary' => '#0047AB', // ビストロ風の深いブルー（仮）
+                'theme_bg' => '#ffffff',      // クリーンな白
+            ],
+            [
+                'name' => 'Curry Kitano',
+                'domain' => 'currykitano.tn',
+                'theme_primary' => '#E6A817', // スパイスイエロー（仮）
+                'theme_bg' => '#FFF8E7',      // ウォームホワイト
+            ],
+        ];
+
+        foreach ($tenants as $tenant) {
+            Tenant::updateOrCreate(['domain' => $tenant['domain']], $tenant);
+        }
+    }
+}
+</file>
+
+<file path="database/.gitignore">
+*.sqlite*
 </file>
 
 <file path="resources/js/bootstrap.js">
@@ -4051,187 +3724,6 @@ h1.brand-title {
 }
 </file>
 
-<file path="resources/sass/menu.scss">
-/* resources/sass/menu.scss */
-
-/* --- 1. Base Settings --- */
-body {
-    font-family: 'Montserrat', sans-serif;
-    background-color: #f8f9fa;
-    color: #1a1a1a;
-    -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
-}
-.serif { font-family: 'Playfair Display', serif; }
-
-/* --- 2. Navigation & Header --- */
-
-/* ★修正: スクロールバーを「隠す」のではなく「極細ライン」にする */
-.category-nav {
-    /* Firefox用 */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(230, 0, 18, 0.3) transparent; /* Thumb Track */
-    padding-bottom: 8px; /* スクロールバーの分だけ少し余白を開ける */
-}
-
-/* Chrome, Safari, Edge用 */
-.category-nav::-webkit-scrollbar {
-    display: block; /* 表示する */
-    height: 3px;    /* 極細にする */
-}
-
-.category-nav::-webkit-scrollbar-track {
-    background: transparent; /* 背景は透明 */
-}
-
-.category-nav::-webkit-scrollbar-thumb {
-    background-color: rgba(230, 0, 18, 0.3); /* Söyaレッド（薄め） */
-    border-radius: 10px; /* 丸くする */
-}
-
-/* 常駐戻るボタン */
-.nav-back-fixed {
-    position: fixed;
-    top: 16px;
-    left: 16px;
-    z-index: 1000;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.6;
-    transition: all 0.3s ease;
-    mix-blend-mode: difference;
-    color: #fff;
-
-    &:hover {
-        opacity: 1;
-        transform: translateX(-2px);
-    }
-
-    .nav-back-text {
-        font-family: 'Montserrat', sans-serif;
-        font-weight: 700;
-        font-size: 0.7rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-    }
-}
-
-/* --- 3. Gimmicks (Animations) --- */
-
-/* カテゴリ点滅 */
-@keyframes flashRed {
-    0%, 100% { color: #1a1a1a; text-shadow: none; transform: scale(1); }
-    50% { color: #e60012; text-shadow: 0 0 8px rgba(230, 0, 18, 0.4); transform: scale(1.1); }
-}
-
-.nav-link.active {
-    animation: flashRed 0.8s infinite ease-in-out;
-    border-bottom: 2px solid #e60012;
-    padding-bottom: 2px;
-    font-weight: 700;
-}
-
-/* 醤油の雨 */
-#soy-rain-container {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-    pointer-events: none; z-index: 9999;
-}
-
-.soy-drop {
-    position: absolute; top: -20px; width: 10px; height: 15px;
-    background: #2c1a16;
-    border-radius: 0 50% 50% 50%;
-    transform: rotate(45deg);
-    opacity: 0.8;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
-}
-
-@keyframes dripDown {
-    0% { top: -20px; opacity: 1; transform: rotate(45deg) scale(1); }
-    100% { top: 110vh; opacity: 0; transform: rotate(45deg) scale(0.8); }
-}
-
-.animate-drip {
-    animation: dripDown 1.2s linear forwards;
-}
-
-/* --- 4. Modal Styles --- */
-#product-modal {
-    transition: opacity 0.2s ease, visibility 0.2s ease;
-
-    &.hidden { visibility: hidden; opacity: 0; }
-    &.active { visibility: visible; opacity: 1; }
-
-    > div {
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    &.hidden > div { transform: translateY(100%); }
-    &.active > div { transform: translateY(0); }
-}
-
-/* --- 5. Character & UI Gimmicks --- */
-
-/* お叱り醤油ちゃん (出現) */
-@keyframes pyonJump {
-    0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
-    40% { transform: translate(-50%, -20px) scale(1.1); opacity: 1; }
-    60% { transform: translate(-50%, 10px) scale(0.95); }
-    80% { transform: translate(-50%, -5px) scale(1.05); }
-    100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
-}
-
-/* 揺れを控えめに、上品に (Gentle Shake) */
-@keyframes shakeGentle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-3deg); }
-    75% { transform: rotate(3deg); }
-}
-
-.soy-appear {
-    display: flex !important;
-    animation: pyonJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-.soy-shake {
-    animation: shakeGentle 2.0s ease-in-out infinite;
-}
-
-/* 赤いキャップ回転 */
-@keyframes rollHappy {
-    0% { transform: translateX(-20px) rotate(-180deg); opacity: 0; }
-    100% { transform: translateX(0) rotate(0deg); opacity: 1; }
-}
-
-.animate-roll {
-    animation: rollHappy 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* 必須項目のパルス強調 */
-@keyframes pulseAttention {
-    0% { color: #9ca3af; transform: scale(1); }
-    50% { color: #e60012; transform: scale(1.05); text-shadow: 0 0 5px rgba(230, 0, 18, 0.2); }
-    100% { color: #9ca3af; transform: scale(1); }
-}
-
-.required-pulse {
-    display: inline-block;
-    animation: pulseAttention 2s infinite ease-in-out;
-    transform-origin: left center;
-}
-/* --- Checkout Stamp Animation --- */
-@keyframes stampIn {
-    0% { transform: scale(3) rotate(-15deg); opacity: 0; }
-    50% { transform: scale(0.9) rotate(-15deg); opacity: 1; }
-    100% { transform: scale(1) rotate(-15deg); opacity: 1; }
-}
-
-.stamp-animation {
-    animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-</file>
-
 <file path="resources/views/layouts/soya.blade.php">
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -4261,344 +3753,6 @@ body {
 </body>
 
 </html>
-</file>
-
-<file path="resources/views/menu.blade.php">
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Menu | Söya.</title>
-
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Montserrat:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    @vite(['resources/sass/menu.scss'])
-
-    <style>
-        .nav-back-fixed {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 1000;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0.6;
-            transition: all 0.3s ease;
-            mix-blend-mode: difference;
-            color: #fff;
-        }
-
-        .nav-back-fixed:hover {
-            opacity: 1;
-            transform: translateX(-2px);
-        }
-
-        .nav-back-text {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-        }
-    </style>
-</head>
-
-<body class="pb-32">
-
-    <a href="{{ url('/') }}" class="nav-back-fixed">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        <span class="nav-back-text">Söya.</span>
-    </a>
-
-    <div id="soy-rain-container"></div>
-
-    <div
-        class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 transition-all duration-300">
-        <header class="pt-3 pb-1 px-4 text-center">
-            <a href="{{ url('/') }}" class="inline-block hover:opacity-70 transition-opacity">
-                <h1 class="serif text-xl font-bold tracking-tight text-[#1a1a1a]">Söya<span
-                        class="text-[#e60012]">.</span></h1>
-            </a>
-        </header>
-        <div class="flex gap-6 px-4 py-3 overflow-x-auto category-nav items-center">
-            @foreach ($categories as $category)
-                <a href="#cat-{{ $category->id }}"
-                    class="nav-link whitespace-nowrap text-[10px] font-bold tracking-[0.15em] uppercase text-gray-400 transition-all duration-200"
-                    data-target="cat-{{ $category->id }}">
-                    {{ $category->name }}
-                </a>
-            @endforeach
-        </div>
-    </div>
-
-    <main class="px-0 mt-2 max-w-xl mx-auto">
-        @foreach ($categories as $category)
-            <section id="cat-{{ $category->id }}" class="section-spy pt-6 pb-2">
-                <div class="px-4 mb-2 flex items-center gap-2 sticky top-[100px] z-30 pointer-events-none">
-                    <div class="bg-gray-100/90 backdrop-blur px-3 py-1 rounded-full border border-gray-200">
-                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-gray-900">{{ $category->name }}
-                        </h2>
-                    </div>
-                </div>
-                <div class="bg-white border-t border-b border-gray-100 divide-y divide-gray-100">
-                    @foreach ($category->products as $product)
-                        <div onclick="openProductModal({{ $product->id }})"
-                            class="relative flex items-center gap-3 p-3 active:bg-gray-50 transition-colors cursor-pointer group h-[88px]">
-
-                            <div
-                                class="w-16 h-16 shrink-0 bg-gray-50 rounded-md overflow-hidden relative border border-gray-100">
-                                @if ($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <div
-                                        class="w-full h-full flex items-center justify-center text-[8px] text-gray-300">
-                                        NO IMG</div>
-                                @endif
-                            </div>
-
-                            <div class="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
-                                <h3 class="serif text-[15px] font-bold leading-tight text-gray-900 mb-1 truncate pr-2">
-                                    {{ $product->name }}
-                                </h3>
-                                <p class="text-[10px] text-gray-400 line-clamp-1 leading-tight mb-1">
-                                    {!! strip_tags($product->description) !!}
-                                </p>
-                                @if ($product->productVariants->count() > 0)
-                                    <span
-                                        class="inline-flex items-center px-1.5 py-0.5 rounded-[4px] text-[8px] font-medium bg-gray-50 text-gray-500 border border-gray-100 self-start">
-                                        {{ $product->productVariants->count() }} Styles
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="flex flex-col justify-between items-end h-full py-1 pl-2 shrink-0">
-                                <span class="font-bold text-[13px] text-gray-900">
-                                    {{ number_format($product->price, 3) }}
-                                    @if ($product->productVariants->where('is_required', true)->count() > 0)
-                                        <span class="text-[9px] text-gray-400 font-normal">~</span>
-                                    @endif
-                                </span>
-                                <button
-                                    class="w-7 h-7 rounded-full bg-[#f4f5f7] text-[#1a1a1a] flex items-center justify-center shadow-sm group-hover:bg-[#1a1a1a] group-hover:text-white transition-colors duration-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </section>
-        @endforeach
-    </main>
-
-    <div id="cart-bar"
-        class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto bg-[#1a1a1a] text-white py-3 px-5 rounded-full flex justify-between items-center shadow-[0_10px_40px_rgba(0,0,0,0.4)] z-[1000] hidden animate-[fadeInUp_0.3s_ease-out]">
-        <div class="flex flex-col">
-            <span class="text-[8px] tracking-widest text-gray-400 uppercase">Total</span>
-            <div class="font-bold text-base leading-none">
-                <span id="cart-total">0.000</span> <span class="text-[10px] font-normal">DT</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div class="bg-gray-800 px-3 py-1 rounded-full text-[10px] font-medium text-gray-300">
-                <span id="cart-count">0</span> items
-            </div>
-            <button onclick="App.openCheckout()"
-                class="bg-white text-black px-5 py-2 rounded-full text-[10px] font-bold tracking-widest uppercase hover:bg-gray-200 transition">
-                Check Out
-            </button>
-        </div>
-    </div>
-
-    <div id="product-modal"
-        class="fixed inset-0 bg-black/60 backdrop-blur-[3px] z-[2000] hidden items-end justify-center sm:items-center">
-        <div
-            class="bg-white w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col relative">
-            <div class="p-6 pb-2 shrink-0 relative z-10 bg-white">
-                <button onclick="closeModal()"
-                    class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-gray-50 text-gray-400 hover:bg-gray-100 transition-colors">✕</button>
-                <h2 id="modal-product-name" class="serif text-2xl font-bold pr-10 leading-none mb-2"></h2>
-                <div class="mt-3 space-y-2">
-                    <p id="modal-description" class="text-xs text-gray-500 leading-relaxed font-medium"></p>
-                    <p id="modal-ingredients"
-                        class="text-[9px] text-gray-400 uppercase tracking-wider border-l-2 border-[#e60012] pl-2"></p>
-                </div>
-            </div>
-
-            <div id="modal-options" class="p-6 pt-2 overflow-y-auto grow bg-white"></div>
-
-            <div class="p-5 pt-0 border-t border-gray-50 shrink-0 bg-white relative z-20">
-                <div id="soy-character"
-                    class="hidden absolute -top-20 left-1/2 flex-col items-center pointer-events-none z-30"
-                    style="transform: translateX(-50%);">
-                    <div
-                        class="bg-[#e60012] text-white text-[10px] font-bold py-1 px-3 rounded-full mb-2 shadow-lg whitespace-nowrap animate-bounce">
-                        Please select a style.
-                    </div>
-                    <svg width="50" height="80" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
-                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
-                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
-                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
-                        <circle cx="30" cy="50" r="5" fill="#e60012" />
-                    </svg>
-                </div>
-                <button id="add-to-cart-btn" onclick="confirmProduct()"
-                    class="w-full bg-[#1a1a1a] text-white py-4 rounded-xl font-bold tracking-[0.15em] text-xs hover:bg-[#e60012] transition-colors shadow-lg flex justify-center items-center gap-2">
-                    ADD TO ORDER
-                </button>
-            </div>
-        </div>
-    </div>
-
-    @include('parts.checkout-modal')
-
-    <div id="order-status-bar"
-        class="fixed bottom-0 left-0 right-0 bg-white shadow-[0_-5px_20px_rgba(0,0,0,0.15)] z-[1500] transform translate-y-full transition-transform duration-500 rounded-t-3xl overflow-hidden hidden flex-col max-w-xl mx-auto">
-        <div class="bg-[#1a1a1a] text-white p-4 flex items-center justify-between cursor-pointer"
-            onclick="document.getElementById('order-status-details').classList.toggle('hidden')">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center animate-pulse">
-                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div class="text-xs font-bold tracking-widest uppercase">Waiting for Confirmation</div>
-                    <div class="text-[10px] text-gray-400">Order <span id="status-order-number"
-                            class="text-white font-mono font-bold"></span></div>
-                </div>
-            </div>
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
-            </svg>
-        </div>
-        <div id="order-status-details" class="p-5 bg-[#f8f9fa] hidden border-t border-gray-100">
-            <p class="text-xs text-gray-600 leading-relaxed font-medium">
-                Awaiting Confirmation
-                Your order is not yet confirmed.
-                Please call us if there is no response within 10 minutes, as we may
-                miss messages during busy periods.
-            </p>
-            <a href="tel:+216557786656"
-                class="mt-4 w-full bg-white border border-gray-200 text-[#1a1a1a] py-3 rounded-xl font-bold text-xs flex justify-center items-center gap-2 hover:bg-gray-50 shadow-sm transition-colors">
-                <i class="bi bi-telephone-fill"></i> CALL : +216 55 778 6656
-            </a>
-            <div class="text-center mt-3">
-                <button onclick="App.clearOrderStatus()"
-                    class="text-gray-400 hover:text-gray-600 text-[10px] underline tracking-wider uppercase">Hide this
-                    tracker</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        window.ALL_PRODUCTS = @json($categories->flatMap->products);
-        const openProductModal = (id) => App.openModal(id);
-        const closeModal = () => App.close();
-        const confirmProduct = () => App.confirm();
-
-        let lastScrollY = 0;
-        let soyRainContainer = document.getElementById('soy-rain-container');
-        let dropCooldown = false;
-
-        window.addEventListener('scroll', () => {
-            const currentScrollY = window.scrollY;
-            const delta = Math.abs(currentScrollY - lastScrollY);
-            if (delta > 10 && !dropCooldown) {
-                createSoyDrop();
-                dropCooldown = true;
-                setTimeout(() => {
-                    dropCooldown = false;
-                }, 100);
-            }
-            lastScrollY = currentScrollY;
-        });
-
-        function createSoyDrop() {
-            const drop = document.createElement('div');
-            drop.className = 'soy-drop animate-drip';
-            drop.style.left = (Math.random() * window.innerWidth) + 'px';
-            drop.style.transform = `rotate(45deg) scale(${0.5 + Math.random() * 0.5})`;
-            if (soyRainContainer) soyRainContainer.appendChild(drop);
-            setTimeout(() => {
-                drop.remove();
-            }, 1200);
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const sections = document.querySelectorAll('.section-spy');
-            const navLinks = document.querySelectorAll('.nav-link');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        navLinks.forEach(link => link.classList.remove('active'));
-                        const activeLink = document.querySelector(
-                            `.nav-link[href="#${entry.target.id}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('active');
-                            activeLink.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'nearest',
-                                inline: 'center'
-                            });
-                        }
-                    }
-                });
-            }, {
-                rootMargin: '-20% 0px -60% 0px'
-            });
-            sections.forEach(section => observer.observe(section));
-
-            // トラッカーをチェックして表示
-            if (typeof App !== 'undefined') App.checkActiveOrder();
-        });
-    </script>
-    <script src="{{ asset('js/menu.js') }}"></script>
-</body>
-
-</html>
-</file>
-
-<file path="routes/api.php">
-<?php
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::post('/orders', [\App\Http\Controllers\Api\OrderController::class, 'store']);
 </file>
 
 <file path="routes/channels.php">
@@ -4644,56 +3798,411 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 </file>
 
-<file path="app/Models/User.php">
+<file path="app/Filament/Resources/OrderResource/Pages/EditOrder.php">
+<?php
+
+namespace App\Filament\Resources\OrderResource\Pages;
+
+use App\Filament\Resources\OrderResource;
+use Filament\Actions;
+use Filament\Resources\Pages\EditRecord;
+
+class EditOrder extends EditRecord
+{
+    protected static string $resource = OrderResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            //Actions\DeleteAction::make(),
+        ];
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/OrderResource.php">
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\OrderResource\Pages;
+use App\Models\Order;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
+
+class OrderResource extends Resource
+{
+    protected static ?string $model = Order::class;
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static ?string $navigationLabel = '注文管理';
+
+    public static function form(Form $form): Form
+    {
+        return $form->schema([
+            Forms\Components\Placeholder::make('receipt_view')
+                ->hiddenLabel()
+                ->content(function ($record) {
+                    if (!$record) return '';
+
+                    // 1. 超コンパクトな顧客情報 & 備考（あれば赤色で強調）
+                    $html = '<div class="mb-3">';
+                    $html .= '<div class="text-[11px] text-gray-500 flex items-center gap-1.5 font-medium"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg> ' . e($record->customer_name) . ' <span class="mx-1 text-gray-300">|</span> 📞 ' . e($record->customer_phone) . '</div>';
+                    if (!empty($record->notes)) {
+                        $html .= '<div class="mt-1.5 p-2 bg-red-50 border border-red-100 rounded text-[12px] text-red-600 font-bold">⚠️ 備考: ' . nl2br(e($record->notes)) . '</div>';
+                    }
+                    $html .= '</div>';
+
+                    // 2. スマホ特化レシート
+                    $html .= '<div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">';
+                    if ($record->items->isEmpty()) {
+                        $html .= '<div class="p-4 text-sm text-gray-400">明細がありません</div>';
+                    } else {
+                        $html .= '<div class="divide-y divide-gray-100">';
+                        foreach ($record->items as $item) {
+                            $optionsHtml = '';
+                            if (!empty($item->variants)) {
+                                $opts = [];
+                                foreach ($item->variants as $v) {
+                                    $p = !empty($v['price_adjustment']) ? "(+{$v['price_adjustment']})" : '';
+                                    $opts[] = "{$v['name']} {$p}";
+                                }
+                                $optionsHtml = '<div class="text-[12px] text-gray-500 mt-1 mb-0.5 leading-tight">' . implode(' / ', $opts) . '</div>';
+                            }
+
+                            $price = number_format($item->price, 3);
+                            $subtotal = number_format($item->price * $item->quantity, 3);
+
+                            $html .= '<div class="p-3 flex justify-between items-start gap-3">';
+                            $html .= '<div class="flex-1 min-w-0">';
+                            $html .= "<div class='font-bold text-[15px] text-gray-900 leading-tight'>{$item->product_name}</div>";
+                            $html .= $optionsHtml;
+                            $html .= "<div class='text-[12px] text-gray-400 mt-1 font-mono'>{$price} DT × {$item->quantity}</div>";
+                            $html .= '</div>';
+                            $html .= "<div class='font-bold text-[15px] text-gray-900 whitespace-nowrap pt-0.5'>{$subtotal}</div>";
+                            $html .= '</div>';
+                        }
+                        $html .= '</div>';
+
+                        // 合計金額フッター
+                        $total = number_format($record->total_price, 3);
+                        $html .= '<div class="p-3 bg-gray-50 border-t border-gray-200 flex justify-between items-center">';
+                        $html .= '<span class="font-bold text-[13px] tracking-widest text-gray-500 uppercase">Total</span>';
+                        $html .= '<span class="font-bold text-lg text-[#e60012] font-mono">' . $total . ' DT</span>';
+                        $html .= '</div>';
+                    }
+                    $html .= '</div>';
+
+                    // 3. 注文番号と日時の極小表示（最下部）
+                    $date = $record->created_at ? $record->created_at->format('Y/m/d H:i') : '';
+                    $html .= '<div class="mt-3 text-[10px] text-gray-400 flex justify-between px-1">';
+                    $html .= '<span>Order #' . e($record->order_number) . '</span>';
+                    $html .= '<span>' . $date . '</span>';
+                    $html .= '</div>';
+
+                    return new HtmlString($html);
+                })->columnSpanFull(),
+        ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table->defaultSort('created_at', 'desc')->columns([
+            Tables\Columns\TextColumn::make('created_at')->label('日時')->dateTime('M d, H:i')->sortable(),
+            Tables\Columns\TextColumn::make('order_number')->label('注文番号')->searchable()->weight('bold'),
+            Tables\Columns\TextColumn::make('customer_name')->label('顧客名')->searchable(),
+            Tables\Columns\TextColumn::make('total_price')->label('売上')->numeric(3)->suffix(' DT'),
+        ])->filters([
+            Tables\Filters\TernaryFilter::make('is_test')->label('テスト(削除済)の表示')->default(0),
+        ])->actions([
+            Tables\Actions\EditAction::make()->label('詳細確認'),
+
+            Tables\Actions\Action::make('delete_order')
+                ->label('削除')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('注文の削除')
+                ->modalDescription('担当者パスコードを入力して削除してください。')
+                ->form([
+                    Forms\Components\TextInput::make('passcode')
+                        ->label('パスコード')
+                        ->password()
+                        ->required()
+                        ->rule('in:2017')
+                        ->validationMessages(['in' => 'パスコードが正しくありません。']),
+                ])
+                ->action(function (Order $record) {
+                    $record->update(['is_test' => true]);
+                }),
+        ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListOrders::route('/'),
+            'edit' => Pages\EditOrder::route('/{record}/edit'),
+        ];
+    }
+}
+</file>
+
+<file path="app/Models/Category.php">
 <?php
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
+use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable implements FilamentUser
+class Category extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable;
+
+    use HasFactory;
+
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'slug',
+        'image',
+        'description',
+        'is_active',
+        'sort_order',
+        'seo_title',
+        'seo_description',
+        'tenant_id', // ★これを追加
+        'name',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'is_active' => 'boolean',
+    ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+}
+</file>
+
+<file path="app/Models/OrderItem.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class OrderItem extends Model
+{
+    protected $guarded = [];
+    protected $casts = ['variants' => 'array'];
+
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+}
+</file>
+
+<file path="app/Models/Product.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var array
      */
     protected $fillable = [
+        'category_id',
         'name',
-        'email',
-        'password',
+        'staff_name',
+        'slug',
+        'price',
+        'description',
+        'image',
+        'ingredients',
+        'is_active',
+        'order_type',
+        'sort_order',
+        'tenant_id', // ★これを追加
+        'name',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be cast to native types.
      *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
+     * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'id' => 'integer',
+        'category_id' => 'integer',
+        'price' => 'decimal:3',
+        'is_active' => 'boolean',
     ];
 
-    public function canAccessPanel(Panel $panel): bool
+    public function category()
     {
-        return true;
+        return $this->belongsTo(Category::class);
+    }
+
+    // public function category()
+    // {
+    //     return $this->belongsTo(Category::class);
+    // }
+
+    public function productVariants()
+    {
+        return $this->hasMany(ProductVariant::class);
+    }
+    // --- 追加 ---
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class);
+    }
+}
+</file>
+
+<file path="app/Models/ProductVariant.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class ProductVariant extends Model
+{
+    use HasFactory;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'product_id',
+        'name',
+        'staff_name',
+        'price_adjustment',
+        'is_required',
+        'sort_order',
+        'tenant_id', // ★これを追加
+        'name',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        'product_id' => 'integer',
+        'price_adjustment' => 'decimal:3',
+        'is_required' => 'boolean',
+    ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+}
+</file>
+
+<file path="app/Providers/Filament/AdminPanelProvider.php">
+<?php
+
+namespace App\Providers\Filament;
+
+use App\Models\Tenant;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->login()
+            ->colors([
+                'primary' => Color::Amber,
+            ])
+            // ★ マルチテナント設定を有効化 ★
+            ->tenant(Tenant::class)
+            // 管理画面のUI上からのテナント(店舗)新規作成・登録画面を無効化
+            ->tenantRegistration(false)
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
+                Pages\Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ]);
     }
 }
 </file>
@@ -5167,6 +4676,276 @@ $(function() {
 }
 </file>
 
+<file path="resources/sass/menu.scss">
+/* resources/sass/menu.scss */
+
+/* --- 1. Base Settings --- */
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    color: #1a1a1a;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+}
+.serif { font-family: 'Playfair Display', serif; }
+
+/* --- 2. Navigation & Header --- */
+
+/* ★修正: スクロールバーを「隠す」のではなく「極細ライン」にする */
+.category-nav {
+    /* Firefox用 */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(230, 0, 18, 0.3) transparent; /* Thumb Track */
+    padding-bottom: 8px; /* スクロールバーの分だけ少し余白を開ける */
+}
+
+/* Chrome, Safari, Edge用 */
+.category-nav::-webkit-scrollbar {
+    display: block; /* 表示する */
+    height: 3px;    /* 極細にする */
+}
+
+.category-nav::-webkit-scrollbar-track {
+    background: transparent; /* 背景は透明 */
+}
+
+.category-nav::-webkit-scrollbar-thumb {
+    background-color: rgba(230, 0, 18, 0.3); /* Söyaレッド（薄め） */
+    border-radius: 10px; /* 丸くする */
+}
+
+/* 常駐戻るボタン */
+.nav-back-fixed {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    mix-blend-mode: difference;
+    color: #fff;
+
+    &:hover {
+        opacity: 1;
+        transform: translateX(-2px);
+    }
+
+    .nav-back-text {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 0.7rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+    }
+}
+
+/* --- 3. Gimmicks (Animations) --- */
+
+/* カテゴリ点滅 */
+@keyframes flashRed {
+    0%, 100% { color: #2c3034; text-shadow: none; transform: scale(1); } // 黒じゃなくてスレートに
+    50% { color: #e60012; text-shadow: 0 0 8px rgba(230, 0, 18, 0.4); transform: scale(1.1); }
+}
+
+.nav-link.active {
+    animation: flashRed 0.8s infinite ease-in-out;
+    border-bottom: 2px solid #e60012;
+    padding-bottom: 2px;
+    font-weight: 700;
+    color: #2c3034; // デフォルトのアクティブ色
+}
+
+/* 醤油の雨 */
+#soy-rain-container {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    pointer-events: none; z-index: 9999;
+}
+
+.soy-drop {
+    position: absolute; top: -20px; width: 10px; height: 15px;
+    background: #2c1a16;
+    border-radius: 0 50% 50% 50%;
+    transform: rotate(45deg);
+    opacity: 0.8;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+}
+
+@keyframes dripDown {
+    0% { top: -20px; opacity: 1; transform: rotate(45deg) scale(1); }
+    100% { top: 110vh; opacity: 0; transform: rotate(45deg) scale(0.8); }
+}
+
+.animate-drip {
+    animation: dripDown 1.2s linear forwards;
+}
+
+/* --- 4. Modal Styles --- */
+#product-modal {
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+
+    &.hidden { visibility: hidden; opacity: 0; }
+    &.active { visibility: visible; opacity: 1; }
+
+    > div {
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    &.hidden > div { transform: translateY(100%); }
+    &.active > div { transform: translateY(0); }
+}
+
+/* --- 5. Character & UI Gimmicks --- */
+
+/* お叱り醤油ちゃん (出現) */
+@keyframes pyonJump {
+    0% { transform: translate(-50%, 100%) scale(0.5); opacity: 0; }
+    40% { transform: translate(-50%, -20px) scale(1.1); opacity: 1; }
+    60% { transform: translate(-50%, 10px) scale(0.95); }
+    80% { transform: translate(-50%, -5px) scale(1.05); }
+    100% { transform: translate(-50%, 0) scale(1); opacity: 1; }
+}
+
+/* 揺れを控えめに、上品に (Gentle Shake) */
+@keyframes shakeGentle {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+.soy-appear {
+    display: flex !important;
+    animation: pyonJump 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.soy-shake {
+    animation: shakeGentle 2.0s ease-in-out infinite;
+}
+
+/* 赤いキャップ回転 */
+@keyframes rollHappy {
+    0% { transform: translateX(-20px) rotate(-180deg); opacity: 0; }
+    100% { transform: translateX(0) rotate(0deg); opacity: 1; }
+}
+
+.animate-roll {
+    animation: rollHappy 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 必須項目のパルス強調 */
+@keyframes pulseAttention {
+    0% { color: #9ca3af; transform: scale(1); }
+    50% { color: #e60012; transform: scale(1.05); text-shadow: 0 0 5px rgba(230, 0, 18, 0.2); }
+    100% { color: #9ca3af; transform: scale(1); }
+}
+
+.required-pulse {
+    display: inline-block;
+    animation: pulseAttention 2s infinite ease-in-out;
+    transform-origin: left center;
+}
+/* --- Checkout Stamp Animation --- */
+@keyframes stampIn {
+    0% { transform: scale(3) rotate(-15deg); opacity: 0; }
+    50% { transform: scale(0.9) rotate(-15deg); opacity: 1; }
+    100% { transform: scale(1) rotate(-15deg); opacity: 1; }
+}
+
+.stamp-animation {
+    animation: stampIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+</file>
+
+<file path="resources/views/parts/checkout-modal.blade.php">
+<div id="checkout-modal" class="fixed inset-0 bg-[#2c3034]/70 backdrop-blur-[4px] z-[2000] hidden flex-col justify-end">
+    <div id="checkout-sheet"
+        class="bg-[#eaedf0] w-full max-w-lg mx-auto rounded-t-[2rem] shadow-[0_-15px_40px_rgba(0,0,0,0.2)] flex flex-col relative transition-transform duration-300 translate-y-full max-h-[92vh]">
+
+        <div class="w-12 h-1.5 bg-[#cbd2d9] rounded-full mx-auto mt-4 mb-2"></div>
+
+        <div class="absolute top-5 right-5 z-20">
+            <button onclick="App.closeCheckout()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-white/50 text-[#8b949e] hover:bg-white hover:text-[#2c3034] transition-colors shadow-sm">✕</button>
+        </div>
+
+        <div class="overflow-y-auto px-4 pt-4 pb-32">
+
+            {{-- Söya限定のキャラクター表示制御 --}}
+            @if ($features['has_mascot'] ?? false)
+                <div id="checkout-soy-character"
+                    class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
+                    <div
+                        class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1.5 px-4 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
+                        Tell me your name!
+                    </div>
+                    <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
+                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
+                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
+                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
+                        <circle cx="30" cy="50" r="5" fill="#e60012" />
+                        <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+            @endif
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm relative border border-[#d1d8e0]"
+                style="background-image: radial-gradient(#eaedf0 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
+
+                <div class="text-center mb-6">
+                    {{-- 店舗名を変数化 --}}
+                    <h2 class="serif text-2xl font-bold text-[#2c3034]">{{ $tenant->name ?? 'Store' }}<span
+                            class="text-[var(--theme-primary)]">.</span></h2>
+                    <p class="font-mono text-[9px] text-[#8b949e] uppercase tracking-widest mt-1">Order Slip <span
+                            class="mx-1">|</span> <span id="receipt-date"></span></p>
+                    <div class="border-b-2 border-dashed border-[#eaedf0] mt-5"></div>
+                </div>
+
+                <div id="checkout-items" class="font-mono text-sm text-[#2c3034] space-y-4 mb-6 min-h-[80px]">
+                </div>
+
+                <div class="border-b-2 border-dashed border-[#eaedf0] mb-6"></div>
+
+                <div class="space-y-5 font-sans">
+                    <div>
+                        <label class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">Guest
+                            Name <span class="text-[var(--theme-primary)]">*</span></label>
+                        <input type="text" id="order-name"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            placeholder="Your Name">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">WhatsApp
+                            Number <span class="text-[var(--theme-primary)]">*</span></label>
+                        <input type="tel" id="order-phone"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            placeholder="+216 ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-[#eaedf0] rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
+            <div class="flex justify-between items-end mb-4 px-2">
+                <span class="text-[10px] font-bold tracking-widest uppercase text-[#8b949e]">Total Due</span>
+                <span class="font-mono font-bold text-3xl text-[#2c3034] leading-none"><span
+                        id="checkout-total">0.000</span> <span class="text-sm font-sans text-[#8b949e]">DT</span></span>
+            </div>
+            {{-- ボタンカラーをテナントのテーマカラーに連動 --}}
+            <button id="submit-order-btn" onclick="App.submitOrder()"
+                class="w-full bg-[var(--theme-primary)] text-white py-4 rounded-2xl font-bold tracking-[0.15em] text-[12px] transition-colors shadow-md hover:brightness-95 flex justify-center items-center gap-2">
+                SEND TO KITCHEN
+            </button>
+        </div>
+    </div>
+</div>
+</file>
+
 <file path="resources/views/reservation.blade.php">
 @extends('layouts.soya')
 
@@ -5358,6 +5137,108 @@ Please send this without modification.`;
 @endpush
 </file>
 
+<file path="routes/api.php">
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register API routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| is assigned the "api" middleware group. Enjoy building your API!
+|
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+Route::post('/orders', [\App\Http\Controllers\Api\OrderController::class, 'store']);
+</file>
+
+<file path="app/Http/Controllers/Api/OrderController.php">
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Tenant;
+use App\Models\Customer; // ★追加
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+
+class OrderController extends Controller
+{
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_name' => 'required|string',
+            'customer_phone' => 'required|string',
+            'order_type' => 'required|string',
+            'notes' => 'nullable|string',
+            'total_price' => 'required|numeric',
+            'items' => 'required|array',
+        ]);
+
+        $host = $request->getHost();
+        if (in_array($host, ['localhost', '127.0.0.1'])) {
+            $host = 'soya.bistronippon.tn';
+        }
+        $tenant = Tenant::where('domain', $host)->firstOrFail();
+
+        $order = DB::transaction(function () use ($validated, $tenant) {
+
+            // ★1. 顧客データの取得または新規作成（電話番号をキーにする）
+            $customer = Customer::firstOrCreate(
+                ['phone' => $validated['customer_phone']],
+                ['name' => $validated['customer_name']]
+            );
+
+            $orderNumber = strtoupper(Str::random(4));
+
+            // ★2. 注文データの作成（customer_idを追加）
+            // テスト注文判定（小文字変換してチェック）
+            $testNames = ['test', 'テスト', 'てすと'];
+            $isTest = in_array(mb_strtolower($validated['customer_name']), $testNames, true);
+
+            $order = Order::create([
+                'tenant_id' => $tenant->id,
+                'customer_id' => $customer->id,
+                'order_number' => $orderNumber,
+                'customer_name' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
+                'order_type' => $validated['order_type'],
+                'notes' => $validated['notes'],
+                'total_price' => $validated['total_price'],
+                'is_test' => $isTest, // ★追加
+            ]);
+
+            // 3. 注文明細データの作成
+            foreach ($validated['items'] as $item) {
+                OrderItem::create([
+                    'tenant_id' => $tenant->id,
+                    'order_id' => $order->id,
+                    'product_id' => $item['productId'],
+                    'product_name' => $item['name'],
+                    'price' => $item['price'],
+                    'variants' => $item['variants'],
+                ]);
+            }
+            return $order;
+        });
+
+        return response()->json(['success' => true, 'order_number' => $order->order_number]);
+    }
+}
+</file>
+
 <file path="app/Http/Middleware/TrustProxies.php">
 <?php
 namespace App\Http\Middleware;
@@ -5368,6 +5249,104 @@ class TrustProxies extends Middleware
     // ★すべてのプロキシを信頼する（OVHの仕様に合わせる）
     protected $proxies = '*';
     protected $headers = Request::HEADER_X_FORWARDED_FOR | Request::HEADER_X_FORWARDED_HOST | Request::HEADER_X_FORWARDED_PORT | Request::HEADER_X_FORWARDED_PROTO | Request::HEADER_X_FORWARDED_AWS_ELB;
+}
+</file>
+
+<file path="app/Models/Order.php">
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Order extends Model
+{
+    protected $guarded = [];
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+    // 1. 顧客とのリレーション
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+}
+</file>
+
+<file path="app/Models/User.php">
+<?php
+
+namespace App\Models;
+
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
+use Laravel\Sanctum\HasApiTokens;
+
+class User extends Authenticatable implements FilamentUser, HasTenants
+{
+    use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    // --- ここから追加: マルチテナント用メソッド ---
+
+    public function getTenants(Panel $panel): array|Collection
+    {
+        // 管理者はすべての店舗(Tenant)にアクセス可能とする
+        return Tenant::all();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        // 選択された店舗へのアクセス権限をチェック（今回は常にtrue）
+        return true;
+    }
 }
 </file>
 
@@ -5397,36 +5376,217 @@ class TrustProxies extends Middleware
 </div>
 </file>
 
-<file path="routes/web.php">
+<file path="app/Filament/Resources/ProductResource.php">
 <?php
 
-use Illuminate\Support\Facades\Route;
+namespace App\Filament\Resources;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+use App\Filament\Resources\ProductResource\Pages;
+use App\Models\Product;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Repeater;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Builder;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+class ProductResource extends Resource
+{
+    protected static ?string $model = Product::class;
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
-//予約
-Route::get('/reservation', function () {
-    // 既存のステータス管理変数（status）はControllerから渡す想定ですが、
-    // ここでは簡易的に 1 (通常営業) としています。
-    return view('reservation', ['status' => 1, 'message' => '']);
-})->name('reservation');
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Basic Information')->schema([
+                    Select::make('category_id')
+                        ->relationship(
+                            name: 'category',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn(Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
+                        )
+                        ->required(),
 
-use App\Http\Controllers\MenuController;
+                    TextInput::make('name')
+                        ->required()
+                        ->label('Product Name (Public)')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
-Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+                    TextInput::make('slug')
+                        ->required()
+                        ->unique(Product::class, 'slug', ignoreRecord: true)
+                        ->helperText('URLに使用されます（自動生成されます）'),
+
+                    TextInput::make('staff_name')
+                        ->label('Staff Name (Kitchen)'),
+
+                    TextInput::make('price')
+                        ->numeric()
+                        ->suffix('DT'),
+
+                    Select::make('order_type')
+                        ->options(['kitchen' => 'Kitchen', 'counter' => 'Counter'])
+                        ->default('kitchen'),
+
+                    Toggle::make('is_active')
+                        ->label('Available')
+                        ->default(true),
+
+                    TextInput::make('sort_order')
+                        ->numeric()
+                        ->default(0)
+                        ->label('Sort Order (0 is first)'),
+                ])->columns(2),
+
+                Section::make('Presentation')->schema([
+                    FileUpload::make('image')
+                        ->image()
+                        ->directory(fn() => 'products/' . Str::upper(Str::slug(Filament::getTenant()->name, ''))),
+                    RichEditor::make('description')
+                        ->columnSpanFull(),
+                    TextInput::make('ingredients')
+                        ->label('Ingredients (for AI recommendations)'),
+                ])->collapsed(),
+
+                Section::make('Options & Toppings')
+                    ->description('Add variations like noodle types or extra toppings.')
+                    ->schema([
+                        Repeater::make('productVariants')
+                            ->relationship()
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->placeholder('e.g. Extra Egg'),
+                                TextInput::make('staff_name')
+                                    ->label('Kitchen Code'),
+                                TextInput::make('price_adjustment')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->label('+ Price (DT)'),
+                                Toggle::make('is_required')
+                                    ->label('Selection Required?')
+                            ])->columns(4)
+                    ]),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->reorderable('sort_order')
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')->circular(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\TextColumn::make('category.name')->sortable(),
+                Tables\Columns\TextColumn::make('price')->sortable(),
+                Tables\Columns\TextColumn::make('sort_order')->sortable(),
+                Tables\Columns\IconColumn::make('is_active')->boolean(),
+            ])
+            ->filters([])
+            ->actions([Tables\Actions\EditAction::make()])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+
+                    Tables\Actions\BulkAction::make('export_csv')
+                        ->label('Export CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $filename = 'products_export_' . date('YmdHis') . '.csv';
+
+                            return response()->streamDownload(function () use ($records) {
+                                $file = fopen('php://output', 'w');
+                                fputs($file, "\xEF\xBB\xBF");
+
+                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants', 'Sort Order']);
+
+                                foreach ($records as $product) {
+                                    $variants = $product->productVariants->map(function ($v) {
+                                        return "{$v->name}:{$v->price_adjustment}:" . ($v->is_required ? '1' : '0');
+                                    })->implode(',');
+
+                                    fputcsv($file, [
+                                        $product->name,
+                                        $product->price,
+                                        $product->category ? $product->category->slug : '',
+                                        $product->description,
+                                        $product->image ? basename($product->image) : '',
+                                        $variants,
+                                        $product->sort_order
+                                    ]);
+                                }
+                                fclose($file);
+                            }, $filename);
+                        }),
+                ])
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+}
+</file>
+
+<file path="app/Http/Controllers/MenuController.php">
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Category;
+use App\Models\Tenant;
+use Illuminate\Http\Request;
+
+class MenuController extends Controller
+{
+    public function index(Request $request)
+    {
+        $host = $request->getHost();
+        if (in_array($host, ['localhost', '127.0.0.1'])) {
+            $host = 'soya.bistronippon.tn';
+        }
+
+        $tenant = \App\Models\Tenant::where('domain', $host)->firstOrFail();
+        $categories = \App\Models\Category::with(['products' => function ($q) {
+            $q->where('is_active', true)
+                ->orderBy('sort_order', 'asc') // ★ 商品の並び順を適用
+                ->with('productVariants');
+        }])->where('tenant_id', $tenant->id)
+            ->where('is_active', true)
+            ->orderBy('sort_order', 'asc') // ★ カテゴリの並び順を適用
+            ->get();
+
+        // ★ ここを追加: 店舗固有のギミックをフラグ化してBladeに渡す
+        $features = [
+            'has_mascot' => $tenant->name === 'Söya',      // Söyaなら醤油ちゃんを表示
+            'has_rain_effect' => $tenant->name === 'Söya', // Söyaなら背景の雨エフェクトをON
+        ];
+        $homeUrl = match ($tenant->domain) {
+            'menu.bistronippon.tn' => 'https://bistronippon.tn',
+            'menu.currykitano.tn' => 'https://currykitano.tn',
+            default => url('/'), // soyaの場合は自身のルート(/)
+        };
+
+        return view('menu', compact('categories', 'tenant', 'features', 'homeUrl'));
+    }
+}
 </file>
 
 <file path="app/Providers/AppServiceProvider.php">
@@ -5459,6 +5619,153 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production') || env('APP_ENV') === 'production') {
             URL::forceScheme('https');
         }
+    }
+}
+</file>
+
+<file path="app/Filament/Resources/ProductResource/Pages/ListProducts.php">
+<?php
+
+namespace App\Filament\Resources\ProductResource\Pages;
+
+use App\Filament\Resources\ProductResource;
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductVariant;
+use Filament\Actions;
+use Filament\Facades\Filament;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ListRecords;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
+class ListProducts extends ListRecords
+{
+    protected static string $resource = ProductResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+
+            Actions\Action::make('importCsv')
+                ->label('Import CSV (Fix Paths)')
+                ->icon('heroicon-o-arrow-up-tray')
+                ->color('success')
+                ->form([
+                    FileUpload::make('csv_file')
+                        ->label('Upload CSV File')
+                        ->disk('local')
+                        ->directory('csv-imports')
+                        ->acceptedFileTypes(['text/csv', 'application/vnd.ms-excel'])
+                        ->required(),
+                ])
+                ->action(function (array $data) {
+                    set_time_limit(300);
+                    $file = storage_path('app/' . $data['csv_file']);
+                    $this->importProducts($file);
+                    Notification::make()->title('Import & Path Fix Completed!')->success()->send();
+                }),
+
+            Actions\Action::make('deleteAll')
+                ->label('Delete ALL')
+                ->icon('heroicon-o-trash')
+                ->color('danger')
+                ->requiresConfirmation()
+                ->modalHeading('⚠️ DANGER ZONE')
+                ->modalDescription('Type "delete" to confirm.')
+                ->form([
+                    TextInput::make('confirmation')
+                        ->label('Confirmation')
+                        ->placeholder('delete')
+                        ->required()
+                        ->rules(['required', 'in:delete']),
+                ])
+                ->action(function () {
+                    $tenantId = Filament::getTenant()->id;
+
+                    DB::transaction(function () use ($tenantId) {
+                        ProductVariant::where('tenant_id', $tenantId)->delete();
+                        Product::where('tenant_id', $tenantId)->delete();
+                    });
+                    Notification::make()->title('Deleted all products for this store.')->danger()->send();
+                }),
+        ];
+    }
+
+    protected function importProducts(string $filePath)
+    {
+        $handle = fopen($filePath, 'r');
+        if ($handle === false) return;
+
+        fgetcsv($handle);
+
+        $tenant = Filament::getTenant();
+        $tenantId = $tenant->id;
+        $targetDir = 'products/' . Str::upper(Str::slug($tenant->name, ''));
+
+        DB::transaction(function () use ($handle, $targetDir, $tenantId) {
+            while (($row = fgetcsv($handle)) !== false) {
+                if (empty($row[0])) continue;
+
+                $name = $row[0];
+                $price = is_numeric($row[1]) ? $row[1] : 0;
+                $categorySlug = $row[2];
+                $description = $row[3] ?? '';
+                $imageName = isset($row[4]) ? trim($row[4]) : null;
+                $variantsString = $row[5] ?? '';
+                $sortOrder = isset($row[6]) && is_numeric($row[6]) ? (int)$row[6] : 0;
+
+                if ($imageName) {
+                    $imageName = $targetDir . '/' . basename($imageName);
+                }
+
+                $category = Category::firstOrCreate(
+                    ['slug' => Str::slug($categorySlug), 'tenant_id' => $tenantId],
+                    ['name' => ucfirst(str_replace('-', ' ', $categorySlug)), 'is_active' => true]
+                );
+
+                $product = Product::where('name', $name)->where('tenant_id', $tenantId)->first();
+
+                $productData = [
+                    'tenant_id' => $tenantId,
+                    'category_id' => $category->id,
+                    'price' => $price,
+                    'description' => $description,
+                    'image' => $imageName,
+                    'sort_order' => $sortOrder,
+                ];
+
+                if ($product) {
+                    $product->update($productData);
+                    $product->productVariants()->delete();
+                } else {
+                    $productData['name'] = $name;
+                    $productData['slug'] = Str::slug($name);
+                    $productData['is_active'] = true;
+                    $productData['order_type'] = 'kitchen';
+                    $product = Product::create($productData);
+                }
+
+                if (!empty($variantsString)) {
+                    $variantItems = explode(',', $variantsString);
+                    foreach ($variantItems as $item) {
+                        $parts = explode(':', trim($item));
+                        if (count($parts) < 2) continue;
+                        $product->productVariants()->create([
+                            'tenant_id' => $tenantId,
+                            'name' => trim($parts[0]),
+                            'price_adjustment' => is_numeric($parts[1]) ? $parts[1] : 0,
+                            'is_required' => isset($parts[2]) ? (bool)$parts[2] : false,
+                        ]);
+                    }
+                }
+            }
+        });
+
+        fclose($handle);
     }
 }
 </file>
@@ -5496,6 +5803,409 @@ class AppServiceProvider extends ServiceProvider
         </div>
     </div>
 </footer>
+</file>
+
+<file path="resources/views/menu.blade.php">
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ $tenant->name ?? 'Menu' }} | Order</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/sass/menu.scss'])
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --theme-primary: {{ $tenant->theme_primary ?? '#e60012' }};
+            --theme-bg: {{ $tenant->theme_bg ?? '#eaedf0' }};
+        }
+
+        .nav-back-fixed {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+            mix-blend-mode: difference;
+            color: #fff;
+        }
+
+        .nav-back-fixed:hover {
+            opacity: 1;
+        }
+
+        /* スクロールバー非表示 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .nav-link.active-nav {
+            color: var(--theme-primary);
+        }
+    </style>
+</head>
+
+<body class="pb-32 bg-[var(--theme-bg)] text-[#110A08] transition-colors duration-500">
+
+    <a href="{{ $homeUrl ?? url('/') }}" class="nav-back-fixed p-2 -ml-2">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+    </a>
+
+    <div class="sticky top-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md shadow-sm border-b border-[#A3B8C9]/30">
+        <header class="pt-3 pb-1 px-4 text-center">
+            <a href="{{ $homeUrl ?? url('/') }}" class="inline-block hover:opacity-70 transition-opacity">
+                <h1 class="serif text-xl font-bold tracking-tight text-[#110A08]">{{ $tenant->name ?? 'Store' }}<span
+                        class="text-[var(--theme-primary)]">.</span></h1>
+            </a>
+        </header>
+        <div class="flex gap-6 px-4 py-3 overflow-x-auto hide-scrollbar items-center">
+            @foreach ($categories as $category)
+                <a href="#cat-{{ $category->id }}"
+                    class="nav-link whitespace-nowrap text-[10px] font-bold tracking-[0.15em] uppercase text-[#A3B8C9]"
+                    data-target="cat-{{ $category->id }}">
+                    {{ $category->name }}
+                </a>
+            @endforeach
+        </div>
+    </div>
+
+    <main class="px-0 mt-4 max-w-xl mx-auto">
+        @foreach ($categories as $category)
+            <section id="cat-{{ $category->id }}" class="section-spy pt-4 pb-6 scroll-mt-[100px]">
+                <div class="px-4 mb-3 flex items-center gap-2 sticky top-[70px] z-30 pointer-events-none">
+                    <div
+                        class="bg-white/95 backdrop-blur px-4 py-1.5 rounded-full shadow-sm border border-[var(--theme-primary)]">
+                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-[var(--theme-primary)]">
+                            {{ $category->name }}</h2>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 px-4">
+                    @foreach ($category->products as $product)
+                        <div onclick="openProductModal({{ $product->id }})"
+                            class="relative flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-transparent hover:border-[var(--theme-primary)] active:scale-[0.98] transition-all cursor-pointer group h-[96px]">
+
+                            <div
+                                class="w-[72px] h-[72px] shrink-0 bg-[var(--theme-bg)] rounded-xl overflow-hidden relative">
+                                @if ($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                        class="w-full h-full object-cover">
+                                @else
+                                    <div
+                                        class="w-full h-full flex items-center justify-center text-[9px] text-[#A3B8C9] font-bold">
+                                        NO IMG</div>
+                                @endif
+                            </div>
+
+                            <div class="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
+                                <h3 class="serif text-[15px] font-bold leading-tight text-[#110A08] mb-1 truncate pr-2">
+                                    {{ $product->name }}</h3>
+                                <p class="text-[10px] text-[#A3B8C9] line-clamp-1 leading-tight mb-1.5">
+                                    {!! strip_tags($product->description) !!}</p>
+                                @if ($product->productVariants->count() > 0)
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[8px] font-bold tracking-wider bg-[var(--theme-bg)] text-[#110A08] self-start border border-[#A3B8C9]/30">
+                                        {{ $product->productVariants->count() }} Styles
+                                    </span>
+                                @endif
+                            </div>
+
+                            <div class="flex flex-col justify-between items-end h-full py-1 pl-2 shrink-0">
+                                <span class="font-mono font-bold text-[14px] text-[#110A08]">
+                                    {{ number_format($product->price, 3) }}
+                                    @if ($product->productVariants->where('is_required', true)->count() > 0)
+                                        <span class="text-[10px] text-[#A3B8C9] font-normal">~</span>
+                                    @endif
+                                </span>
+                                <button
+                                    class="w-8 h-8 rounded-full bg-[var(--theme-bg)] text-[#110A08] flex items-center justify-center group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors duration-300">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </section>
+        @endforeach
+    </main>
+
+    <div id="cart-bar"
+        class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto bg-[#110A08] border border-white/20 p-2 pl-6 rounded-full flex justify-between items-center shadow-[0_15px_40px_rgba(0,0,0,0.3)] z-[1000] hidden">
+        <div class="flex flex-col justify-center">
+            <span class="text-[10px] tracking-[0.15em] text-white/60 uppercase font-bold">Total</span>
+            <div class="font-mono font-bold text-[22px] leading-none mt-0.5 flex items-baseline gap-1 text-white">
+                <span id="cart-total">0.000</span><span
+                    class="text-[11px] font-sans font-medium text-white/60">DT</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <div
+                class="flex items-center justify-center w-9 h-9 bg-white/10 border border-white/20 rounded-full text-xs font-bold text-white">
+                <span id="cart-count">0</span>
+            </div>
+            <button onclick="App.openCheckout()"
+                class="group flex items-center gap-2 bg-[var(--theme-primary)] text-white px-6 py-3.5 rounded-full text-[11px] font-bold tracking-[0.2em] uppercase hover:brightness-90 shadow-md active:scale-95 transition-all">
+                <span style="text-shadow: 0 1px 2px rgba(0,0,0,0.2);">Check Out</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+                    style="filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="product-modal"
+        class="fixed inset-0 bg-[#110A08]/80 backdrop-blur-sm z-[2000] hidden items-end justify-center sm:items-center">
+        <div
+            class="bg-[var(--theme-bg)] w-full max-w-lg rounded-t-[2rem] sm:rounded-3xl overflow-hidden shadow-2xl max-h-[92vh] flex flex-col relative">
+
+            <div class="shrink-0 relative z-10 bg-white border-b border-[#A3B8C9]/30">
+                <div class="relative w-full h-40 bg-[var(--theme-bg)]">
+                    <img id="modal-product-image" src="" alt=""
+                        class="w-full h-full object-cover hidden">
+                    <div id="modal-no-image"
+                        class="w-full h-full flex items-center justify-center text-[11px] tracking-widest text-[#A3B8C9] font-bold hidden">
+                        NO IMAGE</div>
+                    <button onclick="closeModal()"
+                        class="absolute top-3 right-3 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur text-[#110A08] shadow-sm hover:bg-white transition-colors z-20">✕</button>
+                </div>
+
+                <div class="p-4 pb-2 bg-white">
+                    <h2 id="modal-product-name" class="serif text-xl font-bold text-[#110A08] leading-tight mb-1.5">
+                    </h2>
+                    <div class="space-y-1.5">
+                        <p id="modal-description" class="text-[11px] text-[#110A08]/70 leading-relaxed"></p>
+                        <p id="modal-ingredients"
+                            class="text-[9px] text-[#A3B8C9] uppercase tracking-wider border-l-2 border-[var(--theme-primary)] pl-2 font-bold">
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-options" class="px-4 py-3 overflow-y-auto grow bg-[var(--theme-bg)]"></div>
+
+            <div
+                class="p-3 border-t border-[#A3B8C9]/30 shrink-0 bg-white relative z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
+                @if ($features['has_mascot'] ?? false)
+                    <div id="soy-character"
+                        class="hidden absolute -top-16 left-1/2 flex-col items-center pointer-events-none z-30"
+                        style="transform: translateX(-50%);">
+                        <div
+                            class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1 px-3 rounded-full mb-1 shadow-sm whitespace-nowrap animate-bounce">
+                            Please select a style.
+                        </div>
+                    </div>
+                @endif
+                <button id="add-to-cart-btn" onclick="confirmProduct()"
+                    class="w-full bg-[var(--theme-primary)] text-white py-3 rounded-xl font-bold tracking-[0.15em] text-[12px] hover:brightness-95 transition-all shadow-md flex justify-center items-center gap-2">
+                    ADD TO ORDER — <span id="add-to-cart-price">0.000</span> DT
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @include('parts.checkout-modal')
+
+    <div id="order-tracker-overlay"
+        class="fixed inset-0 bg-[#110A08]/40 backdrop-blur-sm z-[1500] hidden items-center justify-center transition-opacity">
+        <div id="order-tracker-expanded"
+            class="bg-white w-[90%] max-w-sm rounded-3xl shadow-2xl p-6 flex flex-col items-center text-center relative transform transition-all scale-95 opacity-0">
+            <button onclick="toggleOrderTracker(false)"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--theme-bg)] text-[#A3B8C9] hover:text-[var(--theme-primary)] transition-colors">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+
+            <div
+                class="w-16 h-16 rounded-full bg-[var(--theme-bg)] flex items-center justify-center mb-4 mt-2 border border-[var(--theme-primary)]/30">
+                <svg class="w-8 h-8 text-[var(--theme-primary)] animate-pulse" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+
+            <h3 class="font-bold text-lg text-[#110A08] mb-1">Waiting Confirmation</h3>
+            <p class="text-[11px] font-mono text-[#A3B8C9] mb-4">Order <span id="expanded-order-number"
+                    class="font-bold text-[var(--theme-primary)]"></span></p>
+
+            <p class="text-[13px] text-[#110A08] leading-relaxed font-medium mb-5">
+                Your order is <strong class="text-[var(--theme-primary)]">not yet confirmed</strong>.<br>
+                Waiting for staff confirmation.<br><br>
+                If you don't receive a reply within 10 minutes, please contact the store directly.
+            </p>
+
+            <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
+                class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all mb-4">
+                <i class="bi bi-telephone-fill"></i> CALL : +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}
+            </a>
+
+            <button onclick="App.clearOrderStatus()"
+                class="text-[#A3B8C9] hover:text-[#110A08] text-[10px] font-bold tracking-wider uppercase underline underline-offset-4">Cancel
+                Tracker</button>
+        </div>
+    </div>
+
+    <div id="order-tracker-minimized" onclick="toggleOrderTracker(true)"
+        class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-[var(--theme-primary)]/30 shadow-[0_10px_25px_rgba(0,0,0,0.1)] rounded-full px-5 py-3 z-[1400] hidden items-center gap-3 cursor-pointer hover:scale-105 transition-all">
+        <svg class="w-5 h-5 text-[var(--theme-primary)] animate-pulse" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div class="flex flex-col">
+            <span
+                class="text-[10px] font-bold tracking-widest uppercase text-[var(--theme-primary)] leading-none mb-1">Pending</span>
+            <span class="text-[11px] text-[#110A08] font-mono font-bold leading-none tracking-tight">#<span
+                    id="minimized-order-number"></span></span>
+        </div>
+    </div>
+
+    <script>
+        window.TENANT_STORE_NAME = "{{ $tenant->name ?? 'Söya Menzah9' }}";
+        window.TENANT_WA_NUMBER = "{{ $tenant->whatsapp_number ?? '216557786656' }}";
+        window.ALL_PRODUCTS = @json($categories->flatMap->products);
+
+        const openProductModal = (id) => App.openModal(id);
+        const closeModal = () => App.close();
+        const confirmProduct = () => App.confirm();
+
+        function toggleOrderTracker(showExpanded) {
+            const overlay = document.getElementById('order-tracker-overlay');
+            const expanded = document.getElementById('order-tracker-expanded');
+            const minimized = document.getElementById('order-tracker-minimized');
+
+            if (showExpanded) {
+                minimized.classList.add('hidden');
+                minimized.classList.remove('flex');
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+                setTimeout(() => {
+                    expanded.classList.remove('scale-95', 'opacity-0');
+                    expanded.classList.add('scale-100', 'opacity-100');
+                }, 10);
+            } else {
+                expanded.classList.remove('scale-100', 'opacity-100');
+                expanded.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                    minimized.classList.remove('hidden');
+                    minimized.classList.add('flex');
+                }, 300);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.section-spy');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => link.classList.remove('active-nav'));
+                        const activeLink = document.querySelector(
+                            `.nav-link[href="#${entry.target.id}"]`);
+                        if (activeLink) {
+                            activeLink.classList.add('active-nav');
+                            activeLink.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'nearest',
+                                inline: 'center'
+                            });
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '-20% 0px -60% 0px'
+            });
+
+            sections.forEach(section => observer.observe(section));
+
+            if (typeof App !== 'undefined') App.checkActiveOrder();
+        });
+    </script>
+    <script src="{{ asset('js/menu.js') }}"></script>
+</body>
+
+</html>
+</file>
+
+<file path="routes/web.php">
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Http\Controllers\MenuController;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+//予約
+Route::get('/reservation', function () {
+    // 既存のステータス管理変数（status）はControllerから渡す想定ですが、
+    // ここでは簡易的に 1 (通常営業) としています。
+    return view('reservation', ['status' => 1, 'message' => '']);
+})->name('reservation');
+
+
+Route::get('/', function (Request $request) {
+    $host = $request->getHost();
+
+    // Bistro Nippon と Curry Kitano はトップ(/)で直接メニュー画面を表示
+    if (in_array($host, ['menu.bistronippon.tn', 'menu.currykitano.tn'])) {
+        return app(MenuController::class)->index($request);
+    }
+
+    // Söya（soya.bistronippon.tn 等）は従来のトップページを表示
+    // ※ 'welcome' の部分は実際のSöyaトップページのblade名（indexなど）に合わせてください
+    return view('welcome');
+});
+Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 </file>
 
 <file path="config/livewire.php">

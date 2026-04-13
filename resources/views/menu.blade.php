@@ -210,7 +210,7 @@
 
             <div
                 class="p-3 border-t border-[#A3B8C9]/30 shrink-0 bg-white relative z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.02)]">
-                @if ($features['has_mascot'] ?? false)
+               
                     <div id="soy-character"
                         class="hidden absolute -top-16 left-1/2 flex-col items-center pointer-events-none z-30"
                         style="transform: translateX(-50%);">
@@ -219,7 +219,7 @@
                             Please select a style.
                         </div>
                     </div>
-                @endif
+                
                 <button id="add-to-cart-btn" onclick="confirmProduct()"
                     class="w-full bg-[var(--theme-primary)] text-white py-3 rounded-xl font-bold tracking-[0.15em] text-[12px] hover:brightness-95 transition-all shadow-md flex justify-center items-center gap-2">
                     ADD TO ORDER — <span id="add-to-cart-price">0.000</span> DT

@@ -1,12 +1,50 @@
 /**
  * Modern Menu Logic (Full Version - Updated)
+ *
+ * History API design:
+ *   /menu                   → base state  { layer: null }
+ *   /menu#product-{id}      → product modal open  { layer: 'product', productId }
+ *   /menu#checkout          → checkout sheet open { layer: 'checkout' }
+ *
+ * Browser Back from product modal → closes modal, stays on /menu
+ * Browser Back from checkout      → closes sheet,  stays on /menu
+ * Browser Back from list view     → normal browser navigation (leaves /menu)
+ *
+ * Base-layer exit guard (when cart has items):
+ *   Extra history entry { layer: 'guard' } blocks the first Back from leaving /menu;
+ *   Back then triggers confirm(); cancel re-pushes the guard entry.
  */
 window.App = {
     state: {
         cart: [],
         currentProduct: null,
         selectedType: null,
-        selectedExtras: []
+        selectedExtras: [],
+        activeLayer: null,   // null | 'product' | 'checkout'
+        exitGuardSyncing: false  // true while programmatically popping the guard entry
+    },
+
+    /**
+     * Push or pop the invisible guard entry so the first Back on the base layer
+     * does not unload /menu when the cart is non-empty.
+     * Idempotent: never stacks duplicate { layer: 'guard' } entries.
+     */
+    syncExitGuard() {
+        const pathname = window.location.pathname;
+        const st = history.state;
+
+        if (this.state.activeLayer !== null) {
+            return;
+        }
+
+        if (this.state.cart.length > 0) {
+            if (!st || st.layer !== 'guard') {
+                history.pushState({ layer: 'guard' }, '', pathname);
+            }
+        } else if (st && st.layer === 'guard') {
+            this.state.exitGuardSyncing = true;
+            history.back();
+        }
     },
 
     // ==========================================
@@ -109,6 +147,14 @@ window.App = {
         }
 
         this.updateTotal();
+
+        // Push history entry so browser Back closes this modal instead of leaving /menu
+        this.state.activeLayer = 'product';
+        history.pushState(
+            { layer: 'product', productId },
+            '',
+            window.location.pathname + '#product-' + productId
+        );
 
         const modal = document.getElementById('product-modal');
         if (modal) {
@@ -245,9 +291,22 @@ window.App = {
         } else {
             bar.classList.add('hidden');
         }
+
+        this.syncExitGuard();
     },
 
+    // Public close: pops history (popstate handler calls _closeModalDOM)
     close() {
+        if (this.state.activeLayer === 'product') {
+            history.back();
+        } else {
+            this._closeModalDOM();
+        }
+    },
+
+    // DOM-only close: called by popstate handler or when no history entry exists
+    _closeModalDOM() {
+        this.state.activeLayer = null;
         const modal = document.getElementById('product-modal');
         if (!modal) return;
         modal.classList.remove('active');
@@ -268,6 +327,14 @@ window.App = {
 
         this.renderCheckoutItems();
 
+        // Push history entry so browser Back closes checkout instead of leaving /menu
+        this.state.activeLayer = 'checkout';
+        history.pushState(
+            { layer: 'checkout' },
+            '',
+            window.location.pathname + '#checkout'
+        );
+
         const modal = document.getElementById('checkout-modal');
         const sheet = document.getElementById('checkout-sheet');
 
@@ -282,7 +349,18 @@ window.App = {
         }
     },
 
+    // Public close: pops history (popstate handler calls _closeCheckoutDOM)
     closeCheckout() {
+        if (this.state.activeLayer === 'checkout') {
+            history.back();
+        } else {
+            this._closeCheckoutDOM();
+        }
+    },
+
+    // DOM-only close: called by popstate handler or when no history entry exists
+    _closeCheckoutDOM() {
+        this.state.activeLayer = null;
         const modal = document.getElementById('checkout-modal');
         const sheet = document.getElementById('checkout-sheet');
 
@@ -492,5 +570,68 @@ window.App = {
         const minimized = document.getElementById('order-tracker-minimized');
         if (overlay) { overlay.classList.add('hidden'); overlay.classList.remove('flex'); }
         if (minimized) { minimized.classList.add('hidden'); minimized.classList.remove('flex'); }
+    },
+
+    // ==========================================
+    // 3. HISTORY API INIT
+    // ==========================================
+    initHistory() {
+        // Capture the initial hash BEFORE replaceState wipes it
+        const initialHash = window.location.hash;
+
+        // Normalize the base entry so history.state is always { layer: null }
+        // Works for both /menu (Söya) and / (Bistronippon/CurryKitano)
+        history.replaceState({ layer: null }, '', window.location.pathname);
+
+        const EXIT_GUARD_MSG = "Wait! Your order will be cleared. Are you sure you want to leave?";
+
+        // Intercept browser Back (and forward) button
+        window.addEventListener('popstate', (event) => {
+            if (this.state.exitGuardSyncing) {
+                this.state.exitGuardSyncing = false;
+                return;
+            }
+
+            const layer = this.state.activeLayer;
+
+            if (layer === 'product') {
+                this._closeModalDOM();
+                this.syncExitGuard();
+                return;
+            }
+            if (layer === 'checkout') {
+                this._closeCheckoutDOM();
+                this.syncExitGuard();
+                return;
+            }
+
+            // Base layer: user popped the guard entry (now on { layer: null }) with cart items
+            const L = event.state ? event.state.layer : undefined;
+            const isModalLayer = L === 'product' || L === 'checkout';
+            if (this.state.cart.length > 0 && !isModalLayer && L !== 'guard') {
+                const leave = window.confirm(EXIT_GUARD_MSG);
+                if (!leave) {
+                    history.pushState({ layer: 'guard' }, '', window.location.pathname);
+                    return;
+                }
+                this.state.cart = [];
+                this.updateCartBar();
+                history.back();
+            }
+        });
+
+        // Handle direct URL access with a product hash (e.g. shared link /menu#product-5)
+        const productMatch = initialHash.match(/^#product-(\d+)$/);
+        if (productMatch) {
+            const productId = parseInt(productMatch[1], 10);
+            if (window.ALL_PRODUCTS) {
+                this.openModal(productId);
+            }
+            // ALL_PRODUCTS is always set by the inline script before menu.js loads,
+            // so the else branch is unreachable in normal operation.
+        }
     }
 };
+
+// Boot History API immediately (DOM is available at this point in body script execution)
+App.initHistory();

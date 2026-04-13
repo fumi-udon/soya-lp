@@ -11,8 +11,6 @@
 
         <div class="overflow-y-auto px-4 pt-4 pb-32">
 
-            {{-- Söya限定のキャラクター表示制御 --}}
-            @if ($features['has_mascot'] ?? false)
                 <div id="checkout-soy-character"
                     class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
                     <div
@@ -28,7 +26,6 @@
                             stroke-linecap="round" />
                     </svg>
                 </div>
-            @endif
 
             <div class="bg-white p-6 rounded-2xl shadow-sm relative border border-[#d1d8e0]"
                 style="background-image: radial-gradient(#eaedf0 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
