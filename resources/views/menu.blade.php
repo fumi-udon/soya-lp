@@ -70,7 +70,7 @@
 
     <div class="sticky top-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md shadow-sm border-b border-[#A3B8C9]/30">
         <header class="pt-3 pb-1 px-4 text-center">
-            <a href="{{ $homeUrl ?? url('/') }}" class="inline-block hover:opacity-70 transition-opacity">
+            <a href="#" class="inline-block hover:opacity-70 transition-opacity">
                 <h1 class="serif text-xl font-bold tracking-tight text-[#110A08]">{{ $tenant->name ?? 'Store' }}<span
                         class="text-[var(--theme-primary)]">.</span></h1>
             </a>
