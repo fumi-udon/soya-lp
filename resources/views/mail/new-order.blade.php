@@ -1,7 +1,6 @@
 <x-mail::message>
 <div style="color: #c62828; font-weight: 700; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 12px 14px; border: 2px solid #c62828; border-radius: 8px; background-color: #ffebee; direction: ltr; text-align: left;" lang="tn-Latn">
     <p style="margin: 0 0 10px 0;">[L'ordre mzl mch confirmed]</p>
-    <p style="margin: 0;">Confirm l'ordre 3la 7seb elli b3ath el client.</p>
 </div>
 
 # Request #{{ $order->order_number }}
