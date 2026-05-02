@@ -31,7 +31,7 @@ class NewOrderNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '['.$this->tenant->name.'] New order #'.$this->order->order_number,
+            subject: '[TK-Req] CmdNo.'.$this->order->order_number.'/'.$this->order->customer_name,
         );
     }
 

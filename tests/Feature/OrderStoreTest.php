@@ -83,8 +83,8 @@ class OrderStoreTest extends TestCase
 
         Mail::assertSent(NewOrderNotification::class, function (NewOrderNotification $mail) {
             return $mail->hasTo('kitchen@example.test')
-                && str_contains($mail->subject, 'Test Bistro')
-                && str_contains($mail->subject, 'New order #');
+                && str_contains($mail->subject, '[TK-Req] CmdNo.')
+                && str_contains($mail->subject, '/Jane');
         });
     }
 
