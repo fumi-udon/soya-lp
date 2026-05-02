@@ -1,12 +1,10 @@
 <x-mail::message>
-<div style="color: #c62828; font-weight: 700; font-size: 15px; line-height: 1.55; margin: 0 0 20px 0; padding: 12px 14px; border: 2px solid #c62828; border-radius: 8px; background-color: #ffebee;">
-    <p style="margin: 0 0 10px 0;">[未確定オーダーです]</p>
-    <p style="margin: 0 0 14px 0;">お客様からの注文をもって、注文を確定してください。</p>
-    <p style="margin: 0 0 8px 0; direction: rtl; text-align: right;" dir="rtl" lang="ar">[الطلب مازال مش مؤكّد]</p>
-    <p style="margin: 0; direction: rtl; text-align: right;" dir="rtl" lang="ar">ثبّت الأوردر على حساب اللي بعثو الزبون (الكليان).</p>
+<div style="color: #c62828; font-weight: 700; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 12px 14px; border: 2px solid #c62828; border-radius: 8px; background-color: #ffebee; direction: ltr; text-align: left;" lang="tn-Latn">
+    <p style="margin: 0 0 10px 0;">[L'ordre mzl mch confirmed]</p>
+    <p style="margin: 0;">Confirm l'ordre 3la 7seb elli b3ath el client.</p>
 </div>
 
-# Order request #{{ $order->order_number }}
+# Request #{{ $order->order_number }}
 
 **Guest:** {{ $order->customer_name }}  
 **Phone:** {{ $order->customer_phone }}  
