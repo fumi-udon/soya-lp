@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -32,16 +31,19 @@ class OrderController extends Controller
         if (in_array($host, ['localhost', '127.0.0.1'])) {
             $host = 'soya.bistronippon.tn';
         }
-        $tenant = Tenant::where('domain', $host)->firstOrFail();
 
-        $order = DB::transaction(function () use ($validated, $tenant) {
+        $order = DB::transaction(function () use ($validated, $host) {
+            $tenant = Tenant::where('domain', $host)->lockForUpdate()->firstOrFail();
 
             $customer = Customer::firstOrCreate(
                 ['phone' => $validated['customer_phone']],
                 ['name' => $validated['customer_name']]
             );
 
-            $orderNumber = strtoupper(Str::random(4));
+            $tenant->increment('order_sequence');
+            $tenant->refresh();
+
+            $orderNumber = Order::formatOrderNumberFromSequence((int) $tenant->order_sequence);
 
             $testNames = ['test', 'テスト', 'てすと'];
             $isTest = in_array(mb_strtolower($validated['customer_name']), $testNames, true);
@@ -72,26 +74,29 @@ class OrderController extends Controller
             return $order;
         });
 
+        $tenant = $order->tenant;
         $order->load('items');
 
-        $recipient = $tenant->order_notification_email ?: config('mail.order_notification.address');
-        $recipient = $recipient ? trim((string) $recipient) : null;
+        if (config('mail.order_notification.send_enabled')) {
+            $recipient = $tenant->order_notification_email ?: config('mail.order_notification.address');
+            $recipient = $recipient ? trim((string) $recipient) : null;
 
-        if ($recipient && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
-            try {
-                Mail::to($recipient)->send(new NewOrderNotification($order, $tenant));
-            } catch (\Throwable $e) {
-                Log::error('order_notification_mail_failed', [
+            if ($recipient && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    Mail::to($recipient)->send(new NewOrderNotification($order, $tenant));
+                } catch (\Throwable $e) {
+                    Log::error('order_notification_mail_failed', [
+                        'tenant_id' => $tenant->id,
+                        'order_id' => $order->id,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
+            } else {
+                Log::warning('order_notification_no_valid_recipient', [
                     'tenant_id' => $tenant->id,
-                    'order_id' => $order->id,
-                    'message' => $e->getMessage(),
+                    'recipient' => $recipient,
                 ]);
             }
-        } else {
-            Log::warning('order_notification_no_valid_recipient', [
-                'tenant_id' => $tenant->id,
-                'recipient' => $recipient,
-            ]);
         }
 
         $whatsappUrl = OrderWhatsAppUrl::build($order, $tenant);

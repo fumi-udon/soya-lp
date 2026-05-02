@@ -23,6 +23,7 @@ class OrderStoreTest extends TestCase
         config([
             'database.default' => 'sqlite',
             'database.connections.sqlite.database' => ':memory:',
+            'mail.order_notification.send_enabled' => true,
         ]);
         $this->app['db']->purge();
 
@@ -72,6 +73,7 @@ class OrderStoreTest extends TestCase
 
         $response->assertOk()
             ->assertJsonPath('success', true)
+            ->assertJsonPath('order_number', '01')
             ->assertJsonStructure(['order_number', 'whatsapp_url']);
 
         $url = $response->json('whatsapp_url');
@@ -174,5 +176,75 @@ class OrderStoreTest extends TestCase
             return str_contains($html, 'Public Ramen (Large)')
                 && str_contains($html, 'RAMEN-A');
         });
+    }
+
+    public function test_takeout_mail_send_false_skips_email(): void
+    {
+        Mail::fake();
+
+        config([
+            'mail.order_notification.address' => 'kitchen@example.test',
+            'mail.order_notification.send_enabled' => false,
+        ]);
+
+        $this->createTenant();
+
+        $payload = [
+            'customer_name' => 'NoMail',
+            'customer_phone' => '+216444444',
+            'order_type' => 'Takeaway',
+            'notes' => null,
+            'total_price' => 5,
+            'items' => [
+                [
+                    'productId' => null,
+                    'name' => 'Item',
+                    'price' => 5,
+                    'variants' => [],
+                ],
+            ],
+        ];
+
+        $this->postJson('http://soya.bistronippon.tn/api/orders', $payload, [
+            'Accept' => 'application/json',
+        ])->assertOk()->assertJsonPath('success', true);
+
+        Mail::assertNothingSent();
+    }
+
+    public function test_order_number_increments_per_tenant(): void
+    {
+        Mail::fake();
+
+        config(['mail.order_notification.address' => 'kitchen@example.test']);
+
+        $this->createTenant();
+
+        $payload = [
+            'customer_name' => 'First',
+            'customer_phone' => '+216500001',
+            'order_type' => 'Takeaway',
+            'notes' => null,
+            'total_price' => 1,
+            'items' => [
+                [
+                    'productId' => null,
+                    'name' => 'A',
+                    'price' => 1,
+                    'variants' => [],
+                ],
+            ],
+        ];
+
+        $this->postJson('http://soya.bistronippon.tn/api/orders', $payload, [
+            'Accept' => 'application/json',
+        ])->assertOk()->assertJsonPath('order_number', '01');
+
+        $payload['customer_name'] = 'Second';
+        $payload['customer_phone'] = '+216500002';
+
+        $this->postJson('http://soya.bistronippon.tn/api/orders', $payload, [
+            'Accept' => 'application/json',
+        ])->assertOk()->assertJsonPath('order_number', '02');
     }
 }

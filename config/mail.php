@@ -103,6 +103,7 @@ return [
     */
     'order_notification' => [
         'address' => env('MAIL_ORDER_NOTIFICATION_ADDRESS'),
+        'send_enabled' => filter_var(env('TAKEOUT_MAIL_SEND', false), FILTER_VALIDATE_BOOLEAN),
     ],
 
     /*

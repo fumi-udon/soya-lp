@@ -521,7 +521,7 @@ window.App = {
             }));
 
             if (waUrl && typeof waUrl === 'string') {
-                this.showOrderWaFollowup(waUrl);
+                this.showOrderWaFollowup(waUrl, orderNumber);
             }
 
             this.state.cart = [];
@@ -571,6 +571,11 @@ window.App = {
         if (expNum) expNum.innerText = orderData.orderNumber;
         if (minNum) minNum.innerText = orderData.orderNumber;
 
+        this.syncOrderTrackerWhatsAppLink(orderData.orderNumber);
+
+        const spanWaNo = document.getElementById('order-wa-followup-order-no');
+        if (spanWaNo) spanWaNo.innerText = orderData.orderNumber;
+
         const expandTracker = !options || options.expand !== false;
 
         if (expandTracker) {
@@ -596,12 +601,26 @@ window.App = {
         }
     },
 
-    showOrderWaFollowup(url) {
+    syncOrderTrackerWhatsAppLink(orderNo) {
+        if (!orderNo) return;
+        const el = document.getElementById('order-tracker-wa-link');
+        if (!el) return;
+        const phone = window.TENANT_WA_NUMBER || '216557786656';
+        const text = `Please confirm my order #${orderNo}`;
+        el.href = `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
+    },
+
+    showOrderWaFollowup(url, orderNumber) {
         const wrap = document.getElementById('order-wa-followup');
         const link = document.getElementById('order-wa-followup-link');
+        const orderNoEl = document.getElementById('order-wa-followup-order-no');
         if (link) {
             link.href = url;
         }
+        if (orderNoEl && orderNumber) {
+            orderNoEl.innerText = orderNumber;
+        }
+        this.syncOrderTrackerWhatsAppLink(orderNumber);
         if (wrap) {
             wrap.classList.remove('hidden');
             wrap.classList.add('flex');
