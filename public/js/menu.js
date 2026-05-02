@@ -478,6 +478,7 @@ window.App = {
         }
 
         const btn = document.getElementById('submit-order-btn');
+        if (!btn) return;
         const originalBtnText = btn.innerHTML;
         btn.innerHTML = `<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> SENDING...`;
         btn.disabled = true;
@@ -509,9 +510,9 @@ window.App = {
             if (!result.success) throw new Error('DB Save Failed');
 
             const orderNumber = result.order_number;
+            const waUrl = result.whatsapp_url;
 
             const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
-            const waNumber = window.TENANT_WA_NUMBER || '216557786656';
             const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
 
             localStorage.setItem(storageKey, JSON.stringify({
@@ -519,28 +520,9 @@ window.App = {
                 timestamp: Date.now()
             }));
 
-            let text = `*NEW ORDER - ${storeName}*\n`;
-            text += `*Order ID:* #${orderNumber}\n`;
-            text += `------------------------\n`;
-            text += `*Guest:* ${name}\n`;
-            text += `*Phone:* ${phone}\n`;
-            text += `*Type:* ${type}\n`;
-            if (notes) text += `*Notes:* ${notes}\n`;
-            text += `------------------------\n`;
-
-            this.state.cart.forEach(item => {
-                text += `1x ${item.name} - ${item.price.toFixed(3)} DT\n`;
-                if (item.variants.length > 0) {
-                    const extras = item.variants.map(v => v.name).join(', ');
-                    text += `   + ${extras}\n`;
-                }
-            });
-            text += `------------------------\n`;
-            text += `*Total:* ${total.toFixed(3)} DT\n\n`;
-            text += `_Waiting for shop confirmation..._`;
-
-            const waUrl = `https://api.whatsapp.com/send/?phone=${waNumber}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
-            window.open(waUrl, '_blank');
+            if (waUrl && typeof waUrl === 'string') {
+                this.showOrderWaFollowup(waUrl);
+            }
 
             this.state.cart = [];
             this.updateCartBar();
@@ -553,7 +535,7 @@ window.App = {
             btn.classList.remove('opacity-80', 'cursor-wait');
 
             this.closeCheckout();
-            this.checkActiveOrder();
+            this.checkActiveOrder({ expand: false });
 
         } catch (error) {
             console.error(error);
@@ -564,10 +546,15 @@ window.App = {
         }
     },
 
-    checkActiveOrder() {
+    checkActiveOrder(options) {
         const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
         const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
-        const orderData = JSON.parse(localStorage.getItem(storageKey));
+        let orderData;
+        try {
+            orderData = JSON.parse(localStorage.getItem(storageKey));
+        } catch (e) {
+            return;
+        }
 
         if (!orderData) return;
 
@@ -584,12 +571,54 @@ window.App = {
         if (expNum) expNum.innerText = orderData.orderNumber;
         if (minNum) minNum.innerText = orderData.orderNumber;
 
-        if (typeof toggleOrderTracker === 'function') {
-            toggleOrderTracker(true);
+        const expandTracker = !options || options.expand !== false;
+
+        if (expandTracker) {
+            if (typeof toggleOrderTracker === 'function') {
+                toggleOrderTracker(true);
+            }
+        } else {
+            const overlay = document.getElementById('order-tracker-overlay');
+            const expanded = document.getElementById('order-tracker-expanded');
+            const minimized = document.getElementById('order-tracker-minimized');
+            if (overlay) {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+            if (expanded) {
+                expanded.classList.remove('scale-100', 'opacity-100');
+                expanded.classList.add('scale-95', 'opacity-0');
+            }
+            if (minimized) {
+                minimized.classList.remove('hidden');
+                minimized.classList.add('flex');
+            }
+        }
+    },
+
+    showOrderWaFollowup(url) {
+        const wrap = document.getElementById('order-wa-followup');
+        const link = document.getElementById('order-wa-followup-link');
+        if (link) {
+            link.href = url;
+        }
+        if (wrap) {
+            wrap.classList.remove('hidden');
+            wrap.classList.add('flex');
+        }
+    },
+
+    dismissOrderWaFollowup() {
+        const wrap = document.getElementById('order-wa-followup');
+        if (wrap) {
+            wrap.classList.add('hidden');
+            wrap.classList.remove('flex');
         }
     },
 
     clearOrderStatus() {
+        this.dismissOrderWaFollowup();
+
         const storeName = window.TENANT_STORE_NAME || 'Söya Menzah9';
         const storageKey = `active_order_${storeName.replace(/\s+/g, '_')}`;
         localStorage.removeItem(storageKey);

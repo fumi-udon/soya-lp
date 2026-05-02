@@ -35,6 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Tenant::class)
             // 管理画面のUI上からのテナント(店舗)新規作成・登録画面を無効化
             ->tenantRegistration(false)
+            ->tenantProfile(\App\Filament\Pages\EditTenantProfile::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

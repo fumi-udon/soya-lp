@@ -4,25 +4,26 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
 use App\Models\Product;
+use Filament\Facades\Filament;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
     public static function form(Form $form): Form
@@ -34,7 +35,7 @@ class ProductResource extends Resource
                         ->relationship(
                             name: 'category',
                             titleAttribute: 'name',
-                            modifyQueryUsing: fn(Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
+                            modifyQueryUsing: fn (Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
                         )
                         ->required(),
 
@@ -42,7 +43,7 @@ class ProductResource extends Resource
                         ->required()
                         ->label('Product Name (Public)')
                         ->live(onBlur: true)
-                        ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                        ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
 
                     TextInput::make('slug')
                         ->required()
@@ -50,7 +51,8 @@ class ProductResource extends Resource
                         ->helperText('URLに使用されます（自動生成されます）'),
 
                     TextInput::make('staff_name')
-                        ->label('Staff Name (Kitchen)'),
+                        ->label('Staff Name (Kitchen)')
+                        ->helperText('Shown in order notification emails under the public product name (kitchen label).'),
 
                     TextInput::make('price')
                         ->numeric()
@@ -73,7 +75,7 @@ class ProductResource extends Resource
                 Section::make('Presentation')->schema([
                     FileUpload::make('image')
                         ->image()
-                        ->directory(fn() => 'products/' . Str::upper(Str::slug(Filament::getTenant()->name, ''))),
+                        ->directory(fn () => 'products/'.Str::upper(Str::slug(Filament::getTenant()->name, ''))),
                     RichEditor::make('description')
                         ->columnSpanFull(),
                     TextInput::make('ingredients')
@@ -96,8 +98,8 @@ class ProductResource extends Resource
                                     ->default(0)
                                     ->label('+ Price (DT)'),
                                 Toggle::make('is_required')
-                                    ->label('Selection Required?')
-                            ])->columns(4)
+                                    ->label('Selection Required?'),
+                            ])->columns(4),
                     ]),
             ]);
     }
@@ -125,17 +127,17 @@ class ProductResource extends Resource
                         ->label('Export CSV')
                         ->icon('heroicon-o-arrow-down-tray')
                         ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
-                            $filename = 'products_export_' . date('YmdHis') . '.csv';
+                            $filename = 'products_export_'.date('YmdHis').'.csv';
 
                             return response()->streamDownload(function () use ($records) {
                                 $file = fopen('php://output', 'w');
-                                fputs($file, "\xEF\xBB\xBF");
+                                fwrite($file, "\xEF\xBB\xBF");
 
                                 fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants', 'Sort Order']);
 
                                 foreach ($records as $product) {
                                     $variants = $product->productVariants->map(function ($v) {
-                                        return "{$v->name}:{$v->price_adjustment}:" . ($v->is_required ? '1' : '0');
+                                        return "{$v->name}:{$v->price_adjustment}:".($v->is_required ? '1' : '0');
                                     })->implode(',');
 
                                     fputcsv($file, [
@@ -145,13 +147,13 @@ class ProductResource extends Resource
                                         $product->description,
                                         $product->image ? basename($product->image) : '',
                                         $variants,
-                                        $product->sort_order
+                                        $product->sort_order,
                                     ]);
                                 }
                                 fclose($file);
                             }, $filename);
                         }),
-                ])
+                ]),
             ]);
     }
 

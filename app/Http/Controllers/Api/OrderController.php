@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewOrderNotification;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Tenant;
-use App\Models\Customer; // ★追加
+use App\Support\OrderWhatsAppUrl;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -32,7 +36,6 @@ class OrderController extends Controller
 
         $order = DB::transaction(function () use ($validated, $tenant) {
 
-            // ★1. 顧客データの取得または新規作成（電話番号をキーにする）
             $customer = Customer::firstOrCreate(
                 ['phone' => $validated['customer_phone']],
                 ['name' => $validated['customer_name']]
@@ -40,8 +43,6 @@ class OrderController extends Controller
 
             $orderNumber = strtoupper(Str::random(4));
 
-            // ★2. 注文データの作成（customer_idを追加）
-            // テスト注文判定（小文字変換してチェック）
             $testNames = ['test', 'テスト', 'てすと'];
             $isTest = in_array(mb_strtolower($validated['customer_name']), $testNames, true);
 
@@ -54,10 +55,9 @@ class OrderController extends Controller
                 'order_type' => $validated['order_type'],
                 'notes' => $validated['notes'],
                 'total_price' => $validated['total_price'],
-                'is_test' => $isTest, // ★追加
+                'is_test' => $isTest,
             ]);
 
-            // 3. 注文明細データの作成
             foreach ($validated['items'] as $item) {
                 OrderItem::create([
                     'tenant_id' => $tenant->id,
@@ -68,9 +68,38 @@ class OrderController extends Controller
                     'variants' => $item['variants'],
                 ]);
             }
+
             return $order;
         });
 
-        return response()->json(['success' => true, 'order_number' => $order->order_number]);
+        $order->load('items');
+
+        $recipient = $tenant->order_notification_email ?: config('mail.order_notification.address');
+        $recipient = $recipient ? trim((string) $recipient) : null;
+
+        if ($recipient && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+            try {
+                Mail::to($recipient)->send(new NewOrderNotification($order, $tenant));
+            } catch (\Throwable $e) {
+                Log::error('order_notification_mail_failed', [
+                    'tenant_id' => $tenant->id,
+                    'order_id' => $order->id,
+                    'message' => $e->getMessage(),
+                ]);
+            }
+        } else {
+            Log::warning('order_notification_no_valid_recipient', [
+                'tenant_id' => $tenant->id,
+                'recipient' => $recipient,
+            ]);
+        }
+
+        $whatsappUrl = OrderWhatsAppUrl::build($order, $tenant);
+
+        return response()->json([
+            'success' => true,
+            'order_number' => $order->order_number,
+            'whatsapp_url' => $whatsappUrl,
+        ]);
     }
 }
