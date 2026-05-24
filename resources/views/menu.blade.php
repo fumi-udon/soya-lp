@@ -24,24 +24,6 @@
             --theme-bg: {{ $tenant->theme_bg ?? '#eaedf0' }};
         }
 
-        .nav-back-fixed {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 1000;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-            mix-blend-mode: difference;
-            color: #fff;
-        }
-
-        .nav-back-fixed:hover {
-            opacity: 1;
-        }
-
         /* スクロールバー非表示 */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
@@ -52,107 +34,94 @@
             scrollbar-width: none;
         }
 
-        .nav-link.active-nav {
-            color: var(--theme-primary);
+        #product-scroll-area {
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 </head>
 
-<body class="pb-32 bg-[var(--theme-bg)] text-[#110A08] transition-colors duration-500">
+<body class="h-[100dvh] flex flex-col overflow-hidden bg-[var(--theme-bg)] text-[#110A08]">
 
-    <a href="{{ $homeUrl ?? url('/') }}" class="nav-back-fixed p-2 -ml-2">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-    </a>
-
-    <div class="sticky top-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md shadow-sm border-b border-[#A3B8C9]/30">
-        <header class="pt-3 pb-1 px-4 text-center">
-            <a href="#" class="inline-block hover:opacity-70 transition-opacity">
-                <h1 class="serif text-xl font-bold tracking-tight text-[#110A08]">{{ $tenant->name ?? 'Store' }}<span
-                        class="text-[var(--theme-primary)]">.</span></h1>
-            </a>
-        </header>
-        <div class="flex gap-6 px-4 py-3 overflow-x-auto hide-scrollbar items-center">
+    <header class="shrink-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md border-b border-[#A3B8C9]/30 shadow-sm">
+        <div class="pt-3 pb-1 px-4 text-center">
+            <h1 class="serif text-xl font-bold tracking-tight">
+                {{ $tenant->name ?? 'Store' }}<span class="text-[var(--theme-primary)]">.</span>
+            </h1>
+        </div>
+        <div class="flex gap-3 px-4 py-2 overflow-x-auto hide-scrollbar">
             @foreach ($categories as $category)
-                <a href="#cat-{{ $category->id }}"
-                    class="nav-link whitespace-nowrap text-[10px] font-bold tracking-[0.15em] uppercase text-[#A3B8C9]"
-                    data-target="cat-{{ $category->id }}">
+                <button
+                    onclick="scrollToCategory('cat-{{ $category->id }}')"
+                    data-cat="cat-{{ $category->id }}"
+                    class="cat-chip shrink-0 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-[#A3B8C9]/20 text-[#A3B8C9]">
                     {{ $category->name }}
-                </a>
+                </button>
             @endforeach
         </div>
-    </div>
+    </header>
 
-    <main class="px-0 mt-4 max-w-xl mx-auto">
-        @foreach ($categories as $category)
-            <section id="cat-{{ $category->id }}" class="section-spy pt-4 pb-6 scroll-mt-[100px]">
-                <div class="px-4 mb-3 flex items-center gap-2 sticky top-[70px] z-30 pointer-events-none">
-                    <div
-                        class="bg-white/95 backdrop-blur px-4 py-1.5 rounded-full shadow-sm border border-[var(--theme-primary)]">
-                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-[var(--theme-primary)]">
-                            {{ $category->name }}</h2>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-3 px-4">
-                    @foreach ($category->products as $product)
-                        <div onclick="openProductModal({{ $product->id }})"
-                            class="relative flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-transparent hover:border-[var(--theme-primary)] active:scale-[0.98] transition-all cursor-pointer group h-[96px]">
-
-                            <div
-                                class="w-[72px] h-[72px] shrink-0 bg-[var(--theme-bg)] rounded-xl overflow-hidden relative">
-                                @if ($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <div
-                                        class="w-full h-full flex items-center justify-center text-[9px] text-[#A3B8C9] font-bold">
-                                        NO IMG</div>
-                                @endif
-                            </div>
-
-                            <div class="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
-                                <h3 class="serif text-[15px] font-bold leading-tight text-[#110A08] mb-1 truncate pr-2">
-                                    {{ $product->name }}</h3>
-                                <p class="text-[10px] text-[#A3B8C9] line-clamp-1 leading-tight mb-1.5">
-                                    {!! strip_tags($product->description) !!}</p>
-                                @if ($product->productVariants->count() > 0)
-                                    <span
-                                        class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[8px] font-bold tracking-wider bg-[var(--theme-bg)] text-[#110A08] self-start border border-[#A3B8C9]/30">
-                                        {{ $product->productVariants->count() }} Styles
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="flex flex-col justify-between items-end h-full py-1 pl-2 shrink-0">
-                                <span class="font-mono font-bold text-[14px] text-[#110A08]">
-                                    {{ number_format($product->price, 3) }}
-                                    @if ($product->productVariants->where('is_required', true)->count() > 0)
-                                        <span class="text-[10px] text-[#A3B8C9] font-normal">~</span>
-                                    @endif
-                                </span>
-                                <button
-                                    class="w-8 h-8 rounded-full bg-[var(--theme-bg)] text-[#110A08] flex items-center justify-center group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                            </div>
+    <main class="flex-1 overflow-y-auto overscroll-contain" id="product-scroll-area">
+        <div class="max-w-xl mx-auto px-3 py-3 space-y-4 pb-6">
+            @foreach ($categories as $category)
+                <section id="cat-{{ $category->id }}" class="section-spy">
+                    <div class="flex items-center gap-2 mb-2 px-1">
+                        <div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-[var(--theme-primary)] shadow-sm">
+                            <h2 class="text-[9px] font-bold uppercase tracking-widest text-[var(--theme-primary)]">
+                                {{ $category->name }}
+                            </h2>
                         </div>
-                    @endforeach
-                </div>
-            </section>
-        @endforeach
+                    </div>
+                    <div class="space-y-2">
+                        @foreach ($category->products as $product)
+                            <div onclick="openProductModal({{ $product->id }})"
+                                class="group flex items-center gap-2 p-2 bg-white rounded-xl shadow-sm border border-transparent hover:border-[var(--theme-primary)] active:scale-[0.98] transition-all cursor-pointer h-[80px]">
+                                <div class="w-[60px] h-[60px] shrink-0 bg-[var(--theme-bg)] rounded-lg overflow-hidden">
+                                    @if ($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                            class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-[8px] text-[#A3B8C9] font-bold">NO IMG</div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0 flex flex-col justify-center">
+                                    <h3 class="serif text-[13px] font-bold leading-tight text-[#110A08] truncate">
+                                        {{ $product->name }}
+                                    </h3>
+                                    <p class="text-[9px] text-[#A3B8C9] line-clamp-1 leading-tight mt-0.5">
+                                        {!! strip_tags($product->description) !!}
+                                    </p>
+                                    @if ($product->productVariants->count() > 0)
+                                        <span class="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-bold tracking-wider bg-[var(--theme-bg)] text-[#110A08] border border-[#A3B8C9]/30 self-start">
+                                            {{ $product->productVariants->count() }} Styles
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col justify-between items-end h-full py-1 pl-1 shrink-0">
+                                    <span class="font-mono font-bold text-[12px] text-[#110A08]">
+                                        {{ number_format($product->price, 3) }}
+                                        @if ($product->productVariants->where('is_required', true)->count() > 0)
+                                            <span class="text-[9px] text-[#A3B8C9] font-normal">~</span>
+                                        @endif
+                                    </span>
+                                    <button class="w-7 h-7 rounded-full bg-[var(--theme-bg)] text-[#110A08] flex items-center justify-center group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endforeach
+        </div>
     </main>
 
     <div id="cart-bar"
-        class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto bg-[#110A08] border border-white/20 p-2 pl-6 rounded-full flex justify-between items-center shadow-[0_15px_40px_rgba(0,0,0,0.3)] z-[1000] hidden">
+        class="shrink-0 mx-auto w-full max-w-xl bg-[#110A08] border border-white/20 p-2 pl-6 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.2)] z-[1000] hidden">
         <div class="flex flex-col justify-center">
             <span class="text-[10px] tracking-[0.15em] text-white/60 uppercase font-bold">Total</span>
             <div class="font-mono font-bold text-[22px] leading-none mt-0.5 flex items-baseline gap-1 text-white">
@@ -375,30 +344,43 @@
             }
         }
 
+        function scrollToCategory(id) {
+            const el = document.getElementById(id);
+            const scrollArea = document.getElementById('product-scroll-area');
+            if (el && scrollArea) {
+                scrollArea.scrollTo({ top: el.offsetTop - 8, behavior: 'smooth' });
+            }
+            setActiveChip(id);
+        }
+
+        function setActiveChip(id) {
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                const isActive = btn.dataset.cat === id;
+                btn.classList.toggle('bg-[#110A08]', isActive);
+                btn.classList.toggle('text-white', isActive);
+                btn.classList.toggle('bg-[#A3B8C9]/20', !isActive);
+                btn.classList.toggle('text-[#A3B8C9]', !isActive);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            const scrollArea = document.getElementById('product-scroll-area');
             const sections = document.querySelectorAll('.section-spy');
-            const navLinks = document.querySelectorAll('.nav-link');
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        navLinks.forEach(link => link.classList.remove('active-nav'));
-                        const activeLink = document.querySelector(
-                            `.nav-link[href="#${entry.target.id}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('active-nav');
-                            activeLink.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'nearest',
-                                inline: 'center'
-                            });
+                        const id = entry.target.id;
+                        setActiveChip(id);
+                        const activeChip = document.querySelector(`.cat-chip[data-cat="${id}"]`);
+                        if (activeChip) {
+                            activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                         }
                     }
                 });
-            }, {
-                rootMargin: '-20% 0px -60% 0px'
-            });
+            }, { root: scrollArea, rootMargin: '-10% 0px -60% 0px' });
 
-            sections.forEach(section => observer.observe(section));
+            sections.forEach(s => observer.observe(s));
 
             if (typeof App !== 'undefined') App.checkActiveOrder();
         });

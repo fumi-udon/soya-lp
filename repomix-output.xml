@@ -48,6 +48,8 @@ app/
   Exceptions/
     Handler.php
   Filament/
+    Pages/
+      EditTenantProfile.php
     Resources/
       CategoryResource/
         Pages/
@@ -84,6 +86,8 @@ app/
       ValidateSignature.php
       VerifyCsrfToken.php
     Kernel.php
+  Mail/
+    NewOrderNotification.php
   Models/
     Category.php
     Customer.php
@@ -93,6 +97,8 @@ app/
     ProductVariant.php
     Tenant.php
     User.php
+  Policies/
+    TenantPolicy.php
   Providers/
     Filament/
       AdminPanelProvider.php
@@ -101,6 +107,8 @@ app/
     BroadcastServiceProvider.php
     EventServiceProvider.php
     RouteServiceProvider.php
+  Support/
+    OrderWhatsAppUrl.php
 database/
   migrations/
     2014_10_12_000000_create_users_table.php
@@ -119,6 +127,9 @@ database/
     2026_03_04_062405_create_customers_table.php
     2026_03_04_062807_add_customer_id_to_orders_table.php
     2026_03_04_082453_add_is_test_to_orders_table.php
+    2026_05_01_000001_add_order_notification_email_to_tenants_table.php
+    2026_05_02_000001_add_order_sequence_to_tenants_table.php
+    2026_05_02_000002_change_orders_order_number_unique_to_tenant_scoped.php
   seeders/
     DatabaseSeeder.php
     TenantSeeder.php
@@ -129,6 +140,8 @@ resources/
   views/
     layouts/
       soya.blade.php
+    mail/
+      new-order.blade.php
     parts/
       checkout-modal.blade.php
       footer.blade.php
@@ -234,6 +247,36 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+}
+</file>
+
+<file path="app/Filament/Pages/EditTenantProfile.php">
+<?php
+
+namespace App\Filament\Pages;
+
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Pages\Tenancy\EditTenantProfile as BaseEditTenantProfile;
+
+class EditTenantProfile extends BaseEditTenantProfile
+{
+    public static function getLabel(): string
+    {
+        return 'Store settings';
+    }
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                TextInput::make('order_notification_email')
+                    ->label('Order notification email')
+                    ->email()
+                    ->maxLength(255)
+                    ->helperText('New orders from the public menu are sent here. Leave empty to use MAIL_ORDER_NOTIFICATION_ADDRESS from .env.'),
+            ]);
     }
 }
 </file>
@@ -782,35 +825,19 @@ class Tenant extends Model
 }
 </file>
 
-<file path="app/Providers/AuthServiceProvider.php">
+<file path="app/Policies/TenantPolicy.php">
 <?php
 
-namespace App\Providers;
+namespace App\Policies;
 
-// use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\Tenant;
+use App\Models\User;
 
-class AuthServiceProvider extends ServiceProvider
+class TenantPolicy
 {
-    /**
-     * The model to policy mappings for the application.
-     *
-     * @var array<class-string, class-string>
-     */
-    protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
-
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function update(User $user, Tenant $tenant): bool
     {
-        $this->registerPolicies();
-
-        //
+        return true;
     }
 }
 </file>
@@ -935,6 +962,56 @@ class RouteServiceProvider extends ServiceProvider
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
+    }
+}
+</file>
+
+<file path="app/Support/OrderWhatsAppUrl.php">
+<?php
+
+namespace App\Support;
+
+use App\Models\Order;
+use App\Models\Tenant;
+
+class OrderWhatsAppUrl
+{
+    /**
+     * Prefilled WhatsApp message URL (customer must open via explicit tap).
+     */
+    public static function build(Order $order, Tenant $tenant): string
+    {
+        $waNumber = $tenant->whatsapp_number ?: '216557786656';
+        $storeName = $tenant->name;
+
+        $order->loadMissing('items');
+
+        $text = "*NEW ORDER - {$storeName}*\n";
+        $text .= '*Order ID:* #'.$order->order_number."\n";
+        $text .= "------------------------\n";
+        $text .= '*Guest:* '.$order->customer_name."\n";
+        $text .= '*Phone:* '.$order->customer_phone."\n";
+        $text .= '*Type:* '.$order->order_type."\n";
+        if ($order->notes) {
+            $text .= '*Notes:* '.$order->notes."\n";
+        }
+        $text .= "------------------------\n";
+
+        foreach ($order->items as $item) {
+            $text .= '1x '.$item->product_name.' - '.number_format((float) $item->price, 3, '.', '')." DT\n";
+            $variants = $item->variants;
+            if (is_array($variants) && count($variants) > 0) {
+                $extras = collect($variants)->pluck('name')->implode(', ');
+                $text .= '   + '.$extras."\n";
+            }
+        }
+        $text .= "------------------------\n";
+        $text .= '*Total:* '.number_format((float) $order->total_price, 3, '.', '')." DT\n\n";
+        $text .= '_Waiting for shop confirmation..._';
+
+        return 'https://api.whatsapp.com/send/?phone='.$waNumber
+            .'&text='.rawurlencode($text)
+            .'&type=phone_number&app_absent=0';
     }
 }
 </file>
@@ -1529,6 +1606,83 @@ return new class extends Migration
 };
 </file>
 
+<file path="database/migrations/2026_05_01_000001_add_order_notification_email_to_tenants_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->string('order_notification_email')->nullable()->after('whatsapp_number');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->dropColumn('order_notification_email');
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_05_02_000001_add_order_sequence_to_tenants_table.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->unsignedBigInteger('order_sequence')->default(0)->after('order_notification_email');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('tenants', function (Blueprint $table) {
+            $table->dropColumn('order_sequence');
+        });
+    }
+};
+</file>
+
+<file path="database/migrations/2026_05_02_000002_change_orders_order_number_unique_to_tenant_scoped.php">
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropUnique(['order_number']);
+            $table->unique(['tenant_id', 'order_number']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropUnique(['tenant_id', 'order_number']);
+            $table->unique('order_number');
+        });
+    }
+};
+</file>
+
 <file path="database/seeders/DatabaseSeeder.php">
 <?php
 
@@ -2052,68 +2206,35 @@ class ProductVariant extends Model
 }
 </file>
 
-<file path="app/Providers/Filament/AdminPanelProvider.php">
+<file path="app/Providers/AuthServiceProvider.php">
 <?php
 
-namespace App\Providers\Filament;
+namespace App\Providers;
 
-use App\Models\Tenant;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
-use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
-use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
+// use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-class AdminPanelProvider extends PanelProvider
+class AuthServiceProvider extends ServiceProvider
 {
-    public function panel(Panel $panel): Panel
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        \App\Models\Tenant::class => \App\Policies\TenantPolicy::class,
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     *
+     * @return void
+     */
+    public function boot()
     {
-        return $panel
-            ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->colors([
-                'primary' => Color::Amber,
-            ])
-            // ★ マルチテナント設定を有効化 ★
-            ->tenant(Tenant::class)
-            // 管理画面のUI上からのテナント(店舗)新規作成・登録画面を無効化
-            ->tenantRegistration(false)
-            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
-            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
-            ->pages([
-                Pages\Dashboard::class,
-            ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
-            ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
-            ])
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                AuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                Authenticate::class,
-            ]);
+        $this->registerPolicies();
+
+        //
     }
 }
 </file>
@@ -2463,85 +2584,6 @@ Route::post('/orders', [\App\Http\Controllers\Api\OrderController::class, 'store
 }
 </file>
 
-<file path="app/Http/Controllers/Api/OrderController.php">
-<?php
-
-namespace App\Http\Controllers\Api;
-
-use App\Http\Controllers\Controller;
-use App\Models\Order;
-use App\Models\OrderItem;
-use App\Models\Tenant;
-use App\Models\Customer; // ★追加
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-
-class OrderController extends Controller
-{
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'customer_name' => 'required|string',
-            'customer_phone' => 'required|string',
-            'order_type' => 'required|string',
-            'notes' => 'nullable|string',
-            'total_price' => 'required|numeric',
-            'items' => 'required|array',
-        ]);
-
-        $host = $request->getHost();
-        if (in_array($host, ['localhost', '127.0.0.1'])) {
-            $host = 'soya.bistronippon.tn';
-        }
-        $tenant = Tenant::where('domain', $host)->firstOrFail();
-
-        $order = DB::transaction(function () use ($validated, $tenant) {
-
-            // ★1. 顧客データの取得または新規作成（電話番号をキーにする）
-            $customer = Customer::firstOrCreate(
-                ['phone' => $validated['customer_phone']],
-                ['name' => $validated['customer_name']]
-            );
-
-            $orderNumber = strtoupper(Str::random(4));
-
-            // ★2. 注文データの作成（customer_idを追加）
-            // テスト注文判定（小文字変換してチェック）
-            $testNames = ['test', 'テスト', 'てすと'];
-            $isTest = in_array(mb_strtolower($validated['customer_name']), $testNames, true);
-
-            $order = Order::create([
-                'tenant_id' => $tenant->id,
-                'customer_id' => $customer->id,
-                'order_number' => $orderNumber,
-                'customer_name' => $validated['customer_name'],
-                'customer_phone' => $validated['customer_phone'],
-                'order_type' => $validated['order_type'],
-                'notes' => $validated['notes'],
-                'total_price' => $validated['total_price'],
-                'is_test' => $isTest, // ★追加
-            ]);
-
-            // 3. 注文明細データの作成
-            foreach ($validated['items'] as $item) {
-                OrderItem::create([
-                    'tenant_id' => $tenant->id,
-                    'order_id' => $order->id,
-                    'product_id' => $item['productId'],
-                    'product_name' => $item['name'],
-                    'price' => $item['price'],
-                    'variants' => $item['variants'],
-                ]);
-            }
-            return $order;
-        });
-
-        return response()->json(['success' => true, 'order_number' => $order->order_number]);
-    }
-}
-</file>
-
 <file path="app/Http/Middleware/TrustProxies.php">
 <?php
 namespace App\Http\Middleware;
@@ -2555,29 +2597,77 @@ class TrustProxies extends Middleware
 }
 </file>
 
-<file path="app/Models/Order.php">
+<file path="app/Mail/NewOrderNotification.php">
 <?php
 
-namespace App\Models;
+namespace App\Mail;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
+use App\Models\Tenant;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Collection;
 
-class Order extends Model
+class NewOrderNotification extends Mailable
 {
-    protected $guarded = [];
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
+    use Queueable, SerializesModels;
+
+    /** @var Collection<int, array{line: string, kitchen: string|null, price: string, extras: string}> */
+    public Collection $lines;
+
+    public function __construct(
+        public Order $order,
+        public Tenant $tenant
+    ) {
+        $this->order->loadMissing('items');
+        $this->lines = $this->buildLines();
     }
 
-    public function tenant()
+    public function envelope(): Envelope
     {
-        return $this->belongsTo(\App\Models\Tenant::class);
+        return new Envelope(
+            subject: '[TK-Req] No.'.$this->order->order_number.'/'.$this->order->customer_name,
+        );
     }
-    // 1. 顧客とのリレーション
-    public function customer()
+
+    public function content(): Content
     {
-        return $this->belongsTo(Customer::class);
+        return new Content(
+            markdown: 'mail.new-order',
+        );
+    }
+
+    /**
+     * @return Collection<int, array{line: string, kitchen: string|null, price: string, extras: string}>
+     */
+    protected function buildLines(): Collection
+    {
+        $productIds = $this->order->items->pluck('product_id')->filter()->unique()->values();
+        $staffById = $productIds->isEmpty()
+            ? collect()
+            : Product::query()->whereIn('id', $productIds)->pluck('staff_name', 'id');
+
+        return $this->order->items->map(function (OrderItem $item) use ($staffById) {
+            $kitchen = $staffById->get($item->product_id);
+            $kitchen = $kitchen !== null && trim((string) $kitchen) !== '' ? trim((string) $kitchen) : null;
+
+            $extras = '';
+            if (is_array($item->variants) && count($item->variants) > 0) {
+                $extras = collect($item->variants)->pluck('name')->implode(', ');
+            }
+
+            return [
+                'line' => $item->product_name,
+                'kitchen' => $kitchen,
+                'price' => number_format((float) $item->price, 3, '.', '').' DT',
+                'extras' => $extras,
+            ];
+        });
     }
 }
 </file>
@@ -2653,6 +2743,73 @@ class User extends Authenticatable implements FilamentUser, HasTenants
 }
 </file>
 
+<file path="app/Providers/Filament/AdminPanelProvider.php">
+<?php
+
+namespace App\Providers\Filament;
+
+use App\Models\Tenant;
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Pages;
+use Filament\Panel;
+use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
+use Filament\Widgets;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+class AdminPanelProvider extends PanelProvider
+{
+    public function panel(Panel $panel): Panel
+    {
+        return $panel
+            ->default()
+            ->id('admin')
+            ->path('admin')
+            ->login()
+            ->colors([
+                'primary' => Color::Amber,
+            ])
+            // ★ マルチテナント設定を有効化 ★
+            ->tenant(Tenant::class)
+            // 管理画面のUI上からのテナント(店舗)新規作成・登録画面を無効化
+            ->tenantRegistration(false)
+            ->tenantProfile(\App\Filament\Pages\EditTenantProfile::class)
+            ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
+            ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->pages([
+                Pages\Dashboard::class,
+            ])
+            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+            ->widgets([
+                Widgets\AccountWidget::class,
+                Widgets\FilamentInfoWidget::class,
+            ])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                VerifyCsrfToken::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ]);
+    }
+}
+</file>
+
 <file path="resources/views/parts/intro.blade.php">
 <div id="intro-overlay">
     <div class="intro-content">
@@ -2697,171 +2854,46 @@ export default defineConfig({
 });
 </file>
 
-<file path="app/Filament/Resources/ProductResource.php">
+<file path="app/Models/Order.php">
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Models;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Models\Product;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Repeater;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
-class ProductResource extends Resource
+class Order extends Model
 {
-    protected static ?string $model = Product::class;
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected $guarded = [];
 
-    public static function form(Form $form): Form
+    /**
+     * Incrementing sequence per tenant: 01–99 zero-padded, then 100, 101, …
+     */
+    public static function formatOrderNumberFromSequence(int $sequence): string
     {
-        return $form
-            ->schema([
-                Section::make('Basic Information')->schema([
-                    Select::make('category_id')
-                        ->relationship(
-                            name: 'category',
-                            titleAttribute: 'name',
-                            modifyQueryUsing: fn(Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
-                        )
-                        ->required(),
+        if ($sequence < 1) {
+            return '01';
+        }
+        if ($sequence < 100) {
+            return str_pad((string) $sequence, 2, '0', STR_PAD_LEFT);
+        }
 
-                    TextInput::make('name')
-                        ->required()
-                        ->label('Product Name (Public)')
-                        ->live(onBlur: true)
-                        ->afterStateUpdated(fn(Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
-
-                    TextInput::make('slug')
-                        ->required()
-                        ->unique(Product::class, 'slug', ignoreRecord: true)
-                        ->helperText('URLに使用されます（自動生成されます）'),
-
-                    TextInput::make('staff_name')
-                        ->label('Staff Name (Kitchen)'),
-
-                    TextInput::make('price')
-                        ->numeric()
-                        ->suffix('DT'),
-
-                    Select::make('order_type')
-                        ->options(['kitchen' => 'Kitchen', 'counter' => 'Counter'])
-                        ->default('kitchen'),
-
-                    Toggle::make('is_active')
-                        ->label('Available')
-                        ->default(true),
-
-                    TextInput::make('sort_order')
-                        ->numeric()
-                        ->default(0)
-                        ->label('Sort Order (0 is first)'),
-                ])->columns(2),
-
-                Section::make('Presentation')->schema([
-                    FileUpload::make('image')
-                        ->image()
-                        ->directory(fn() => 'products/' . Str::upper(Str::slug(Filament::getTenant()->name, ''))),
-                    RichEditor::make('description')
-                        ->columnSpanFull(),
-                    TextInput::make('ingredients')
-                        ->label('Ingredients (for AI recommendations)'),
-                ])->collapsed(),
-
-                Section::make('Options & Toppings')
-                    ->description('Add variations like noodle types or extra toppings.')
-                    ->schema([
-                        Repeater::make('productVariants')
-                            ->relationship()
-                            ->schema([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->placeholder('e.g. Extra Egg'),
-                                TextInput::make('staff_name')
-                                    ->label('Kitchen Code'),
-                                TextInput::make('price_adjustment')
-                                    ->numeric()
-                                    ->default(0)
-                                    ->label('+ Price (DT)'),
-                                Toggle::make('is_required')
-                                    ->label('Selection Required?')
-                            ])->columns(4)
-                    ]),
-            ]);
+        return (string) $sequence;
     }
 
-    public static function table(Table $table): Table
+    public function items()
     {
-        return $table
-            ->reorderable('sort_order')
-            ->columns([
-                Tables\Columns\ImageColumn::make('image')->circular(),
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('slug'),
-                Tables\Columns\TextColumn::make('category.name')->sortable(),
-                Tables\Columns\TextColumn::make('price')->sortable(),
-                Tables\Columns\TextColumn::make('sort_order')->sortable(),
-                Tables\Columns\IconColumn::make('is_active')->boolean(),
-            ])
-            ->filters([])
-            ->actions([Tables\Actions\EditAction::make()])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-
-                    Tables\Actions\BulkAction::make('export_csv')
-                        ->label('Export CSV')
-                        ->icon('heroicon-o-arrow-down-tray')
-                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
-                            $filename = 'products_export_' . date('YmdHis') . '.csv';
-
-                            return response()->streamDownload(function () use ($records) {
-                                $file = fopen('php://output', 'w');
-                                fputs($file, "\xEF\xBB\xBF");
-
-                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants', 'Sort Order']);
-
-                                foreach ($records as $product) {
-                                    $variants = $product->productVariants->map(function ($v) {
-                                        return "{$v->name}:{$v->price_adjustment}:" . ($v->is_required ? '1' : '0');
-                                    })->implode(',');
-
-                                    fputcsv($file, [
-                                        $product->name,
-                                        $product->price,
-                                        $product->category ? $product->category->slug : '',
-                                        $product->description,
-                                        $product->image ? basename($product->image) : '',
-                                        $variants,
-                                        $product->sort_order
-                                    ]);
-                                }
-                                fclose($file);
-                            }, $filename);
-                        }),
-                ])
-            ]);
+        return $this->hasMany(OrderItem::class);
     }
 
-    public static function getPages(): array
+    public function tenant()
     {
-        return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
-        ];
+        return $this->belongsTo(\App\Models\Tenant::class);
+    }
+
+    // 1. 顧客とのリレーション
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 }
 </file>
@@ -2898,6 +2930,50 @@ class AppServiceProvider extends ServiceProvider
         }
     }
 }
+</file>
+
+<file path="resources/views/mail/new-order.blade.php">
+<x-mail::message>
+<div style="color: #c62828; font-weight: 700; font-size: 15px; line-height: 1.6; margin: 0 0 20px 0; padding: 12px 14px; border: 2px solid #c62828; border-radius: 8px; background-color: #ffebee; direction: ltr; text-align: left;" lang="tn-Latn">
+    <p style="margin: 0 0 10px 0;">[L'ordre mzl mch confirmed]</p>
+</div>
+
+# Request #{{ $order->order_number }}
+
+**Guest:** {{ $order->customer_name }}  
+**Phone:** {{ $order->customer_phone }}  
+**Type:** {{ $order->order_type }}
+
+@if($order->notes)
+**Notes:** {{ $order->notes }}
+
+@endif
+---
+
+@foreach($lines as $row)
+- **{{ $row['line'] }}** — {{ $row['price'] }}
+@if($row['kitchen'])
+  - *Kitchen label:* {{ $row['kitchen'] }}
+@endif
+@if($row['extras'])
+  - Extras: {{ $row['extras'] }}
+@endif
+
+@endforeach
+
+---
+
+**Total:** {{ number_format((float) $order->total_price, 3, '.', '') }} DT
+
+@if($order->is_test)
+<x-mail::panel>
+This order was flagged as a **test** (customer name).
+</x-mail::panel>
+@endif
+
+Thanks,<br>
+{{ config('app.name') }}
+</x-mail::message>
 </file>
 
 <file path="app/Filament/Resources/ProductResource/Pages/ListProducts.php">
@@ -3047,6 +3123,290 @@ class ListProducts extends ListRecords
 }
 </file>
 
+<file path="app/Filament/Resources/ProductResource.php">
+<?php
+
+namespace App\Filament\Resources;
+
+use App\Filament\Resources\ProductResource\Pages;
+use App\Models\Product;
+use Filament\Facades\Filament;
+use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
+
+class ProductResource extends Resource
+{
+    protected static ?string $model = Product::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('Basic Information')->schema([
+                    Select::make('category_id')
+                        ->relationship(
+                            name: 'category',
+                            titleAttribute: 'name',
+                            modifyQueryUsing: fn (Builder $query) => $query->where('tenant_id', Filament::getTenant()->id)
+                        )
+                        ->required(),
+
+                    TextInput::make('name')
+                        ->required()
+                        ->label('Product Name (Public)')
+                        ->live(onBlur: true)
+                        ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('slug', Str::slug($state))),
+
+                    TextInput::make('slug')
+                        ->required()
+                        ->unique(Product::class, 'slug', ignoreRecord: true)
+                        ->helperText('URLに使用されます（自動生成されます）'),
+
+                    TextInput::make('staff_name')
+                        ->label('Staff Name (Kitchen)')
+                        ->helperText('Shown in order notification emails under the public product name (kitchen label).'),
+
+                    TextInput::make('price')
+                        ->numeric()
+                        ->suffix('DT'),
+
+                    Select::make('order_type')
+                        ->options(['kitchen' => 'Kitchen', 'counter' => 'Counter'])
+                        ->default('kitchen'),
+
+                    Toggle::make('is_active')
+                        ->label('Available')
+                        ->default(true),
+
+                    TextInput::make('sort_order')
+                        ->numeric()
+                        ->default(0)
+                        ->label('Sort Order (0 is first)'),
+                ])->columns(2),
+
+                Section::make('Presentation')->schema([
+                    FileUpload::make('image')
+                        ->image()
+                        ->directory(fn () => 'products/'.Str::upper(Str::slug(Filament::getTenant()->name, ''))),
+                    RichEditor::make('description')
+                        ->columnSpanFull(),
+                    TextInput::make('ingredients')
+                        ->label('Ingredients (for AI recommendations)'),
+                ])->collapsed(),
+
+                Section::make('Options & Toppings')
+                    ->description('Add variations like noodle types or extra toppings.')
+                    ->schema([
+                        Repeater::make('productVariants')
+                            ->relationship()
+                            ->schema([
+                                TextInput::make('name')
+                                    ->required()
+                                    ->placeholder('e.g. Extra Egg'),
+                                TextInput::make('staff_name')
+                                    ->label('Kitchen Code'),
+                                TextInput::make('price_adjustment')
+                                    ->numeric()
+                                    ->default(0)
+                                    ->label('+ Price (DT)'),
+                                Toggle::make('is_required')
+                                    ->label('Selection Required?'),
+                            ])->columns(4),
+                    ]),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->reorderable('sort_order')
+            ->columns([
+                Tables\Columns\ImageColumn::make('image')->circular(),
+                Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\TextColumn::make('slug'),
+                Tables\Columns\TextColumn::make('category.name')->sortable(),
+                Tables\Columns\TextColumn::make('price')->sortable(),
+                Tables\Columns\TextColumn::make('sort_order')->sortable(),
+                Tables\Columns\IconColumn::make('is_active')->boolean(),
+            ])
+            ->filters([])
+            ->actions([Tables\Actions\EditAction::make()])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+
+                    Tables\Actions\BulkAction::make('export_csv')
+                        ->label('Export CSV')
+                        ->icon('heroicon-o-arrow-down-tray')
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $filename = 'products_export_'.date('YmdHis').'.csv';
+
+                            return response()->streamDownload(function () use ($records) {
+                                $file = fopen('php://output', 'w');
+                                fwrite($file, "\xEF\xBB\xBF");
+
+                                fputcsv($file, ['Name', 'Price', 'Category Slug', 'Description', 'Image', 'Variants', 'Sort Order']);
+
+                                foreach ($records as $product) {
+                                    $variants = $product->productVariants->map(function ($v) {
+                                        return "{$v->name}:{$v->price_adjustment}:".($v->is_required ? '1' : '0');
+                                    })->implode(',');
+
+                                    fputcsv($file, [
+                                        $product->name,
+                                        $product->price,
+                                        $product->category ? $product->category->slug : '',
+                                        $product->description,
+                                        $product->image ? basename($product->image) : '',
+                                        $variants,
+                                        $product->sort_order,
+                                    ]);
+                                }
+                                fclose($file);
+                            }, $filename);
+                        }),
+                ]),
+            ]);
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
+        ];
+    }
+}
+</file>
+
+<file path="app/Http/Controllers/Api/OrderController.php">
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Mail\NewOrderNotification;
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Tenant;
+use App\Support\OrderWhatsAppUrl;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+
+class OrderController extends Controller
+{
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'customer_name' => 'required|string',
+            'customer_phone' => 'required|string',
+            'order_type' => 'required|string',
+            'notes' => 'nullable|string',
+            'total_price' => 'required|numeric',
+            'items' => 'required|array',
+        ]);
+
+        $host = $request->getHost();
+        if (in_array($host, ['localhost', '127.0.0.1'])) {
+            $host = 'soya.bistronippon.tn';
+        }
+
+        $order = DB::transaction(function () use ($validated, $host) {
+            $tenant = Tenant::where('domain', $host)->lockForUpdate()->firstOrFail();
+
+            $customer = Customer::firstOrCreate(
+                ['phone' => $validated['customer_phone']],
+                ['name' => $validated['customer_name']]
+            );
+
+            $tenant->increment('order_sequence');
+            $tenant->refresh();
+
+            $orderNumber = Order::formatOrderNumberFromSequence((int) $tenant->order_sequence);
+
+            $testNames = ['test', 'テスト', 'てすと'];
+            $isTest = in_array(mb_strtolower($validated['customer_name']), $testNames, true);
+
+            $order = Order::create([
+                'tenant_id' => $tenant->id,
+                'customer_id' => $customer->id,
+                'order_number' => $orderNumber,
+                'customer_name' => $validated['customer_name'],
+                'customer_phone' => $validated['customer_phone'],
+                'order_type' => $validated['order_type'],
+                'notes' => $validated['notes'],
+                'total_price' => $validated['total_price'],
+                'is_test' => $isTest,
+            ]);
+
+            foreach ($validated['items'] as $item) {
+                OrderItem::create([
+                    'tenant_id' => $tenant->id,
+                    'order_id' => $order->id,
+                    'product_id' => $item['productId'],
+                    'product_name' => $item['name'],
+                    'price' => $item['price'],
+                    'variants' => $item['variants'],
+                ]);
+            }
+
+            return $order;
+        });
+
+        $tenant = $order->tenant;
+        $order->load('items');
+
+        if (config('mail.order_notification.send_enabled')) {
+            $recipient = $tenant->order_notification_email ?: config('mail.order_notification.address');
+            $recipient = $recipient ? trim((string) $recipient) : null;
+
+            if ($recipient && filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                try {
+                    Mail::to($recipient)->send(new NewOrderNotification($order, $tenant));
+                } catch (\Throwable $e) {
+                    Log::error('order_notification_mail_failed', [
+                        'tenant_id' => $tenant->id,
+                        'order_id' => $order->id,
+                        'message' => $e->getMessage(),
+                    ]);
+                }
+            } else {
+                Log::warning('order_notification_no_valid_recipient', [
+                    'tenant_id' => $tenant->id,
+                    'recipient' => $recipient,
+                ]);
+            }
+        }
+
+        $whatsappUrl = OrderWhatsAppUrl::build($order, $tenant);
+
+        return response()->json([
+            'success' => true,
+            'order_number' => $order->order_number,
+            'whatsapp_url' => $whatsappUrl,
+        ]);
+    }
+}
+</file>
+
 <file path="app/Http/Controllers/MenuController.php">
 <?php
 
@@ -3089,95 +3449,6 @@ class MenuController extends Controller
         return view('menu', compact('categories', 'tenant', 'features', 'homeUrl'));
     }
 }
-</file>
-
-<file path="resources/views/parts/checkout-modal.blade.php">
-<div id="checkout-modal" class="fixed inset-0 bg-[#2c3034]/70 backdrop-blur-[4px] z-[2000] hidden flex-col justify-end">
-    <div id="checkout-sheet"
-        class="bg-[#eaedf0] w-full max-w-lg mx-auto rounded-t-[2rem] shadow-[0_-15px_40px_rgba(0,0,0,0.2)] flex flex-col relative transition-transform duration-300 translate-y-full max-h-[92vh]">
-
-        <div class="w-12 h-1.5 bg-[#cbd2d9] rounded-full mx-auto mt-4 mb-2"></div>
-
-        <div class="absolute top-5 right-5 z-20">
-            <button onclick="App.closeCheckout()"
-                class="w-8 h-8 flex items-center justify-center rounded-full bg-white/50 text-[#8b949e] hover:bg-white hover:text-[#2c3034] transition-colors shadow-sm">✕</button>
-        </div>
-
-        <div class="overflow-y-auto px-4 pt-4 pb-32">
-
-                <div id="checkout-soy-character"
-                    class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
-                    <div
-                        class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1.5 px-4 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
-                        Tell me your name!
-                    </div>
-                    <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
-                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
-                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
-                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
-                        <circle cx="30" cy="50" r="5" fill="#e60012" />
-                        <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3"
-                            stroke-linecap="round" />
-                    </svg>
-                </div>
-
-            <div class="bg-white p-6 rounded-2xl shadow-sm relative border border-[#d1d8e0]"
-                style="background-image: radial-gradient(#eaedf0 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
-
-                <div class="text-center mb-6">
-                    {{-- 店舗名を変数化 --}}
-                    <h2 class="serif text-2xl font-bold text-[#2c3034]">{{ $tenant->name ?? 'Store' }}<span
-                            class="text-[var(--theme-primary)]">.</span></h2>
-                    <p class="font-mono text-[9px] text-[#8b949e] uppercase tracking-widest mt-1">Order Slip <span
-                            class="mx-1">|</span> <span id="receipt-date"></span></p>
-                    <div class="border-b-2 border-dashed border-[#eaedf0] mt-5"></div>
-                </div>
-
-                <div id="checkout-items" class="font-mono text-sm text-[#2c3034] space-y-4 mb-6 min-h-[80px]">
-                </div>
-
-                <div class="border-b-2 border-dashed border-[#eaedf0] mb-6"></div>
-
-                <div class="space-y-5 font-sans">
-                    <div>
-                        <label class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">Guest
-                            Name <span class="text-[var(--theme-primary)]">*</span></label>
-                        <input type="text" id="order-name"
-                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
-                            placeholder="Your Name">
-                    </div>
-
-                    <div>
-                        <label
-                            class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">WhatsApp
-                            Number <span class="text-[var(--theme-primary)]">*</span></label>
-                        <input type="tel" id="order-phone"
-                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
-                            placeholder="+216 ...">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div
-            class="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-[#eaedf0] rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
-            <div class="flex justify-between items-end mb-4 px-2">
-                <span class="text-[10px] font-bold tracking-widest uppercase text-[#8b949e]">Total Due</span>
-                <span class="font-mono font-bold text-3xl text-[#2c3034] leading-none"><span
-                        id="checkout-total">0.000</span> <span class="text-sm font-sans text-[#8b949e]">DT</span></span>
-            </div>
-            {{-- WhatsApp ブランド（テナントテーマ色とは独立） --}}
-            <button id="submit-order-btn" type="button" onclick="App.submitOrder()"
-                class="group w-full bg-[#25D366] hover:bg-[#20BA5A] active:bg-[#1DA851] text-white py-4 px-4 rounded-2xl font-bold text-[13px] tracking-wide transition-colors shadow-lg shadow-[#25D366]/35 hover:shadow-[#25D366]/45 flex justify-center items-center gap-3">
-                <svg class="h-7 w-7 shrink-0 text-white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                    <path fill="currentColor"
-                        d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.123 1.035 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-                </svg>
-                <span>Commander sur WhatsApp</span>
-            </button>
-        </div>
-    </div>
-</div>
 </file>
 
 <file path="resources/views/parts/footer.blade.php">
@@ -3259,6 +3530,95 @@ Route::get('/', function (Request $request) {
 Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 </file>
 
+<file path="resources/views/parts/checkout-modal.blade.php">
+<div id="checkout-modal" class="fixed inset-0 bg-[#2c3034]/70 backdrop-blur-[4px] z-[2000] hidden flex-col justify-end">
+    <div id="checkout-sheet"
+        class="bg-[#eaedf0] w-full max-w-lg mx-auto rounded-t-[2rem] shadow-[0_-15px_40px_rgba(0,0,0,0.2)] flex flex-col relative transition-transform duration-300 translate-y-full max-h-[92vh]">
+
+        <div class="w-12 h-1.5 bg-[#cbd2d9] rounded-full mx-auto mt-4 mb-2"></div>
+
+        <div class="absolute top-5 right-5 z-20">
+            <button onclick="App.closeCheckout()"
+                class="w-8 h-8 flex items-center justify-center rounded-full bg-white/50 text-[#8b949e] hover:bg-white hover:text-[#2c3034] transition-colors shadow-sm">✕</button>
+        </div>
+
+        <div class="overflow-y-auto px-4 pt-4 pb-32">
+
+                <div id="checkout-soy-character"
+                    class="hidden absolute top-0 right-12 flex-col items-center pointer-events-none z-30">
+                    <div
+                        class="bg-[var(--theme-primary)] text-white text-[10px] font-bold py-1.5 px-4 rounded-full mb-1 shadow-lg whitespace-nowrap animate-bounce">
+                        Tell me your name!
+                    </div>
+                    <svg width="40" height="60" viewBox="0 0 60 90" class="drop-shadow-xl soy-shake">
+                        <path d="M15,20 L45,20 L42,5 L18,5 Z" fill="#e60012" />
+                        <path d="M18,20 L42,20 L50,80 C50,85 45,90 30,90 C15,90 10,85 10,80 L18,20 Z" fill="#2c1a16" />
+                        <rect x="20" y="35" width="20" height="30" fill="white" rx="2" />
+                        <circle cx="30" cy="50" r="5" fill="#e60012" />
+                        <path d="M45,30 L55,20 M55,30 L45,20" stroke="#e60012" stroke-width="3"
+                            stroke-linecap="round" />
+                    </svg>
+                </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm relative border border-[#d1d8e0]"
+                style="background-image: radial-gradient(#eaedf0 1px, transparent 1px); background-size: 20px 20px; background-position: 0 0;">
+
+                <div class="text-center mb-6">
+                    {{-- 店舗名を変数化 --}}
+                    <h2 class="serif text-2xl font-bold text-[#2c3034]">{{ $tenant->name ?? 'Store' }}<span
+                            class="text-[var(--theme-primary)]">.</span></h2>
+                    <p class="font-mono text-[9px] text-[#8b949e] uppercase tracking-widest mt-1">Order Slip <span
+                            class="mx-1">|</span> <span id="receipt-date"></span></p>
+                    <div class="border-b-2 border-dashed border-[#eaedf0] mt-5"></div>
+                </div>
+
+                <div id="checkout-items" class="font-mono text-sm text-[#2c3034] space-y-4 mb-6 min-h-[80px]">
+                </div>
+
+                <div class="border-b-2 border-dashed border-[#eaedf0] mb-6"></div>
+
+                <div class="space-y-5 font-sans">
+                    <div>
+                        <label class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">Guest
+                            Name <span class="text-[var(--theme-primary)]">*</span></label>
+                        <input type="text" id="order-name"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            placeholder="Your Name">
+                    </div>
+
+                    <div>
+                        <label
+                            class="block text-[10px] font-bold tracking-widest text-[#8b949e] uppercase mb-2">WhatsApp
+                            Number <span class="text-[var(--theme-primary)]">*</span></label>
+                        <input type="tel" id="order-phone"
+                            class="w-full bg-[#f8f9fa] border border-[#d1d8e0] rounded-xl px-4 py-3.5 text-sm font-mono focus:outline-none focus:border-[var(--theme-primary)] focus:bg-white transition-all font-bold text-[#2c3034]"
+                            placeholder="+216 ...">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="absolute bottom-0 left-0 right-0 p-5 bg-white border-t border-[#eaedf0] rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
+            <div class="flex justify-between items-end mb-4 px-2">
+                <span class="text-[10px] font-bold tracking-widest uppercase text-[#8b949e]">Total Due</span>
+                <span class="font-mono font-bold text-3xl text-[#2c3034] leading-none"><span
+                        id="checkout-total">0.000</span> <span class="text-sm font-sans text-[#8b949e]">DT</span></span>
+            </div>
+            {{-- Submit to API; WhatsApp confirmation follows on the next step --}}
+            <button id="submit-order-btn" type="button" onclick="App.submitOrder()"
+                class="group w-full bg-[var(--theme-primary)] text-white py-4 px-4 rounded-2xl font-bold text-[13px] tracking-wide transition-all shadow-lg shadow-[var(--theme-primary)]/30 hover:brightness-95 active:scale-[0.99] flex justify-center items-center gap-3">
+                <svg class="h-6 w-6 shrink-0 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+                </svg>
+                <span>Send order request</span>
+            </button>
+        </div>
+    </div>
+</div>
+</file>
+
 <file path="resources/views/parts/header.blade.php">
 <header class="global-header">
 
@@ -3334,24 +3694,6 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
             --theme-bg: {{ $tenant->theme_bg ?? '#eaedf0' }};
         }
 
-        .nav-back-fixed {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 1000;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            opacity: 0.8;
-            transition: opacity 0.3s ease;
-            mix-blend-mode: difference;
-            color: #fff;
-        }
-
-        .nav-back-fixed:hover {
-            opacity: 1;
-        }
-
         /* スクロールバー非表示 */
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
@@ -3362,107 +3704,94 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
             scrollbar-width: none;
         }
 
-        .nav-link.active-nav {
-            color: var(--theme-primary);
+        #product-scroll-area {
+            -webkit-overflow-scrolling: touch;
         }
     </style>
 </head>
 
-<body class="pb-32 bg-[var(--theme-bg)] text-[#110A08] transition-colors duration-500">
+<body class="h-[100dvh] flex flex-col overflow-hidden bg-[var(--theme-bg)] text-[#110A08]">
 
-    <a href="{{ $homeUrl ?? url('/') }}" class="nav-back-fixed p-2 -ml-2">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-    </a>
-
-    <div class="sticky top-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md shadow-sm border-b border-[#A3B8C9]/30">
-        <header class="pt-3 pb-1 px-4 text-center">
-            <a href="#" class="inline-block hover:opacity-70 transition-opacity">
-                <h1 class="serif text-xl font-bold tracking-tight text-[#110A08]">{{ $tenant->name ?? 'Store' }}<span
-                        class="text-[var(--theme-primary)]">.</span></h1>
-            </a>
-        </header>
-        <div class="flex gap-6 px-4 py-3 overflow-x-auto hide-scrollbar items-center">
+    <header class="shrink-0 z-40 bg-[var(--theme-bg)]/95 backdrop-blur-md border-b border-[#A3B8C9]/30 shadow-sm">
+        <div class="pt-3 pb-1 px-4 text-center">
+            <h1 class="serif text-xl font-bold tracking-tight">
+                {{ $tenant->name ?? 'Store' }}<span class="text-[var(--theme-primary)]">.</span>
+            </h1>
+        </div>
+        <div class="flex gap-3 px-4 py-2 overflow-x-auto hide-scrollbar">
             @foreach ($categories as $category)
-                <a href="#cat-{{ $category->id }}"
-                    class="nav-link whitespace-nowrap text-[10px] font-bold tracking-[0.15em] uppercase text-[#A3B8C9]"
-                    data-target="cat-{{ $category->id }}">
+                <button
+                    onclick="scrollToCategory('cat-{{ $category->id }}')"
+                    data-cat="cat-{{ $category->id }}"
+                    class="cat-chip shrink-0 px-4 py-1.5 rounded-full text-[10px] font-bold tracking-[0.15em] uppercase transition-all bg-[#A3B8C9]/20 text-[#A3B8C9]">
                     {{ $category->name }}
-                </a>
+                </button>
             @endforeach
         </div>
-    </div>
+    </header>
 
-    <main class="px-0 mt-4 max-w-xl mx-auto">
-        @foreach ($categories as $category)
-            <section id="cat-{{ $category->id }}" class="section-spy pt-4 pb-6 scroll-mt-[100px]">
-                <div class="px-4 mb-3 flex items-center gap-2 sticky top-[70px] z-30 pointer-events-none">
-                    <div
-                        class="bg-white/95 backdrop-blur px-4 py-1.5 rounded-full shadow-sm border border-[var(--theme-primary)]">
-                        <h2 class="text-[10px] font-bold uppercase tracking-widest text-[var(--theme-primary)]">
-                            {{ $category->name }}</h2>
-                    </div>
-                </div>
-
-                <div class="flex flex-col gap-3 px-4">
-                    @foreach ($category->products as $product)
-                        <div onclick="openProductModal({{ $product->id }})"
-                            class="relative flex items-center gap-3 p-3 bg-white rounded-2xl shadow-sm border border-transparent hover:border-[var(--theme-primary)] active:scale-[0.98] transition-all cursor-pointer group h-[96px]">
-
-                            <div
-                                class="w-[72px] h-[72px] shrink-0 bg-[var(--theme-bg)] rounded-xl overflow-hidden relative">
-                                @if ($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
-                                        class="w-full h-full object-cover">
-                                @else
-                                    <div
-                                        class="w-full h-full flex items-center justify-center text-[9px] text-[#A3B8C9] font-bold">
-                                        NO IMG</div>
-                                @endif
-                            </div>
-
-                            <div class="flex-1 min-w-0 flex flex-col justify-center h-full py-1">
-                                <h3 class="serif text-[15px] font-bold leading-tight text-[#110A08] mb-1 truncate pr-2">
-                                    {{ $product->name }}</h3>
-                                <p class="text-[10px] text-[#A3B8C9] line-clamp-1 leading-tight mb-1.5">
-                                    {!! strip_tags($product->description) !!}</p>
-                                @if ($product->productVariants->count() > 0)
-                                    <span
-                                        class="inline-flex items-center px-2 py-0.5 rounded-[4px] text-[8px] font-bold tracking-wider bg-[var(--theme-bg)] text-[#110A08] self-start border border-[#A3B8C9]/30">
-                                        {{ $product->productVariants->count() }} Styles
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="flex flex-col justify-between items-end h-full py-1 pl-2 shrink-0">
-                                <span class="font-mono font-bold text-[14px] text-[#110A08]">
-                                    {{ number_format($product->price, 3) }}
-                                    @if ($product->productVariants->where('is_required', true)->count() > 0)
-                                        <span class="text-[10px] text-[#A3B8C9] font-normal">~</span>
-                                    @endif
-                                </span>
-                                <button
-                                    class="w-8 h-8 rounded-full bg-[var(--theme-bg)] text-[#110A08] flex items-center justify-center group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors duration-300">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19"></line>
-                                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                                    </svg>
-                                </button>
-                            </div>
+    <main class="flex-1 overflow-y-auto overscroll-contain" id="product-scroll-area">
+        <div class="max-w-xl mx-auto px-3 py-3 space-y-4 pb-6">
+            @foreach ($categories as $category)
+                <section id="cat-{{ $category->id }}" class="section-spy">
+                    <div class="flex items-center gap-2 mb-2 px-1">
+                        <div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full border border-[var(--theme-primary)] shadow-sm">
+                            <h2 class="text-[9px] font-bold uppercase tracking-widest text-[var(--theme-primary)]">
+                                {{ $category->name }}
+                            </h2>
                         </div>
-                    @endforeach
-                </div>
-            </section>
-        @endforeach
+                    </div>
+                    <div class="space-y-2">
+                        @foreach ($category->products as $product)
+                            <div onclick="openProductModal({{ $product->id }})"
+                                class="group flex items-center gap-2 p-2 bg-white rounded-xl shadow-sm border border-transparent hover:border-[var(--theme-primary)] active:scale-[0.98] transition-all cursor-pointer h-[80px]">
+                                <div class="w-[60px] h-[60px] shrink-0 bg-[var(--theme-bg)] rounded-lg overflow-hidden">
+                                    @if ($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}"
+                                            class="w-full h-full object-cover">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-[8px] text-[#A3B8C9] font-bold">NO IMG</div>
+                                    @endif
+                                </div>
+                                <div class="flex-1 min-w-0 flex flex-col justify-center">
+                                    <h3 class="serif text-[13px] font-bold leading-tight text-[#110A08] truncate">
+                                        {{ $product->name }}
+                                    </h3>
+                                    <p class="text-[9px] text-[#A3B8C9] line-clamp-1 leading-tight mt-0.5">
+                                        {!! strip_tags($product->description) !!}
+                                    </p>
+                                    @if ($product->productVariants->count() > 0)
+                                        <span class="mt-1 inline-flex items-center px-1.5 py-0.5 rounded text-[7px] font-bold tracking-wider bg-[var(--theme-bg)] text-[#110A08] border border-[#A3B8C9]/30 self-start">
+                                            {{ $product->productVariants->count() }} Styles
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col justify-between items-end h-full py-1 pl-1 shrink-0">
+                                    <span class="font-mono font-bold text-[12px] text-[#110A08]">
+                                        {{ number_format($product->price, 3) }}
+                                        @if ($product->productVariants->where('is_required', true)->count() > 0)
+                                            <span class="text-[9px] text-[#A3B8C9] font-normal">~</span>
+                                        @endif
+                                    </span>
+                                    <button class="w-7 h-7 rounded-full bg-[var(--theme-bg)] text-[#110A08] flex items-center justify-center group-hover:bg-[var(--theme-primary)] group-hover:text-white transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </section>
+            @endforeach
+        </div>
     </main>
 
     <div id="cart-bar"
-        class="fixed bottom-6 left-4 right-4 max-w-xl mx-auto bg-[#110A08] border border-white/20 p-2 pl-6 rounded-full flex justify-between items-center shadow-[0_15px_40px_rgba(0,0,0,0.3)] z-[1000] hidden">
+        class="shrink-0 mx-auto w-full max-w-xl bg-[#110A08] border border-white/20 p-2 pl-6 flex justify-between items-center shadow-[0_-4px_20px_rgba(0,0,0,0.2)] z-[1000] hidden">
         <div class="flex flex-col justify-center">
             <span class="text-[10px] tracking-[0.15em] text-white/60 uppercase font-bold">Total</span>
             <div class="font-mono font-bold text-[22px] leading-none mt-0.5 flex items-baseline gap-1 text-white">
@@ -3556,57 +3885,98 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
         class="fixed inset-0 bg-[#110A08]/40 backdrop-blur-sm z-[1500] hidden items-center justify-center transition-opacity">
         <div id="order-tracker-expanded"
             class="bg-white w-[90%] max-w-sm rounded-3xl shadow-2xl p-6 flex flex-col items-center text-center relative transform transition-all scale-95 opacity-0">
-            <button onclick="toggleOrderTracker(false)"
-                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--theme-bg)] text-[#A3B8C9] hover:text-[var(--theme-primary)] transition-colors">
+            <button type="button" onclick="toggleOrderTracker(false)"
+                class="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-[var(--theme-bg)] text-[#A3B8C9] hover:text-[var(--theme-primary)] transition-colors"
+                aria-label="Minimize">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </button>
 
-            <div
-                class="w-16 h-16 rounded-full bg-[var(--theme-bg)] flex items-center justify-center mb-4 mt-2 border border-[var(--theme-primary)]/30">
-                <svg class="w-8 h-8 text-[var(--theme-primary)] animate-pulse" fill="none" stroke="currentColor"
-                    viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-            </div>
-
-            <h3 class="font-bold text-lg text-[#110A08] mb-1">Waiting Confirmation</h3>
-            <p class="text-[11px] font-mono text-[#A3B8C9] mb-4">Order <span id="expanded-order-number"
-                    class="font-bold text-[var(--theme-primary)]"></span></p>
-
-            <p class="text-[13px] text-[#110A08] leading-relaxed font-medium mb-5">
-                Your order is <strong class="text-[var(--theme-primary)]">not yet confirmed</strong>.<br>
-                Waiting for staff confirmation.<br><br>
-                If you don't receive a reply within 10 minutes, please contact the store directly.
+            <p
+                class="text-[13px] font-bold text-[var(--theme-primary)] animate-pulse tracking-tight mb-3 px-1 leading-snug">
+                Your order is not confirmed yet.
             </p>
 
-            <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
-                class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all mb-4">
-                <i class="bi bi-telephone-fill"></i> CALL : +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}
-            </a>
+            <p class="text-[13px] text-[#110A08] leading-relaxed mb-2">
+                We've sent your request to the store.
+            </p>
+            <p class="text-[12px] font-mono text-[#110A08] mb-4">
+                Order No. <span id="expanded-order-number" class="font-bold text-[var(--theme-primary)]"></span>
+            </p>
 
-            <button onclick="App.clearOrderStatus()"
-                class="text-[#A3B8C9] hover:text-[#110A08] text-[10px] font-bold tracking-wider uppercase underline underline-offset-4">Cancel
-                Tracker</button>
+            <p class="text-[13px] text-[#110A08] leading-relaxed font-medium mb-4">
+                Confirm your order using either option below.
+            </p>
+
+            <div class="w-full flex flex-col gap-2.5 mb-4">
+                <a id="order-tracker-wa-link" href="#" target="_blank" rel="noopener noreferrer"
+                    class="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white py-3.5 rounded-xl font-bold text-[12px] tracking-wide flex justify-center items-center gap-2 transition-colors">
+                    <svg class="h-5 w-5 shrink-0 text-white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path fill="currentColor"
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.123 1.035 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                    </svg>
+                    <span>Open WhatsApp</span>
+                </a>
+                <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
+                    class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all">
+                    <i class="bi bi-telephone-fill"></i>
+                    <span>Tel: +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}</span>
+                </a>
+            </div>
+
+            <button type="button" onclick="App.clearOrderStatus()"
+                class="text-[#A3B8C9] hover:text-[#110A08] text-[10px] font-bold tracking-wider uppercase underline underline-offset-4">Clear
+                reminder</button>
         </div>
     </div>
 
     <div id="order-tracker-minimized" onclick="toggleOrderTracker(true)"
         class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border border-[var(--theme-primary)]/30 shadow-[0_10px_25px_rgba(0,0,0,0.1)] rounded-full px-5 py-3 z-[1400] hidden items-center gap-3 cursor-pointer hover:scale-105 transition-all">
         <svg class="w-5 h-5 text-[var(--theme-primary)] animate-pulse" fill="none" stroke="currentColor"
-            viewBox="0 0 24 24">
+            viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
-        <div class="flex flex-col">
+        <div class="flex flex-col text-left">
             <span
-                class="text-[10px] font-bold tracking-widest uppercase text-[var(--theme-primary)] leading-none mb-1">Pending</span>
-            <span class="text-[11px] text-[#110A08] font-mono font-bold leading-none tracking-tight">#<span
+                class="text-[10px] font-bold tracking-widest uppercase text-[var(--theme-primary)] leading-none mb-1">Not confirmed</span>
+            <span class="text-[11px] text-[#110A08] font-mono font-bold leading-none tracking-tight">Order No. <span
                     id="minimized-order-number"></span></span>
         </div>
+    </div>
+
+    <div id="order-wa-followup"
+        class="hidden fixed left-1/2 -translate-x-1/2 bottom-24 w-[92%] max-w-md z-[1600] flex-col gap-3 p-4 rounded-2xl bg-white border border-[var(--theme-primary)]/25 shadow-[0_12px_40px_rgba(0,0,0,0.15)]">
+        <p
+            class="text-[13px] font-bold text-[var(--theme-primary)] text-center animate-pulse tracking-tight leading-snug px-1">
+            Your order is not confirmed yet.
+        </p>
+        <p class="text-[12px] text-[#110A08] text-center leading-relaxed">
+            We've sent your request to the store.
+        </p>
+        <p class="text-[12px] font-mono text-[#110A08] text-center">
+            Order No. <span id="order-wa-followup-order-no" class="font-bold text-[var(--theme-primary)]"></span>
+        </p>
+        <p class="text-[12px] text-[#110A08] text-center font-medium leading-snug">
+            Confirm your order using either option below.
+        </p>
+        <a id="order-wa-followup-link" href="#" target="_blank" rel="noopener noreferrer"
+            class="w-full bg-[#25D366] hover:bg-[#20BA5A] text-white py-3.5 rounded-xl font-bold text-[12px] tracking-wide flex justify-center items-center gap-2 transition-colors">
+            <svg class="h-6 w-6 shrink-0 text-white" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path fill="currentColor"
+                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.123 1.035 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            <span>Open WhatsApp</span>
+        </a>
+        <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
+            class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all">
+            <i class="bi bi-telephone-fill"></i>
+            <span>Tel: +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}</span>
+        </a>
+        <button type="button" onclick="App.dismissOrderWaFollowup()"
+            class="text-[10px] font-bold text-[#A3B8C9] uppercase tracking-wider hover:text-[#110A08]">Hide</button>
     </div>
 
     <script>
@@ -3644,30 +4014,43 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
             }
         }
 
+        function scrollToCategory(id) {
+            const el = document.getElementById(id);
+            const scrollArea = document.getElementById('product-scroll-area');
+            if (el && scrollArea) {
+                scrollArea.scrollTo({ top: el.offsetTop - 8, behavior: 'smooth' });
+            }
+            setActiveChip(id);
+        }
+
+        function setActiveChip(id) {
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                const isActive = btn.dataset.cat === id;
+                btn.classList.toggle('bg-[#110A08]', isActive);
+                btn.classList.toggle('text-white', isActive);
+                btn.classList.toggle('bg-[#A3B8C9]/20', !isActive);
+                btn.classList.toggle('text-[#A3B8C9]', !isActive);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
+            const scrollArea = document.getElementById('product-scroll-area');
             const sections = document.querySelectorAll('.section-spy');
-            const navLinks = document.querySelectorAll('.nav-link');
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
-                        navLinks.forEach(link => link.classList.remove('active-nav'));
-                        const activeLink = document.querySelector(
-                            `.nav-link[href="#${entry.target.id}"]`);
-                        if (activeLink) {
-                            activeLink.classList.add('active-nav');
-                            activeLink.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'nearest',
-                                inline: 'center'
-                            });
+                        const id = entry.target.id;
+                        setActiveChip(id);
+                        const activeChip = document.querySelector(`.cat-chip[data-cat="${id}"]`);
+                        if (activeChip) {
+                            activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                         }
                     }
                 });
-            }, {
-                rootMargin: '-20% 0px -60% 0px'
-            });
+            }, { root: scrollArea, rootMargin: '-10% 0px -60% 0px' });
 
-            sections.forEach(section => observer.observe(section));
+            sections.forEach(s => observer.observe(s));
 
             if (typeof App !== 'undefined') App.checkActiveOrder();
         });
@@ -3683,35 +4066,324 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
 @section('title', 'Söya. | prod. bistronippon 北と北')
 
+@push('page-styles')
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+    /* === モバイル専用上書き === */
+    @@media (max-width: 767px) {
+        body,
+        .concrete-bg { background-color: #eaedf0 !important; }
+
+        .global-header,
+        .global-nav,
+        .site-footer { display: none !important; }
+
+        .main-container {
+            padding: 0 !important;
+            align-items: stretch !important;
+            min-height: 0 !important;
+        }
+    }
+
+    /* スクロールバー非表示 */
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    /* フェードイン アニメーション */
+    .fade-in-section {
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .fade-in-section.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+</style>
+@endpush
+
 @section('content')
-    {{-- 1. Intro Splash --}}
+    {{-- 1. イントロ スプラッシュ（変更禁止） --}}
     @include('parts.intro')
 
-    {{-- 2. Main Content --}}
-    <div class="main-container">
-        <div class="content-wrapper">
-            <div class="architectural-line d-none d-md-block"></div>
+    {{-- 2. メインコンテナ --}}
+    <div class="main-container" style="opacity:0;">
 
-            <div class="row align-items-center">
-                <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
-                    <p class="collab-text animate__animated animate__fadeIn">
-                        Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span> Menzah 9
-                    </p>
-                    <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
-
-                    <h2 class="brand-subtitle" id="subtitle">
-                        {{-- JSで動的に挿入 --}}
-                    </h2>
-                </div>
-
-                <div class="col-lg-7">
-                    <div class="story-text" id="story-content">
-                        {{-- JSで動的に挿入 --}}
+        {{-- === デスクトップ用（既存レイアウト 完全維持） === --}}
+        <div class="hidden md:block w-full">
+            <div class="content-wrapper">
+                <div class="architectural-line d-none d-md-block"></div>
+                <div class="row align-items-center">
+                    <div class="col-lg-5 mb-5 mb-lg-0 text-center text-lg-start">
+                        <p class="collab-text animate__animated animate__fadeIn">
+                            Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span> Menzah 9
+                        </p>
+                        <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
+                        <h2 class="brand-subtitle" id="subtitle"></h2>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="story-text" id="story-content"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        {{-- === モバイル専用 Spotify型UI === --}}
+        <div class="md:hidden flex flex-col w-full overflow-hidden"
+             style="height: 100dvh; background-color: #eaedf0; color: #110A08;">
+
+            {{-- TOP: ブランドヘッダー --}}
+            <header class="shrink-0 flex items-center justify-between px-5 py-3 border-b"
+                    style="background-color: #eaedf0; border-color: rgba(163,184,201,0.3);">
+                <div>
+                    <h1 style="font-family: 'Playfair Display', serif; font-size: 1.3rem;
+                               font-weight: 700; letter-spacing: -0.02em; color: #110A08;">
+                        Söya<span style="color: #e60012;">.</span>
+                    </h1>
+                    <p style="font-size: 0.6rem; letter-spacing: 0.2em;
+                              color: #A3B8C9; margin-top: 1px;">
+                        北 と 北
+                    </p>
+                </div>
+                <a href="https://www.instagram.com/soya.tunis/"
+                   target="_blank" rel="noopener noreferrer"
+                   class="flex items-center justify-center w-9 h-9 rounded-full"
+                   style="background: rgba(163,184,201,0.2);">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                         viewBox="0 0 24 24" fill="none" stroke="#110A08"
+                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                        <circle cx="12" cy="12" r="4"/>
+                        <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
+                    </svg>
+                </a>
+            </header>
+
+            {{-- MIDDLE: スクロールエリア --}}
+            <main class="flex-1 overflow-y-auto overscroll-contain hide-scrollbar"
+                  id="mobile-scroll-area"
+                  style="-webkit-overflow-scrolling: touch;">
+
+                {{-- A: クイックアクセス グリッド --}}
+                <section class="fade-in-section px-4 pt-5 pb-2">
+                    <div class="grid grid-cols-2 gap-2">
+
+                        {{-- Menu --}}
+                        <a href="{{ url('/menu') }}"
+                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
+                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=100&q=80"
+                                 alt="Menu" class="w-12 h-12 object-cover shrink-0">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Menu</span>
+                        </a>
+
+                        {{-- Reservation --}}
+                        <a href="{{ url('/reservation') }}"
+                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
+                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=100&q=80"
+                                 alt="Reservation" class="w-12 h-12 object-cover shrink-0">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Réservation</span>
+                        </a>
+
+                        {{-- Access --}}
+                        <a href="https://maps.google.com/?q=Söya+Menzah+9+Tunis"
+                           target="_blank" rel="noopener noreferrer"
+                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
+                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
+                                 style="background: rgba(230,0,18,0.08);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     viewBox="0 0 24 24" fill="none" stroke="#e60012"
+                                     stroke-width="1.5" stroke-linecap="round">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                                    <circle cx="12" cy="9" r="2.5"/>
+                                </svg>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Accès</span>
+                        </a>
+
+                        {{-- Instagram --}}
+                        <a href="https://www.instagram.com/soya.tunis/"
+                           target="_blank" rel="noopener noreferrer"
+                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
+                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
+                                 style="background: rgba(163,184,201,0.15);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     viewBox="0 0 24 24" fill="none" stroke="#110A08"
+                                     stroke-width="1.5" stroke-linecap="round">
+                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                    <circle cx="12" cy="12" r="4"/>
+                                    <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
+                                </svg>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Instagram</span>
+                        </a>
+
+                        {{-- Story --}}
+                        <button onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
+                                class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
+                                style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=100&q=80"
+                                 alt="Story" class="w-12 h-12 object-cover shrink-0">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Notre Histoire</span>
+                        </button>
+
+                        {{-- Contact --}}
+                        <a href="https://wa.me/21655778665"
+                           target="_blank" rel="noopener noreferrer"
+                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
+                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
+                                 style="background: rgba(37,211,102,0.12);">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     viewBox="0 0 24 24" fill="#25D366">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.123 1.035 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                                </svg>
+                            </div>
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Contact</span>
+                        </a>
+
+                    </div>
+                </section>
+
+                {{-- B: フィーチャーバナー（横スクロール） --}}
+                <section class="fade-in-section px-4 pt-6">
+                    <h2 style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9;
+                               letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem;">
+                        Incontournables
+                    </h2>
+                    <div class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+
+                        @php
+                        $features = [
+                            ['img' => 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&q=80',
+                             'name' => 'Ramen Tokyo', 'sub' => 'Sauce soja, chashu maison'],
+                            ['img' => 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&q=80',
+                             'name' => 'Gyoza du Moment', 'sub' => 'Croustillant, sauce yuzu'],
+                            ['img' => 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&q=80',
+                             'name' => 'Curry Ramen', 'sub' => 'Épicé, onctueux'],
+                            ['img' => 'https://images.unsplash.com/photo-1591814468924-caf88d1232e1?w=400&q=80',
+                             'name' => 'Mazé Ramen', 'sub' => 'Sans bouillon, signature'],
+                        ];
+                        @endphp
+
+                        @foreach ($features as $item)
+                        <div class="shrink-0 w-36 cursor-pointer active:scale-95 transition-all duration-150">
+                            <div class="w-36 h-36 rounded-xl overflow-hidden mb-2">
+                                <img src="{{ $item['img'] }}" alt="{{ $item['name'] }}"
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <p style="font-size: 0.8rem; font-weight: 700; color: #110A08; line-height: 1.2;">
+                                {{ $item['name'] }}
+                            </p>
+                            <p style="font-size: 0.7rem; color: #A3B8C9; margin-top: 2px; line-height: 1.2;">
+                                {{ $item['sub'] }}
+                            </p>
+                        </div>
+                        @endforeach
+
+                    </div>
+                </section>
+
+                {{-- C: ブランドストーリー --}}
+                <section id="story-section" class="fade-in-section px-4 pt-6 pb-8">
+                    <h2 style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9;
+                               letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem;">
+                        Notre Histoire
+                    </h2>
+
+                    {{-- 言語切替ボタン --}}
+                    <div class="flex gap-2 mb-4">
+                        @foreach(['en' => 'EN', 'fr' => 'FR', 'jp' => 'JP'] as $code => $label)
+                        <button class="lang-btn px-3 py-1 rounded-full text-xs font-bold transition-all duration-200 active:scale-95"
+                                data-lang="{{ $code }}"
+                                style="background: rgba(163,184,201,0.15);
+                                       color: #A3B8C9;
+                                       border: 1px solid rgba(163,184,201,0.3);">
+                            {{ $label }}
+                        </button>
+                        @endforeach
+                    </div>
+
+                    <div class="rounded-2xl p-5"
+                         style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                        <h3 id="mobile-subtitle"
+                            style="font-family: 'Playfair Display', serif; font-size: 1.1rem;
+                                   font-weight: 700; color: #110A08; margin-bottom: 1rem; line-height: 1.4;">
+                        </h3>
+                        <div id="mobile-story-content"
+                             style="font-size: 0.8rem; color: #110A08; opacity: 0.8; line-height: 1.8;">
+                        </div>
+                    </div>
+                </section>
+
+            </main>{{-- end MIDDLE --}}
+
+            {{-- BOTTOM: 固定タブバー --}}
+            <nav class="shrink-0 flex items-center justify-around px-2 py-2"
+                 style="background: #ffffff; border-top: 1px solid rgba(163,184,201,0.3); height: 60px;">
+
+                <button onclick="document.getElementById('mobile-scroll-area').scrollTo({top:0,behavior:'smooth'})"
+                        class="flex flex-col items-center gap-0.5 px-3 nav-tab active-tab">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5" stroke-linecap="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">HOME</span>
+                </button>
+
+                <a href="{{ url('/menu') }}"
+                   class="flex flex-col items-center gap-0.5 px-3 nav-tab"
+                   style="color: #A3B8C9;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5" stroke-linecap="round">
+                        <rect x="3" y="3" width="18" height="4" rx="1"/>
+                        <rect x="3" y="9" width="18" height="4" rx="1"/>
+                        <rect x="3" y="15" width="18" height="4" rx="1"/>
+                    </svg>
+                    <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">MENU</span>
+                </a>
+
+                <a href="{{ url('/reservation') }}"
+                   class="flex flex-col items-center gap-0.5 px-3 nav-tab"
+                   style="color: #A3B8C9;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5" stroke-linecap="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <line x1="16" y1="2" x2="16" y2="6"/>
+                        <line x1="8" y1="2" x2="8" y2="6"/>
+                        <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">RÉSERVER</span>
+                </a>
+
+                <button onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
+                        class="flex flex-col items-center gap-0.5 px-3 nav-tab"
+                        style="color: #A3B8C9;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="1.5" stroke-linecap="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">INFO</span>
+                </button>
+
+            </nav>
+
+        </div>{{-- end モバイル専用 --}}
+
+    </div>{{-- end .main-container --}}
 @endsection
 
 @push('scripts')
@@ -3771,6 +4443,8 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
             const $footerText = $('#footer-text');
             const $overlay = $('#intro-overlay');
             const $mainElements = $('.main-container, .global-nav, .site-footer');
+            const $mobileSubtitle = $('#mobile-subtitle');
+            const $mobileStory = $('#mobile-story-content');
 
             // --- 2. Language Setup ---
             const browserLang = navigator.language || navigator.userLanguage;
@@ -3783,6 +4457,20 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                 $footerText.text(contentData[lang].footer);
                 $('.lang-btn').removeClass('active');
                 $(`.lang-btn[data-lang="${lang}"]`).addClass('active');
+
+                // モバイル用ミラー更新
+                $mobileSubtitle.html(contentData[lang].subtitle);
+                $mobileStory.html(contentData[lang].body);
+
+                // アクティブ言語ボタンのスタイル更新
+                $('.lang-btn').each(function() {
+                    const isActive = $(this).data('lang') === lang;
+                    $(this).css({
+                        'background': isActive ? '#110A08' : 'rgba(163,184,201,0.15)',
+                        'color': isActive ? '#ffffff' : '#A3B8C9',
+                        'border-color': isActive ? '#110A08' : 'rgba(163,184,201,0.3)'
+                    });
+                });
             };
 
             updateContent(currentLang);
@@ -3807,6 +4495,30 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                 $subtitle.css('opacity', 0);
                 setTimeout(() => updateContent(lang), 400);
             });
+        });
+
+        // フェードイン（モバイル用）
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeEls = document.querySelectorAll('.fade-in-section');
+            if (!fadeEls.length) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeEls.forEach(el => observer.observe(el));
+
+            // アクティブタブ スタイル初期化
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.style.color = '#A3B8C9';
+            });
+            const firstTab = document.querySelector('.nav-tab.active-tab');
+            if (firstTab) firstTab.style.color = '#110A08';
         });
     </script>
 @endpush
