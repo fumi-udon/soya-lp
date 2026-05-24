@@ -108,7 +108,7 @@
                     <div class="grid grid-cols-2 gap-2">
 
                         {{-- Menu --}}
-                        <a href="{{ url('/menu') }}"
+                        <a href="https://soyam9.bistronippon.tn/menu/preview/soya"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
                             <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=100&q=80"
@@ -275,7 +275,7 @@
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">HOME</span>
                 </button>
 
-                <a href="{{ url('/menu') }}"
+                <a href="https://soyam9.bistronippon.tn/menu/preview/soya"
                    class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                    style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
