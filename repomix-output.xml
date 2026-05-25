@@ -4102,12 +4102,30 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
         opacity: 1;
         transform: translateY(0);
     }
+
+    /* 2回目以降の訪問: Intro を即スキップ */
+    html.intro-skipped #intro-overlay {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    html.intro-skipped .main-container {
+        opacity: 1 !important;
+    }
 </style>
 @endpush
 
 @section('content')
     {{-- 1. イントロ スプラッシュ（変更禁止） --}}
     @include('parts.intro')
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('soya_intro_seen')) {
+                    document.documentElement.classList.add('intro-skipped');
+                }
+            } catch (e) {}
+        })();
+    </script>
 
     {{-- 2. メインコンテナ --}}
     <div class="main-container" style="opacity:0;">
@@ -4172,7 +4190,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                     <div class="grid grid-cols-2 gap-2">
 
                         {{-- Menu --}}
-                        <a href="{{ url('/menu') }}"
+                        <a href="https://soyam9.bistronippon.tn/menu/preview/soya"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
                             <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=100&q=80"
@@ -4181,7 +4199,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                         </a>
 
                         {{-- Reservation --}}
-                        <a href="{{ url('/reservation') }}"
+                        <a href="https://soyam9.bistronippon.tn/reservation"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
                             <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=100&q=80"
@@ -4339,7 +4357,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">HOME</span>
                 </button>
 
-                <a href="{{ url('/menu') }}"
+                <a href="https://soyam9.bistronippon.tn/menu/preview/soya"
                    class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                    style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -4352,7 +4370,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">MENU</span>
                 </a>
 
-                <a href="{{ url('/reservation') }}"
+                <a href="https://soyam9.bistronippon.tn/reservation"
                    class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                    style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -4475,18 +4493,38 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
             updateContent(currentLang);
 
-            // --- 3. Intro Animation ---
-            setTimeout(() => $('#intro-1').addClass('fade-up'), 500);
-            setTimeout(() => $('#intro-2').addClass('fade-up'), 1500);
-            setTimeout(() => $('#intro-3').addClass('fade-up'), 2500);
-            setTimeout(() => $('#intro-action').addClass('fade-up'), 3500);
+            // --- 3. Intro Animation（初回訪問のみ） ---
+            const INTRO_KEY = 'soya_intro_seen';
 
-            $('#enter-btn').on('click', function() {
-                $overlay.addClass('fade-out');
-                setTimeout(() => {
+            const dismissIntro = (animated) => {
+                if (animated) {
+                    $overlay.addClass('fade-out');
+                    setTimeout(() => {
+                        $overlay.hide();
+                        $mainElements.css('opacity', 1);
+                    }, 800);
+                } else {
+                    $overlay.hide();
                     $mainElements.css('opacity', 1);
-                }, 800);
-            });
+                }
+            };
+
+            if (localStorage.getItem(INTRO_KEY)) {
+                document.documentElement.classList.add('intro-skipped');
+                dismissIntro(false);
+            } else {
+                setTimeout(() => $('#intro-1').addClass('fade-up'), 500);
+                setTimeout(() => $('#intro-2').addClass('fade-up'), 1500);
+                setTimeout(() => $('#intro-3').addClass('fade-up'), 2500);
+                setTimeout(() => $('#intro-action').addClass('fade-up'), 3500);
+
+                $('#enter-btn').on('click', function() {
+                    try {
+                        localStorage.setItem(INTRO_KEY, '1');
+                    } catch (e) {}
+                    dismissIntro(true);
+                });
+            }
 
             // --- 4. Language Switch ---
             $(document).on('click', '.lang-btn', function() {
