@@ -48,7 +48,7 @@
         opacity: 1 !important;
     }
 
-    /* ボトムシート共通（Accès / INFO） */
+    /* Accès ボトムシート */
     .bottom-sheet-root {
         pointer-events: none;
         visibility: hidden;
@@ -84,29 +84,6 @@
         transform: translateY(0);
     }
 
-    /* INFO シート固有 */
-    .info-day-row { border-bottom: 1px solid rgba(163,184,201,0.2); }
-    .info-day-row:last-child { border-bottom: none; }
-    .info-day-row.is-today .info-day-name {
-        color: #e60012;
-        font-weight: 700;
-    }
-    .info-day-row.is-today {
-        background: rgba(230,0,18,0.04);
-        border-left: 3px solid #e60012;
-        margin-left: -1px;
-    }
-    .info-action-row {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 0;
-        border-bottom: 1px solid rgba(163,184,201,0.2);
-        cursor: pointer;
-        transition: background 0.15s;
-    }
-    .info-action-row:last-child { border-bottom: none; }
-    .info-action-row:active { background: rgba(163,184,201,0.1); }
 </style>
 @endpush
 
@@ -115,33 +92,8 @@
     $accessMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($accessAddress);
     $accessTel = config('services.takeout.tel', '+21624986077');
     $accessTelHref = 'tel:' . preg_replace('/[^\d+]/', '', $accessTel);
-
-    // -----------------------------------------------------------------
-    // Store Info — 将来 Google Business API に差し替え可能な構造
-    // day: 1=Lundi … 7=Dimanche (ISO 8601 weekday)
-    // periods: [['open' => 'HH:MM', 'close' => 'HH:MM'], ...]
-    // closed: true で定休日
-    // -----------------------------------------------------------------
-    $storeInfo = [
-        'timezone' => 'Africa/Tunis',
-        'contact'  => [
-            'phone'     => $accessTel,
-            'tel_href'  => $accessTelHref,
-            'address'   => $accessAddress,
-            'maps_url'  => $accessMapsUrl,
-            'instagram' => 'https://www.instagram.com/soya.tunis/',
-        ],
-        'regular_hours' => [
-            ['day' => 1, 'label' => ['fr' => 'Lundi',    'en' => 'Monday',    'jp' => '月'], 'closed' => true,  'periods' => []],
-            ['day' => 2, 'label' => ['fr' => 'Mardi',    'en' => 'Tuesday',   'jp' => '火'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-            ['day' => 3, 'label' => ['fr' => 'Mercredi', 'en' => 'Wednesday', 'jp' => '水'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-            ['day' => 4, 'label' => ['fr' => 'Jeudi',    'en' => 'Thursday',  'jp' => '木'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-            ['day' => 5, 'label' => ['fr' => 'Vendredi', 'en' => 'Friday',    'jp' => '金'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-            ['day' => 6, 'label' => ['fr' => 'Samedi',   'en' => 'Saturday',  'jp' => '土'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-            ['day' => 7, 'label' => ['fr' => 'Dimanche', 'en' => 'Sunday',    'jp' => '日'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
-        ],
-        'exceptions' => [], // 将来: [['date' => '2026-01-01', 'closed' => true, 'note' => 'Nouvel An']]
-    ];
+    $infoMapsShareUrl = 'https://share.google/AuyzAfsXz5CmrBywq';
+    $infoInstagramUrl = 'https://www.instagram.com/soya.tunis/';
 @endphp
 
 @section('content')
@@ -369,6 +321,74 @@
                     </div>
                 </section>
 
+                {{-- D: Infos (Bento UI) --}}
+                <section id="info-section" class="fade-in-section px-4 pt-2 pb-10">
+                    <h2 style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9;
+                               letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem;">
+                        Infos
+                    </h2>
+
+                    <div class="flex flex-col gap-3">
+
+                        {{-- 1. Horaires --}}
+                        <div class="rounded-2xl p-4"
+                             style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide mb-3"
+                                  style="background: rgba(163,184,201,0.15); color: #A3B8C9; border: 1px solid rgba(163,184,201,0.3);">
+                                🔴 Ouverture prochainement (Spring 2026)
+                            </span>
+                            <p class="text-sm font-bold mb-1" style="color: #110A08;">Horaires</p>
+                            <ul class="space-y-2" style="font-size: 0.8rem; color: #110A08; line-height: 1.5;">
+                                <li>
+                                    <span class="font-semibold" style="color: #A3B8C9;">Mar – Dim</span>
+                                    <span class="block mt-0.5">12h00 – 15h00 | 18h30 – 22h15</span>
+                                </li>
+                                <li>
+                                    <span class="font-semibold" style="color: #A3B8C9;">Lun</span>
+                                    <span class="block mt-0.5 font-semibold" style="color: #A3B8C9;">Fermé</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        {{-- 2. Accès --}}
+                        <div class="rounded-2xl p-4"
+                             style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                            <p class="text-sm font-bold mb-2" style="color: #110A08;">Accès</p>
+                            <p class="text-sm mb-3" style="color: #110A08; opacity: 0.85; line-height: 1.5;">
+                                {{ $accessAddress }}
+                            </p>
+                            <a href="{{ $infoMapsShareUrl }}"
+                               target="_blank" rel="noopener noreferrer"
+                               class="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-bold text-white active:scale-95 transition-transform duration-150"
+                               style="background-color: #e60012;">
+                                📍 Ouvrir dans Google Maps
+                            </a>
+                        </div>
+
+                        {{-- 3. Contact & SNS --}}
+                        <div class="rounded-2xl p-4"
+                             style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                            <p class="text-sm font-bold mb-3" style="color: #110A08;">Contact &amp; SNS</p>
+                            <div class="grid grid-cols-2 gap-2">
+                                <a href="{{ $accessTelHref }}"
+                                   class="flex flex-col items-center justify-center gap-1 py-3 rounded-xl active:scale-95 transition-transform duration-150"
+                                   style="background: rgba(163,184,201,0.12); border: 1px solid rgba(163,184,201,0.25);">
+                                    <span style="font-size: 1.25rem;">📞</span>
+                                    <span class="text-xs font-bold" style="color: #110A08;">Appeler</span>
+                                </a>
+                                <a href="{{ $infoInstagramUrl }}"
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="flex flex-col items-center justify-center gap-1 py-3 rounded-xl active:scale-95 transition-transform duration-150"
+                                   style="background: rgba(163,184,201,0.12); border: 1px solid rgba(163,184,201,0.25);">
+                                    <span style="font-size: 1.25rem;">📱</span>
+                                    <span class="text-xs font-bold" style="color: #110A08;">Instagram</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
             </main>{{-- end MIDDLE --}}
 
             {{-- BOTTOM: 固定タブバー --}}
@@ -413,7 +433,7 @@
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">RÉSERVER</span>
                 </a>
 
-                <button type="button" onclick="openInfoSheet()"
+                <button type="button" onclick="document.getElementById('info-section').scrollIntoView({behavior:'smooth'})"
                         class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                         style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -487,126 +507,6 @@
         </div>
     </div>
 
-    {{-- INFO ボトムシート（モバイルのみ） --}}
-    <div id="info-sheet-root" class="bottom-sheet-root md:hidden fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="info-sheet-title">
-        <div class="bottom-sheet-overlay absolute inset-0 bg-black/50" onclick="closeInfoSheet()" aria-hidden="true"></div>
-
-        <div class="bottom-sheet-panel absolute bottom-0 inset-x-0 rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] max-h-[75vh] overflow-y-auto overscroll-contain hide-scrollbar"
-             style="background-color: #eaedf0;"
-             onclick="event.stopPropagation()">
-            <div class="flex flex-col items-center pt-3 px-5 pb-8">
-
-                {{-- ハンドル --}}
-                <button type="button" onclick="closeInfoSheet()" class="w-10 h-1 rounded-full mb-4" style="background: rgba(163,184,201,0.5);" aria-label="Fermer"></button>
-
-                {{-- タイトル + ステータスバッジ --}}
-                <div class="w-full flex items-center justify-between mb-5">
-                    <h2 id="info-sheet-title" class="font-bold text-xl leading-tight" style="color: #110A08; font-family: 'Playfair Display', serif;">
-                        Infos — Söya.
-                    </h2>
-                    {{-- 将来のオープン後: openNow ? '🟢 Ouvert' : '🔴 Fermé' に差し替え --}}
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide"
-                          style="background: rgba(163,184,201,0.15); color: #A3B8C9; border: 1px solid rgba(163,184,201,0.3);">
-                        🔴 Ouverture prochainement
-                    </span>
-                </div>
-
-                {{-- ===== HORAIRES ===== --}}
-                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Horaires</p>
-                <div class="w-full rounded-2xl overflow-hidden mb-5" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-                    @foreach ($storeInfo['regular_hours'] as $dayRow)
-                    <div class="info-day-row flex items-center justify-between px-4 py-3"
-                         data-iso-day="{{ $dayRow['day'] }}">
-                        <span class="info-day-name text-sm font-semibold" style="color: #110A08; min-width: 90px;">
-                            {{ $dayRow['label']['fr'] }}
-                        </span>
-                        @if ($dayRow['closed'])
-                            <span class="text-xs font-bold" style="color: #A3B8C9;">Fermé</span>
-                        @else
-                            <div class="flex flex-col items-end gap-0.5">
-                                @foreach ($dayRow['periods'] as $period)
-                                    <span class="text-xs font-semibold" style="color: #110A08;">
-                                        {{ $period['open'] }} – {{ $period['close'] }}
-                                    </span>
-                                @endforeach
-                            </div>
-                        @endif
-                    </div>
-                    @endforeach
-                </div>
-
-                {{-- ===== CONTACT ===== --}}
-                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Contact</p>
-                <div class="w-full rounded-2xl overflow-hidden mb-5" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-                    {{-- 電話 --}}
-                    <a href="{{ $storeInfo['contact']['tel_href'] }}"
-                       class="info-action-row px-4">
-                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                              style="background: rgba(163,184,201,0.15);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                 fill="none" stroke="#110A08" stroke-width="1.8" stroke-linecap="round">
-                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.15 1.19 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
-                            </svg>
-                        </span>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold" style="color: #110A08;">Appeler</p>
-                            <p class="text-xs" style="color: #A3B8C9;">{{ $storeInfo['contact']['phone'] }}</p>
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </a>
-                    {{-- 住所（Accès シートへ） --}}
-                    <button type="button" onclick="closeInfoSheet(); openAccessSheet();"
-                            class="info-action-row px-4 w-full text-left">
-                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                              style="background: rgba(230,0,18,0.08);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                 fill="none" stroke="#e60012" stroke-width="1.8" stroke-linecap="round">
-                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                                <circle cx="12" cy="9" r="2.5"/>
-                            </svg>
-                        </span>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold truncate" style="color: #110A08;">Adresse & itinéraire</p>
-                            <p class="text-xs truncate" style="color: #A3B8C9;">{{ $storeInfo['contact']['address'] }}</p>
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </button>
-                </div>
-
-                {{-- ===== SUIVEZ-NOUS ===== --}}
-                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Suivez-nous</p>
-                <div class="w-full rounded-2xl overflow-hidden" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-                    <a href="{{ $storeInfo['contact']['instagram'] }}" target="_blank" rel="noopener noreferrer"
-                       class="info-action-row px-4">
-                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
-                              style="background: rgba(163,184,201,0.15);">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                 fill="none" stroke="#110A08" stroke-width="1.8" stroke-linecap="round">
-                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                <circle cx="12" cy="12" r="4"/>
-                                <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
-                            </svg>
-                        </span>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold" style="color: #110A08;">Instagram</p>
-                            <p class="text-xs" style="color: #A3B8C9;">@soya.tunis</p>
-                        </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
-                            <polyline points="9 18 15 12 9 6"/>
-                        </svg>
-                    </a>
-                </div>
-
-            </div>
-        </div>
-    </div>
 @endsection
 
 @push('scripts')
@@ -827,87 +727,9 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (accessSheetRoot?.classList.contains('is-open')) closeAccessSheet();
-                if (infoSheetRoot?.classList.contains('is-open'))   closeInfoSheet();
+            if (e.key === 'Escape' && accessSheetRoot?.classList.contains('is-open')) {
+                closeAccessSheet();
             }
         });
-
-        // ----------------------------------------------------------------
-        // INFO ボトムシート
-        // ----------------------------------------------------------------
-        const infoSheetRoot = document.getElementById('info-sheet-root');
-
-        window.openInfoSheet = function() {
-            if (!infoSheetRoot) return;
-            // 排他制御: Accès が開いていれば閉じる
-            if (accessSheetRoot?.classList.contains('is-open')) closeAccessSheet();
-            infoSheetRoot.classList.add('is-open');
-            infoSheetRoot.setAttribute('aria-hidden', 'false');
-            document.body.style.overflow = 'hidden';
-            highlightTodayRow();
-        };
-
-        window.closeInfoSheet = function() {
-            if (!infoSheetRoot) return;
-            infoSheetRoot.classList.remove('is-open');
-            infoSheetRoot.setAttribute('aria-hidden', 'true');
-            document.body.style.overflow = '';
-        };
-
-        // Accès を開く際も INFO を閉じる（排他）
-        const _origOpenAccess = window.openAccessSheet;
-        window.openAccessSheet = function() {
-            if (infoSheetRoot?.classList.contains('is-open')) closeInfoSheet();
-            _origOpenAccess();
-        };
-
-        // 今日の曜日行をハイライト (ISO weekday: 1=月…7=日)
-        function highlightTodayRow() {
-            const today = new Date().toLocaleDateString('en-US', {
-                timeZone: @json($storeInfo['timezone']),
-                weekday: 'short'
-            });
-            // ブラウザの toLocaleDateString weekday + isoDay マッピング
-            const isoMap = { Sun: 7, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
-            const todayIso = isoMap[today] ?? ((new Date().getDay()) || 7);
-            infoSheetRoot?.querySelectorAll('.info-day-row').forEach(row => {
-                row.classList.remove('is-today');
-                if (parseInt(row.dataset.isoDay) === todayIso) {
-                    row.classList.add('is-today');
-                }
-            });
-        }
-
-        // ----------------------------------------------------------------
-        // computeOpenStatus — 将来のオープン後に使用（現在は isPreOpen=true で無効化）
-        // Google Business API レスポンスの periods と互換の構造を想定
-        // ----------------------------------------------------------------
-        // const IS_PRE_OPEN = true; // オープン後に false に変更
-        //
-        // function computeOpenStatus(regularHours, timezone) {
-        //     const now = new Date();
-        //     const localTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
-        //     const isoDay = localTime.getDay() || 7; // 0(日)→7
-        //     const hhmm = localTime.getHours() * 60 + localTime.getMinutes();
-        //
-        //     const todaySchedule = regularHours.find(d => d.day === isoDay);
-        //     if (!todaySchedule || todaySchedule.closed) return { open: false, label: 'Fermé' };
-        //
-        //     const inPeriod = todaySchedule.periods.some(p => {
-        //         const [oh, om] = p.open.split(':').map(Number);
-        //         const [ch, cm] = p.close.split(':').map(Number);
-        //         return hhmm >= oh * 60 + om && hhmm < ch * 60 + cm;
-        //     });
-        //     return inPeriod
-        //         ? { open: true,  label: 'Ouvert' }
-        //         : { open: false, label: 'Fermé' };
-        // }
-        //
-        // 使用例（ステータスバッジ更新）:
-        // const storeHours = @json($storeInfo['regular_hours']);
-        // const status = computeOpenStatus(storeHours, @json($storeInfo['timezone']));
-        // document.getElementById('info-status-badge').textContent =
-        //     status.open ? '🟢 Ouvert' : '🔴 Fermé';
     </script>
 @endpush

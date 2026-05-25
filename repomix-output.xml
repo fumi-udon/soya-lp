@@ -4111,8 +4111,102 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
     html.intro-skipped .main-container {
         opacity: 1 !important;
     }
+
+    /* ボトムシート共通（Accès / INFO） */
+    .bottom-sheet-root {
+        pointer-events: none;
+        visibility: hidden;
+    }
+    .bottom-sheet-root.is-open {
+        pointer-events: auto;
+        visibility: visible;
+    }
+    .bottom-sheet-overlay {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .bottom-sheet-root.is-open .bottom-sheet-overlay {
+        opacity: 1;
+    }
+    .bottom-sheet-panel {
+        transform: translateY(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .bottom-sheet-root.is-open .bottom-sheet-panel {
+        transform: translateY(0);
+    }
+
+    /* Accès 固有 */
+    #access-copy-toast {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
+        pointer-events: none;
+    }
+    #access-copy-toast.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* INFO シート固有 */
+    .info-day-row { border-bottom: 1px solid rgba(163,184,201,0.2); }
+    .info-day-row:last-child { border-bottom: none; }
+    .info-day-row.is-today .info-day-name {
+        color: #e60012;
+        font-weight: 700;
+    }
+    .info-day-row.is-today {
+        background: rgba(230,0,18,0.04);
+        border-left: 3px solid #e60012;
+        margin-left: -1px;
+    }
+    .info-action-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(163,184,201,0.2);
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .info-action-row:last-child { border-bottom: none; }
+    .info-action-row:active { background: rgba(163,184,201,0.1); }
 </style>
 @endpush
+
+@php
+    $accessAddress = '38 Av. Salah Ben Youssef, Tunis 1013';
+    $accessMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($accessAddress);
+    $accessTel = config('services.takeout.tel', '+21624986077');
+    $accessTelHref = 'tel:' . preg_replace('/[^\d+]/', '', $accessTel);
+
+    // -----------------------------------------------------------------
+    // Store Info — 将来 Google Business API に差し替え可能な構造
+    // day: 1=Lundi … 7=Dimanche (ISO 8601 weekday)
+    // periods: [['open' => 'HH:MM', 'close' => 'HH:MM'], ...]
+    // closed: true で定休日
+    // -----------------------------------------------------------------
+    $storeInfo = [
+        'timezone' => 'Africa/Tunis',
+        'contact'  => [
+            'phone'     => $accessTel,
+            'tel_href'  => $accessTelHref,
+            'address'   => $accessAddress,
+            'maps_url'  => $accessMapsUrl,
+            'instagram' => 'https://www.instagram.com/soya.tunis/',
+        ],
+        'regular_hours' => [
+            ['day' => 1, 'label' => ['fr' => 'Lundi',    'en' => 'Monday',    'jp' => '月'], 'closed' => true,  'periods' => []],
+            ['day' => 2, 'label' => ['fr' => 'Mardi',    'en' => 'Tuesday',   'jp' => '火'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+            ['day' => 3, 'label' => ['fr' => 'Mercredi', 'en' => 'Wednesday', 'jp' => '水'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+            ['day' => 4, 'label' => ['fr' => 'Jeudi',    'en' => 'Thursday',  'jp' => '木'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+            ['day' => 5, 'label' => ['fr' => 'Vendredi', 'en' => 'Friday',    'jp' => '金'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+            ['day' => 6, 'label' => ['fr' => 'Samedi',   'en' => 'Saturday',  'jp' => '土'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+            ['day' => 7, 'label' => ['fr' => 'Dimanche', 'en' => 'Sunday',    'jp' => '日'], 'closed' => false, 'periods' => [['open' => '12:00', 'close' => '15:00'], ['open' => '18:30', 'close' => '22:15']]],
+        ],
+        'exceptions' => [], // 将来: [['date' => '2026-01-01', 'closed' => true, 'note' => 'Nouvel An']]
+    ];
+@endphp
 
 @section('content')
     {{-- 1. イントロ スプラッシュ（変更禁止） --}}
@@ -4193,7 +4287,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                         <a href="https://soyam9.bistronippon.tn/menu/preview/soya"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=100&q=80"
+                            <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400&q=80"
                                  alt="Menu" class="w-12 h-12 object-cover shrink-0">
                             <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Menu</span>
                         </a>
@@ -4202,16 +4296,15 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                         <a href="https://soyam9.bistronippon.tn/reservation"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=100&q=80"
-                                 alt="Reservation" class="w-12 h-12 object-cover shrink-0">
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Réservation</span>
+                            <img src="{{ asset('images/rsrv.jpg') }}"
+                                 alt="Réservation" class="w-12 h-12 object-cover shrink-0">
+                            <span style="font-size: 0.7rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Booking</span>
                         </a>
 
                         {{-- Access --}}
-                        <a href="https://maps.google.com/?q=Söya+Menzah+9+Tunis"
-                           target="_blank" rel="noopener noreferrer"
-                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
-                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
+                        <button type="button" onclick="openAccessSheet()"
+                                class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
+                                style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
                             <div class="w-12 h-12 shrink-0 flex items-center justify-center"
                                  style="background: rgba(230,0,18,0.08);">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -4222,7 +4315,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                                 </svg>
                             </div>
                             <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Accès</span>
-                        </a>
+                        </button>
 
                         {{-- Instagram --}}
                         <a href="https://www.instagram.com/soya.tunis/"
@@ -4239,16 +4332,16 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                                     <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
                                 </svg>
                             </div>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Instagram</span>
+                            <span style="font-size: 0.7rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Instagram</span>
                         </a>
 
-                        {{-- Story --}}
-                        <button onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
+                        {{-- Notre Histoire --}}
+                        <button type="button" onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
                                 class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
                                 style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?w=100&q=80"
-                                 alt="Story" class="w-12 h-12 object-cover shrink-0">
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Notre Histoire</span>
+                            <img src="{{ asset('images/story.png') }}"
+                                 alt="Notre Histoire" class="w-12 h-12 object-cover shrink-0">
+                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Story</span>
                         </button>
 
                         {{-- Contact --}}
@@ -4312,7 +4405,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                 <section id="story-section" class="fade-in-section px-4 pt-6 pb-8">
                     <h2 style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9;
                                letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem;">
-                        Notre Histoire
+                        Sto
                     </h2>
 
                     {{-- 言語切替ボタン --}}
@@ -4384,7 +4477,7 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">RÉSERVER</span>
                 </a>
 
-                <button onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
+                <button type="button" onclick="openInfoSheet()"
                         class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                         style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -4402,6 +4495,182 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
         </div>{{-- end モバイル専用 --}}
 
     </div>{{-- end .main-container --}}
+
+    {{-- Accès ボトムシート（モバイルのみ） --}}
+    <div id="access-sheet-root" class="bottom-sheet-root md:hidden fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="access-sheet-title">
+        <div id="access-sheet-overlay" class="bottom-sheet-overlay absolute inset-0 bg-black/50" onclick="closeAccessSheet()" aria-hidden="true"></div>
+
+        <div id="access-sheet-panel"
+             class="bottom-sheet-panel absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] max-h-[70vh] overflow-y-auto overscroll-contain"
+             onclick="event.stopPropagation()">
+            <div class="flex flex-col items-center pt-3 pb-2 px-6">
+                <button type="button" onclick="closeAccessSheet()" class="w-10 h-1 rounded-full mb-3" style="background: rgba(163,184,201,0.5);" aria-label="Fermer"></button>
+                <h2 id="access-sheet-title" class="w-full text-left font-bold text-lg mb-4" style="color: #110A08; font-family: 'Playfair Display', serif;">
+                    Accès — Söya.
+                </h2>
+
+                <div class="w-full bg-gray-200 rounded-xl h-40 relative flex items-center justify-center overflow-hidden mb-5">
+                    <a href="{{ $accessMapsUrl }}" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold text-white active:scale-95 transition-transform"
+                       style="background-color: #e60012;">
+                        📍 Ouvrir dans Google Maps
+                    </a>
+                </div>
+
+                <div class="w-full grid grid-cols-3 gap-4 mb-5">
+                    <a href="{{ $accessMapsUrl }}" target="_blank" rel="noopener noreferrer"
+                       class="flex flex-col items-center gap-2 active:scale-95 transition-transform">
+                        <span class="w-14 h-14 rounded-full flex items-center justify-center text-xl"
+                              style="background: rgba(230,0,18,0.1);">🧭</span>
+                        <span class="text-[10px] font-bold text-center" style="color: #110A08;">Y Aller</span>
+                    </a>
+                    <a href="{{ $accessTelHref }}"
+                       class="flex flex-col items-center gap-2 active:scale-95 transition-transform">
+                        <span class="w-14 h-14 rounded-full flex items-center justify-center text-xl"
+                              style="background: rgba(163,184,201,0.2);">📞</span>
+                        <span class="text-[10px] font-bold text-center" style="color: #110A08;">Appeler</span>
+                    </a>
+                    <button type="button" id="access-copy-btn" onclick="copyAccessAddress()"
+                            class="flex flex-col items-center gap-2 active:scale-95 transition-transform">
+                        <span class="w-14 h-14 rounded-full flex items-center justify-center text-xl"
+                              style="background: rgba(163,184,201,0.2);">📋</span>
+                        <span id="access-copy-label" class="text-[10px] font-bold text-center" style="color: #110A08;">Copier</span>
+                    </button>
+                </div>
+
+                <p class="w-full text-sm leading-relaxed mb-6" style="color: #110A08;">
+                    {{ $accessAddress }}
+                </p>
+            </div>
+        </div>
+
+        <div id="access-copy-toast"
+             class="fixed left-1/2 -translate-x-1/2 bottom-[72vh] px-4 py-2 rounded-full text-xs font-bold text-white shadow-lg z-[61]"
+             style="background-color: #110A08;">
+            Copié !
+        </div>
+    </div>
+
+    {{-- INFO ボトムシート（モバイルのみ） --}}
+    <div id="info-sheet-root" class="bottom-sheet-root md:hidden fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="info-sheet-title">
+        <div class="bottom-sheet-overlay absolute inset-0 bg-black/50" onclick="closeInfoSheet()" aria-hidden="true"></div>
+
+        <div class="bottom-sheet-panel absolute bottom-0 inset-x-0 rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] max-h-[75vh] overflow-y-auto overscroll-contain hide-scrollbar"
+             style="background-color: #eaedf0;"
+             onclick="event.stopPropagation()">
+            <div class="flex flex-col items-center pt-3 px-5 pb-8">
+
+                {{-- ハンドル --}}
+                <button type="button" onclick="closeInfoSheet()" class="w-10 h-1 rounded-full mb-4" style="background: rgba(163,184,201,0.5);" aria-label="Fermer"></button>
+
+                {{-- タイトル + ステータスバッジ --}}
+                <div class="w-full flex items-center justify-between mb-5">
+                    <h2 id="info-sheet-title" class="font-bold text-xl leading-tight" style="color: #110A08; font-family: 'Playfair Display', serif;">
+                        Infos — Söya.
+                    </h2>
+                    {{-- 将来のオープン後: openNow ? '🟢 Ouvert' : '🔴 Fermé' に差し替え --}}
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wide"
+                          style="background: rgba(163,184,201,0.15); color: #A3B8C9; border: 1px solid rgba(163,184,201,0.3);">
+                        🔴 Ouverture prochainement
+                    </span>
+                </div>
+
+                {{-- ===== HORAIRES ===== --}}
+                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Horaires</p>
+                <div class="w-full rounded-2xl overflow-hidden mb-5" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                    @foreach ($storeInfo['regular_hours'] as $dayRow)
+                    <div class="info-day-row flex items-center justify-between px-4 py-3"
+                         data-iso-day="{{ $dayRow['day'] }}">
+                        <span class="info-day-name text-sm font-semibold" style="color: #110A08; min-width: 90px;">
+                            {{ $dayRow['label']['fr'] }}
+                        </span>
+                        @if ($dayRow['closed'])
+                            <span class="text-xs font-bold" style="color: #A3B8C9;">Fermé</span>
+                        @else
+                            <div class="flex flex-col items-end gap-0.5">
+                                @foreach ($dayRow['periods'] as $period)
+                                    <span class="text-xs font-semibold" style="color: #110A08;">
+                                        {{ $period['open'] }} – {{ $period['close'] }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    @endforeach
+                </div>
+
+                {{-- ===== CONTACT ===== --}}
+                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Contact</p>
+                <div class="w-full rounded-2xl overflow-hidden mb-5" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                    {{-- 電話 --}}
+                    <a href="{{ $storeInfo['contact']['tel_href'] }}"
+                       class="info-action-row px-4">
+                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                              style="background: rgba(163,184,201,0.15);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.8" stroke-linecap="round">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.15 1.19 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
+                            </svg>
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold" style="color: #110A08;">Appeler</p>
+                            <p class="text-xs" style="color: #A3B8C9;">{{ $storeInfo['contact']['phone'] }}</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+                    {{-- 住所（Accès シートへ） --}}
+                    <button type="button" onclick="closeInfoSheet(); openAccessSheet();"
+                            class="info-action-row px-4 w-full text-left">
+                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                              style="background: rgba(230,0,18,0.08);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                 fill="none" stroke="#e60012" stroke-width="1.8" stroke-linecap="round">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                                <circle cx="12" cy="9" r="2.5"/>
+                            </svg>
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate" style="color: #110A08;">Adresse & itinéraire</p>
+                            <p class="text-xs truncate" style="color: #A3B8C9;">{{ $storeInfo['contact']['address'] }}</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+
+                {{-- ===== SUIVEZ-NOUS ===== --}}
+                <p class="w-full mb-2" style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">Suivez-nous</p>
+                <div class="w-full rounded-2xl overflow-hidden" style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+                    <a href="{{ $storeInfo['contact']['instagram'] }}" target="_blank" rel="noopener noreferrer"
+                       class="info-action-row px-4">
+                        <span class="w-9 h-9 rounded-full flex items-center justify-center shrink-0"
+                              style="background: rgba(163,184,201,0.15);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.8" stroke-linecap="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                <circle cx="12" cy="12" r="4"/>
+                                <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
+                            </svg>
+                        </span>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold" style="color: #110A08;">Instagram</p>
+                            <p class="text-xs" style="color: #A3B8C9;">@soya.tunis</p>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                             fill="none" stroke="#A3B8C9" stroke-width="2" stroke-linecap="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -4558,6 +4827,152 @@ Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
             const firstTab = document.querySelector('.nav-tab.active-tab');
             if (firstTab) firstTab.style.color = '#110A08';
         });
+
+        // --- Accès ボトムシート ---
+        const ACCESS_ADDRESS = @json($accessAddress);
+        const accessSheetRoot = document.getElementById('access-sheet-root');
+        let copyLabelResetTimer = null;
+
+        window.openAccessSheet = function() {
+            if (!accessSheetRoot) return;
+            accessSheetRoot.classList.add('is-open');
+            accessSheetRoot.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeAccessSheet = function() {
+            if (!accessSheetRoot) return;
+            accessSheetRoot.classList.remove('is-open');
+            accessSheetRoot.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+            hideAccessCopyToast();
+        };
+
+        window.copyAccessAddress = async function() {
+            const label = document.getElementById('access-copy-label');
+            try {
+                if (navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(ACCESS_ADDRESS);
+                } else {
+                    const ta = document.createElement('textarea');
+                    ta.value = ACCESS_ADDRESS;
+                    ta.setAttribute('readonly', '');
+                    ta.style.position = 'fixed';
+                    ta.style.left = '-9999px';
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                }
+                if (label) label.textContent = 'Copié !';
+                showAccessCopyToast();
+                clearTimeout(copyLabelResetTimer);
+                copyLabelResetTimer = setTimeout(() => {
+                    if (label) label.textContent = 'Copier';
+                }, 2000);
+            } catch (e) {
+                if (label) label.textContent = 'Erreur';
+                copyLabelResetTimer = setTimeout(() => {
+                    if (label) label.textContent = 'Copier';
+                }, 2000);
+            }
+        };
+
+        function showAccessCopyToast() {
+            const toast = document.getElementById('access-copy-toast');
+            if (toast) toast.classList.add('is-visible');
+            clearTimeout(window._accessToastTimer);
+            window._accessToastTimer = setTimeout(hideAccessCopyToast, 2000);
+        }
+
+        function hideAccessCopyToast() {
+            const toast = document.getElementById('access-copy-toast');
+            if (toast) toast.classList.remove('is-visible');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (accessSheetRoot?.classList.contains('is-open')) closeAccessSheet();
+                if (infoSheetRoot?.classList.contains('is-open'))   closeInfoSheet();
+            }
+        });
+
+        // ----------------------------------------------------------------
+        // INFO ボトムシート
+        // ----------------------------------------------------------------
+        const infoSheetRoot = document.getElementById('info-sheet-root');
+
+        window.openInfoSheet = function() {
+            if (!infoSheetRoot) return;
+            // 排他制御: Accès が開いていれば閉じる
+            if (accessSheetRoot?.classList.contains('is-open')) closeAccessSheet();
+            infoSheetRoot.classList.add('is-open');
+            infoSheetRoot.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+            highlightTodayRow();
+        };
+
+        window.closeInfoSheet = function() {
+            if (!infoSheetRoot) return;
+            infoSheetRoot.classList.remove('is-open');
+            infoSheetRoot.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        };
+
+        // Accès を開く際も INFO を閉じる（排他）
+        const _origOpenAccess = window.openAccessSheet;
+        window.openAccessSheet = function() {
+            if (infoSheetRoot?.classList.contains('is-open')) closeInfoSheet();
+            _origOpenAccess();
+        };
+
+        // 今日の曜日行をハイライト (ISO weekday: 1=月…7=日)
+        function highlightTodayRow() {
+            const today = new Date().toLocaleDateString('en-US', {
+                timeZone: @json($storeInfo['timezone']),
+                weekday: 'short'
+            });
+            // ブラウザの toLocaleDateString weekday + isoDay マッピング
+            const isoMap = { Sun: 7, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+            const todayIso = isoMap[today] ?? ((new Date().getDay()) || 7);
+            infoSheetRoot?.querySelectorAll('.info-day-row').forEach(row => {
+                row.classList.remove('is-today');
+                if (parseInt(row.dataset.isoDay) === todayIso) {
+                    row.classList.add('is-today');
+                }
+            });
+        }
+
+        // ----------------------------------------------------------------
+        // computeOpenStatus — 将来のオープン後に使用（現在は isPreOpen=true で無効化）
+        // Google Business API レスポンスの periods と互換の構造を想定
+        // ----------------------------------------------------------------
+        // const IS_PRE_OPEN = true; // オープン後に false に変更
+        //
+        // function computeOpenStatus(regularHours, timezone) {
+        //     const now = new Date();
+        //     const localTime = new Date(now.toLocaleString('en-US', { timeZone: timezone }));
+        //     const isoDay = localTime.getDay() || 7; // 0(日)→7
+        //     const hhmm = localTime.getHours() * 60 + localTime.getMinutes();
+        //
+        //     const todaySchedule = regularHours.find(d => d.day === isoDay);
+        //     if (!todaySchedule || todaySchedule.closed) return { open: false, label: 'Fermé' };
+        //
+        //     const inPeriod = todaySchedule.periods.some(p => {
+        //         const [oh, om] = p.open.split(':').map(Number);
+        //         const [ch, cm] = p.close.split(':').map(Number);
+        //         return hhmm >= oh * 60 + om && hhmm < ch * 60 + cm;
+        //     });
+        //     return inPeriod
+        //         ? { open: true,  label: 'Ouvert' }
+        //         : { open: false, label: 'Fermé' };
+        // }
+        //
+        // 使用例（ステータスバッジ更新）:
+        // const storeHours = @json($storeInfo['regular_hours']);
+        // const status = computeOpenStatus(storeHours, @json($storeInfo['timezone']));
+        // document.getElementById('info-status-badge').textContent =
+        //     status.open ? '🟢 Ouvert' : '🔴 Fermé';
     </script>
 @endpush
 </file>
