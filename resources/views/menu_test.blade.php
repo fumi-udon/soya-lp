@@ -449,6 +449,17 @@
                     </div>
                     <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
                 </article>
+
+                <article class="item">
+                    <div class="item-body">
+                        <h3 class="item-name">Tan-Tan Mix Ramen</h3>
+                        <div class="item-meta">
+                            <span class="badge badge-spicy">Épicé</span>
+                        </div>
+                        <p class="item-desc">Nouilles mélangées à la sauce tantanmen épicée, viande hachée et crème de sésame. Bien mélanger avant de déguster. Terminer avec du riz — demandez au staff.</p>
+                    </div>
+                    <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
+                </article>
             </section>
 
             <hr class="divider">
