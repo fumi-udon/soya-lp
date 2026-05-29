@@ -39,3 +39,7 @@ Route::get('/', function (Request $request) {
     return view('welcome');
 });
 Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
+
+Route::get('/menu_test', function () {
+    return view('menu_test');
+})->name('menu_test');
