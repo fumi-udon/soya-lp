@@ -406,6 +406,17 @@
 
                 <article class="item">
                     <div class="item-body">
+                        <h3 class="item-name">Tan-Tan Ramen</h3>
+                        <div class="item-meta">
+                            <span class="badge badge-spicy">Épicé</span>
+                        </div>
+                        <p class="item-desc">Bouillon tantanmen épicé à la crème de sésame et viande hachée, profond et généreux.</p>
+                    </div>
+                    <div class="item-price" aria-label="32 TND">32<span>TND</span></div>
+                </article>
+
+                <article class="item">
+                    <div class="item-body">
                         <h3 class="item-name">Malâ Red Ramen</h3>
                         <div class="item-meta">
                             <span class="badge badge-spicy">Épicé</span>
