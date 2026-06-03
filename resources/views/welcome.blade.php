@@ -5,20 +5,18 @@
 @push('page-styles')
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-    /* === モバイル専用上書き === */
-    @@media (max-width: 767px) {
-        body,
-        .concrete-bg { background-color: #eaedf0 !important; }
+    /* === welcome は全デバイスでアプリ型UIに統一 === */
+    body,
+    .concrete-bg { background-color: #eaedf0 !important; }
 
-        .global-header,
-        .global-nav,
-        .site-footer { display: none !important; }
+    .global-header,
+    .global-nav,
+    .site-footer { display: none !important; }
 
-        .main-container {
-            padding: 0 !important;
-            align-items: stretch !important;
-            min-height: 0 !important;
-        }
+    .main-container {
+        padding: 0 !important;
+        align-items: stretch !important;
+        min-height: 0 !important;
     }
 
     /* スクロールバー非表示 */
@@ -115,8 +113,8 @@
     {{-- 2. メインコンテナ --}}
     <div class="main-container" style="opacity:0;">
 
-        {{-- === デスクトップ用（既存レイアウト 完全維持） === --}}
-        <div class="hidden md:block w-full">
+        {{-- === デスクトップ用（旧レイアウト：全デバイスで非表示） === --}}
+        <div class="hidden w-full">
             <div class="content-wrapper">
                 <div class="architectural-line d-none d-md-block"></div>
                 <div class="row align-items-center">
@@ -134,8 +132,8 @@
             </div>
         </div>
 
-        {{-- === モバイル専用 Spotify型UI === --}}
-        <div class="md:hidden flex flex-col w-full overflow-hidden"
+        {{-- === Spotify型UI（全デバイス共通・大画面は中央に固定） === --}}
+        <div class="flex flex-col w-full overflow-hidden mx-auto max-w-[480px]"
              style="height: 100dvh; background-color: #eaedf0; color: #110A08;">
 
             {{-- TOP: ブランドヘッダー --}}
@@ -178,7 +176,7 @@
                         <a href="{{ $menuUrl }}"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/menu-thumb.jpg') }}"
+                            <img src="{{ asset('images/menu_photo.png') }}"
                                  alt="Menu ramen" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
                             <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Menu</span>
                         </a>
@@ -267,7 +265,7 @@
                              'name' => 'Mabo Mix Ramen', 'sub' => 'nouilles maison sauce mapo poulet et aubergine.'],
                              ['img' => asset('images/features/gyoza.png'),
                              'name' => 'Gyoza japonais', 'sub' => 'pâte et farce préparées avec soin.'],
-                             ['img' => asset('images/features/curry-katsu.png'),
+                             ['img' => asset('images/features/curryrice.png'),
                              'name' => 'Japanese Curry', 'sub' => 'notre authentique curry japonais, 100% végan et sans gluten'],
                             
                         ];
@@ -482,11 +480,11 @@
     </div>{{-- end .main-container --}}
 
     {{-- Accès ボトムシート（モバイルのみ） --}}
-    <div id="access-sheet-root" class="bottom-sheet-root md:hidden fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="access-sheet-title">
+    <div id="access-sheet-root" class="bottom-sheet-root fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="access-sheet-title">
         <div id="access-sheet-overlay" class="bottom-sheet-overlay absolute inset-0 bg-black/50" onclick="closeAccessSheet()" aria-hidden="true"></div>
 
         <div id="access-sheet-panel"
-             class="bottom-sheet-panel absolute bottom-0 inset-x-0 bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] max-h-[70vh] overflow-y-auto overscroll-contain"
+             class="bottom-sheet-panel absolute bottom-0 inset-x-0 mx-auto max-w-[480px] bg-white rounded-t-3xl shadow-[0_-8px_30px_rgba(0,0,0,0.12)] max-h-[70vh] overflow-y-auto overscroll-contain"
              onclick="event.stopPropagation()">
             <div class="flex flex-col items-center pt-3 pb-2 px-6">
                 <button type="button" onclick="closeAccessSheet()" class="w-10 h-1 rounded-full mb-3" style="background: rgba(163,184,201,0.5);" aria-label="Fermer"></button>
