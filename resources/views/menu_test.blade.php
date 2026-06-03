@@ -9,9 +9,7 @@
     <title>Söya | Menu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
         *,
         *::before,
@@ -354,6 +352,99 @@
             color: rgba(212, 174, 98, 0.45);
             margin: 0.75rem 0 0.75rem;
         }
+
+        .gyoza-marketing { 
+            background: rgba(212, 174, 98, 0.03); 
+            border: 1px solid rgba(212, 174, 98, 0.1); 
+            border-radius: 6px; 
+            padding: 1rem; 
+            margin-bottom: 1.25rem; 
+        }
+        .gyoza-marketing p { 
+            font-size: 0.75rem; 
+            color: rgba(245, 234, 216, 0.7); 
+            line-height: 1.6; 
+            font-style: italic; 
+            text-align: center; 
+        }
+        .gyoza-marketing strong { 
+            color: #d4ae62; 
+            font-weight: 500; 
+        }
+/* --- ここからFormulesタイル用のCSS --- */
+.card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+        @media (max-width: 360px) {
+            .card-grid { grid-template-columns: 1fr; }
+        }
+        .card-item {
+            background: rgba(212, 174, 98, 0.02);
+            border: 1px solid rgba(212, 174, 98, 0.15);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .card-img {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: linear-gradient(135deg, #2a1e0e, #1a1208);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-bottom: 1px solid rgba(212, 174, 98, 0.1);
+            gap: 0.25rem;
+        }
+        .card-img .ph-icon { font-size: 1.5rem; opacity: 0.3; }
+        .card-img span {
+            font-size: 0.5rem;
+            letter-spacing: 0.08em;
+            color: rgba(212, 174, 98, 0.35);
+            text-transform: uppercase;
+        }
+        .card-body {
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            color: #f5ead8;
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 0.35rem;
+        }
+        .card-desc {
+            font-size: 0.65rem;
+            color: rgba(245, 234, 216, 0.5);
+            line-height: 1.4;
+            margin-bottom: 0.25rem;
+        }
+        .card-note {
+            font-size: 0.55rem;
+            color: rgba(212, 174, 98, 0.6);
+            margin-bottom: 0.75rem;
+        }
+        .card-price {
+            margin-top: auto;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: #d4ae62;
+            text-align: right;
+        }
+        .card-price span {
+            font-size: 0.625rem;
+            color: rgba(212, 174, 98, 0.6);
+            margin-left: 0.125rem;
+        }
+        /* --- ここまで --- */
     </style>
 </head>
 
@@ -530,15 +621,16 @@
                     <h2 id="section-plates" class="section-title">Small Plates</h2>
                     <div class="section-line" aria-hidden="true"></div>
                 </div>
-
                 <article class="item">
                     <div class="item-body">
-                        <h3 class="item-name">Canard Rosé</h3>
-                        <p class="item-desc">Magret de canard rosé, sauce japonaise maison.</p>
+                        <h3 class="item-name">Korokke</h3>
+                        <div class="item-meta">
+                            <span class="item-variant">2 pièces</span>
+                        </div>
+                        <p class="item-desc">Croquettes japonaises, onctueuses à l'intérieur, croustillantes dehors.</p>
                     </div>
-                    <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
+                    <div class="item-price" aria-label="13 TND">13<span>TND</span></div>
                 </article>
-
                 <article class="item">
                     <div class="item-body">
                         <h3 class="item-name">Mabo Chicken</h3>
@@ -549,6 +641,30 @@
                     </div>
                     <div class="item-price" aria-label="22 TND">22<span>TND</span></div>
                 </article>
+
+                <article class="item">
+                    <div class="item-body">
+                        <h3 class="item-name">Salade Wakamé Zesté</h3>
+                        <p class="item-desc">Algues wakamé fraîches, vinaigrette au zeste d'agrumes.</p>
+                    </div>
+                    <div class="item-price" aria-label="11 TND">11<span>TND</span></div>
+                </article>
+
+                <article class="item">
+                    <div class="item-body">
+                        <h3 class="item-name">Salade verte</h3>
+                        <p class="item-desc">Algues wakamé fraîches, laitue, salade.</p>
+                    </div>
+                    <div class="item-price" aria-label="11 TND">11<span>TND</span></div>
+                </article>
+
+                <hr class="divider" style="margin-top: 1.5rem;">
+
+                <p class="subsection-label">Gyoza Fait Maison</p>
+                
+                <div class="gyoza-marketing">
+                    <p><strong>100% fait maison.</strong> Des raviolis minutieusement pliés à la main, préparés avec une pâte fraîche façonnée par nos artisans nouilliers. Servis avec notre duo de sauces signature : <strong>soja classique & huile pimentée.</strong></p>
+                </div>
 
                 <article class="item">
                     <div class="item-body">
@@ -563,45 +679,115 @@
 
                 <article class="item">
                     <div class="item-body">
-                        <h3 class="item-name">Gyoza Veggi</h3>
+                        <h3 class="item-name">Gyoza Veggi (Tofu & Champignon)</h3>
                         <div class="item-meta">
                             <span class="item-variant">6 pièces</span>
                             <span class="badge badge-vegan">Vegan</span>
                         </div>
-                        <p class="item-desc">Raviolis japonais grillés aux légumes, savoureux et légers.</p>
+                        <p class="item-desc">Raviolis japonais grillés au tofu, champignons et légumes frais.</p>
                     </div>
                     <div class="item-price" aria-label="15 TND">15<span>TND</span></div>
                 </article>
 
                 <article class="item">
                     <div class="item-body">
-                        <h3 class="item-name">Sardines Nikkei Marinées</h3>
-                        <p class="item-desc">Sardines marinées à la sauce japonaise, fraîches et acidulées.</p>
-                    </div>
-                    <div class="item-price" aria-label="14 TND">14<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Korokke</h3>
+                        <h3 class="item-name">Gyoza Bœuf & Fromage</h3>
                         <div class="item-meta">
-                            <span class="item-variant">2 pièces</span>
+                            <span class="item-variant">6 pièces</span>
+                            <span class="badge badge-new">Populaire</span>
                         </div>
-                        <p class="item-desc">Croquettes japonaises, onctueuses à l'intérieur, croustillantes dehors.</p>
+                        <p class="item-desc">Raviolis grillés au bœuf haché et fromage fondant. Une fusion gourmande.</p>
                     </div>
-                    <div class="item-price" aria-label="13 TND">13<span>TND</span></div>
+                    <div class="item-price" aria-label="18 TND">18<span>TND</span></div>
                 </article>
 
                 <article class="item">
                     <div class="item-body">
-                        <h3 class="item-name">Salade Wakamé Zesté</h3>
-                        <p class="item-desc">Algues wakamé fraîches, vinaigrette au zeste d'agrumes.</p>
+                        <h3 class="item-name">Gyoza Fruits de Mer</h3>
+                        <div class="item-meta">
+                            <span class="item-variant">6 pièces</span>
+                        </div>
+                        <p class="item-desc">Raviolis grillés aux crevettes et calamars, riches en saveurs océaniques.</p>
                     </div>
-                    <div class="item-price" aria-label="11 TND">11<span>TND</span></div>
+                    <div class="item-price" aria-label="18 TND">18<span>TND</span></div>
                 </article>
 
-                <hr class="divider">
+                <article class="item">
+                    <div class="item-body">
+                        <h3 class="item-name">Premium Gyoza Canard</h3>
+                        <div class="item-meta">
+                            <span class="item-variant">6 pièces</span>
+                        </div>
+                        <p class="item-desc">Raviolis de luxe farcis au magret de canard. Notre signature.</p>
+                    </div>
+                    <div class="item-price" aria-label="22 TND">22<span>TND</span></div>
+                </article>           <hr class="divider">
 
+                <section class="section" aria-labelledby="section-formules">
+                <div class="section-header">
+                    <span class="section-icon" aria-hidden="true">🍱</span>
+                    <h2 id="section-formules" class="section-title">Formules (Sets)</h2>
+                    <div class="section-line" aria-hidden="true"></div>
+                </div>
+
+                <div class="card-grid">
+                    <article class="card-item">
+                        <div class="card-img" aria-hidden="true">
+                            <span class="ph-icon">🍜</span>
+                            <span>Classic Set</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">Classic Ramen Set</h3>
+                            <p class="card-desc">Söya Miso Ramen + 6 Gyozas au choix* + Salade Wakamé</p>
+                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
+                            <div class="card-price" aria-label="45 TND">45<span>TND</span></div>
+                        </div>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-img" aria-hidden="true">
+                            <span class="ph-icon">🥢</span>
+                            <span>Mix Set</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">Mix Ramen Set</h3>
+                            <p class="card-desc">Söya Mix Ramen + 6 Gyozas au choix* + Salade Wakamé</p>
+                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
+                            <div class="card-price" aria-label="42 TND">42<span>TND</span></div>
+                        </div>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-img" aria-hidden="true">
+                            <span class="ph-icon">🍛</span>
+                            <span>Curry Set</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">Curry & Gyoza Set</h3>
+                            <p class="card-desc">Curry Japonais + 6 Gyozas au choix* + Salade Wakamé + Soupe</p>
+                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
+                            <div class="card-price" aria-label="38 TND">38<span>TND</span></div>
+                        </div>
+                    </article>
+
+                    <article class="card-item">
+                        <div class="card-img" aria-hidden="true">
+                            <span class="ph-icon">🍙</span>
+                            <span>Onigiri Set</span>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">Onigiri & Gyoza Set</h3>
+                            <p class="card-desc">2 Onigiri + 6 Gyozas au choix* + Salade Wakamé + Soupe Miso</p>
+                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
+                            <div class="card-price" aria-label="32 TND">32<span>TND</span></div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <hr class="divider">
+
+            <section class="section" aria-labelledby="section-soups">
                 <p class="subsection-label">Soups</p>
 
                 <article class="item">
