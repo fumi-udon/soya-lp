@@ -33,13 +33,11 @@
 </header>
 
 <nav class="global-nav" id="globalNav">
-    {{-- メニューの中身は変更なし --}}
+    {{-- スマホUIと同じ遷移先・URLに統一 --}}
     <ul class="nav-links">
         <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
-        @env('local')
-            <li><a href="{{ url('/reservation') }}" class="nav-item">Reservation</a></li>
-            <li><a href="{{ url('/menu') }}" class="nav-item">Menu</a></li>
-        @endenv
-        <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" class="nav-item">Instagram</a></li>
+        <li><a href="https://soyam9.bistronippon.tn/guest/menu/soya/readonly" class="nav-item">Menu</a></li>
+        <li><a href="https://soyam9.bistronippon.tn/reservation" class="nav-item">Reservation</a></li>
+        <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" rel="noopener noreferrer" class="nav-item">Instagram</a></li>
     </ul>
 </nav>
