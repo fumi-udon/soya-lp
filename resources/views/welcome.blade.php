@@ -176,8 +176,8 @@
                         <a href="{{ $menuUrl }}"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/menu_photo.png') }}"
-                                 alt="Menu ramen" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
+                            <img src="{{ asset('images/menu_photo.webp') }}"
+                                 alt="Menu ramen" width="48" height="48" class="w-12 h-12 object-cover shrink-0" decoding="async" fetchpriority="high">
                             <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Menu</span>
                         </a>
 
@@ -185,8 +185,8 @@
                         <a href="https://soyam9.bistronippon.tn/reservation"
                            class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
                            style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/rsrv.jpg') }}"
-                                 alt="Réservation" class="w-12 h-12 object-cover shrink-0">
+                            <img src="{{ asset('images/rsrv.webp') }}"
+                                 alt="Réservation" width="48" height="48" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
                             <span style="font-size: 0.7rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Booking</span>
                         </a>
 
@@ -228,8 +228,8 @@
                         <button type="button" onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
                                 class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
                                 style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/story.png') }}"
-                                 alt="Notre Histoire" class="w-12 h-12 object-cover shrink-0">
+                            <img src="{{ asset('images/story.webp') }}"
+                                 alt="Notre Histoire" width="48" height="48" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
                             <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Story</span>
                         </button>
 
@@ -261,11 +261,11 @@
 
                         @php
                         $features = [
-                            ['img' => asset('images/features/mabo-mix-ramen.png'),
+                            ['img' => asset('images/features/mabo-mix-ramen.webp'),
                              'name' => 'Mabo Mix Ramen', 'sub' => 'nouilles maison sauce mapo poulet et aubergine.'],
-                             ['img' => asset('images/features/gyoza.png'),
+                             ['img' => asset('images/features/gyoza.webp'),
                              'name' => 'Gyoza japonais', 'sub' => 'pâte et farce préparées avec soin.'],
-                             ['img' => asset('images/features/curryrice.png'),
+                             ['img' => asset('images/features/curryrice.webp'),
                              'name' => 'Japanese Curry', 'sub' => 'notre authentique curry japonais, 100% végan et sans gluten'],
                             
                         ];
@@ -275,7 +275,7 @@
                         <div class="shrink-0 w-36 cursor-pointer active:scale-95 transition-all duration-150">
                             <div class="w-36 h-36 rounded-xl overflow-hidden mb-2">
                                 <img src="{{ $item['img'] }}" alt="{{ $item['name'] }}"
-                                     class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                     width="144" height="144" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             </div>
                             <p style="font-size: 0.8rem; font-weight: 700; color: #110A08; line-height: 1.2;">
                                 {{ $item['name'] }}
