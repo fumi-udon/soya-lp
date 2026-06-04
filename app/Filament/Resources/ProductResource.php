@@ -75,6 +75,11 @@ class ProductResource extends Resource
                 Section::make('Presentation')->schema([
                     FileUpload::make('image')
                         ->image()
+                        ->maxSize(5120)
+                        ->imageResizeMode('contain')
+                        ->imageResizeUpscale(false)
+                        ->imageResizeTargetWidth(1600)
+                        ->imageResizeTargetHeight(1600)
                         ->directory(fn () => 'products/'.Str::upper(Str::slug(Filament::getTenant()->name, ''))),
                     RichEditor::make('description')
                         ->columnSpanFull(),

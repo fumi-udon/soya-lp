@@ -30,7 +30,12 @@ class CategoryResource extends Resource
                     ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
-                    ->image(),
+                    ->image()
+                    ->maxSize(5120)
+                    ->imageResizeMode('contain')
+                    ->imageResizeUpscale(false)
+                    ->imageResizeTargetWidth(1600)
+                    ->imageResizeTargetHeight(1600),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\Toggle::make('is_active')
