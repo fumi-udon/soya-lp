@@ -1,819 +1,510 @@
+{{-- resources/views/menu_test.blade.php --}}
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#1a1208">
-    <meta name="description" content="Söya — Japanese Ramen menu, La Marsa, Tunisia">
-    <title>Söya | Menu</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a08">
+<title>Söya. — Craft Ramen & Gyoza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        html {
-            -webkit-text-size-adjust: 100%;
-            scroll-behavior: smooth;
-        }
+:root {
+  --ink:        #0a0a08;
+  --ink-soft:   #3a3935;
+  --ink-faint:  #8a8880;
+  --paper:      #f7f5f0;
+  --paper-warm: #efece4;
+  --paper-card: #faf9f6;
+  --red:        #c41e1e;
+  --red-soft:   #f5e8e8;
+  --gold:       #b8860b;
+  --gold-soft:  #f5f0e0;
+  --teal:       #0f6e56;
+  --teal-soft:  #e4f2ee;
+  --coral:      #c45c2e;
+  --coral-soft: #f5ede8;
+  --line:       rgba(10,10,8,.10);
+  --r:          12px;
+  --r-sm:       8px;
+  --serif:      'Cormorant Garamond', Georgia, serif;
+  --sans:       'DM Sans', sans-serif;
+}
 
-        body {
-            font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
-            background: #0f0b06;
-            color: #f5ead8;
-            min-height: 100dvh;
-            line-height: 1.5;
-        }
+html { background: var(--ink); }
 
-        .menu-wrap {
-            width: 100%;
-            max-width: 680px;
-            margin: 0 auto;
-            min-height: 100dvh;
-            background: #1a1208;
-            position: relative;
-            overflow-x: hidden;
-        }
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
 
-        .texture {
-            position: absolute;
-            inset: 0;
-            background-image: repeating-linear-gradient(0deg,
-                    transparent,
-                    transparent 2px,
-                    rgba(255, 255, 255, 0.015) 2px,
-                    rgba(255, 255, 255, 0.015) 4px);
-            pointer-events: none;
-            z-index: 0;
-        }
+/* ── hero header ── */
+.hero {
+  background: var(--ink);
+  padding: 56px 24px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
 
-        .content {
-            position: relative;
-            z-index: 1;
-            padding: max(1.25rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
-        }
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 30% 80%, rgba(196,30,30,.18) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 75% 20%, rgba(184,134,11,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
 
-        @media (min-width: 400px) {
-            .content {
-                padding: max(1.75rem, env(safe-area-inset-top)) 1.5rem max(2rem, env(safe-area-inset-bottom)) 1.5rem;
-            }
-        }
+.hero-eyebrow {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 4px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  opacity: .7;
+}
 
-        @media (min-width: 480px) {
-            .content {
-                padding: 2.5rem 2rem 2.5rem;
-            }
-        }
+.hero-title {
+  font-family: var(--serif);
+  font-size: 56px;
+  font-weight: 300;
+  color: #f7f5f0;
+  letter-spacing: 6px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1.25rem;
-            border-bottom: 1px solid rgba(212, 174, 98, 0.3);
-        }
+.hero-title span {
+  color: var(--red);
+}
 
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 0.5rem;
-        }
+.hero-sub {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(247,245,240,.45);
+  letter-spacing: 1px;
+}
 
-        .logo-mark {
-            flex-shrink: 0;
-            width: 44px;
-            height: 44px;
-            border: 1.5px solid #d4ae62;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.125rem;
-            color: #d4ae62;
-        }
+.hero-divider {
+  width: 32px;
+  height: 1px;
+  background: rgba(247,245,240,.20);
+  margin: 20px auto 0;
+}
 
-        .brand {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.75rem, 6vw, 2.4rem);
-            color: #d4ae62;
-            letter-spacing: 0.05em;
-        }
+/* ── tea banner ── */
+.tea-banner {
+  background: var(--teal);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-        .tagline {
-            font-size: 0.625rem;
-            letter-spacing: 0.2em;
-            color: rgba(245, 234, 216, 0.5);
-            text-transform: uppercase;
-            margin-top: 0.25rem;
-            padding: 0 0.5rem;
-            line-height: 1.6;
-        }
+.tea-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
 
-        .section {
-            margin-bottom: 1.75rem;
-        }
+.tea-text {
+  font-size: 12px;
+  color: rgba(255,255,255,.85);
+  line-height: 1.5;
+}
 
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
+.tea-text strong {
+  color: #fff;
+  font-weight: 500;
+  display: block;
+  font-size: 13px;
+  margin-bottom: 1px;
+}
 
-        .section-icon {
-            font-size: 1rem;
-            line-height: 1;
-            flex-shrink: 0;
-        }
+/* ── section ── */
+.section {
+  padding: 28px 16px 0;
+}
 
-        .section-title {
-            font-size: 0.625rem;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: #d4ae62;
-            font-weight: 500;
-            white-space: nowrap;
-        }
+.section:last-of-type {
+  padding-bottom: 32px;
+}
 
-        .section-line {
-            flex: 1;
-            min-width: 1rem;
-            height: 1px;
-            background: rgba(212, 174, 98, 0.2);
-        }
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  padding: 0 4px;
+  margin-bottom: 12px;
+}
 
-        .item {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 0.35rem 0.75rem;
-            margin-bottom: 1.125rem;
-            padding-bottom: 0.125rem;
-        }
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: .5px;
+  background: var(--line);
+}
 
-        .item-body {
-            flex: 1 1 12rem;
-            min-width: 0;
-        }
+/* ── cards ── */
+.card {
+  background: var(--paper-card);
+  border-radius: var(--r);
+  border: .5px solid var(--line);
+  padding: 18px 18px 16px;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
 
-        .item-name {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1rem, 3.5vw, 1.05rem);
-            color: #f5ead8;
-            font-weight: 400;
-            line-height: 1.35;
-        }
+.card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  border-radius: var(--r) 0 0 var(--r);
+}
 
-        .item-meta {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 0.35rem 0.5rem;
-            margin-top: 0.2rem;
-        }
+.card--signature::before { background: #378ADD; }
+.card--amber::before     { background: var(--gold); }
+.card--teal::before      { background: var(--teal); }
+.card--coral::before     { background: var(--coral); }
+.card--featured {
+  border: 1.5px solid rgba(55,138,221,.35);
+  background: #fafcff;
+}
 
-        .item-variant {
-            font-size: 0.6875rem;
-            color: rgba(245, 234, 216, 0.45);
-            font-weight: 300;
-        }
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
 
-        .badge {
-            display: inline-block;
-            font-size: 0.5625rem;
-            padding: 0.15rem 0.45rem;
-            border-radius: 20px;
-            letter-spacing: 0.08em;
-            font-weight: 500;
-            text-transform: uppercase;
-            line-height: 1.4;
-        }
+.badge {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
-        .badge-vegan {
-            background: rgba(99, 153, 34, 0.2);
-            color: #97c459;
-            border: 0.5px solid rgba(97, 196, 89, 0.3);
-        }
+.badge--blue   { background: #E6F1FB; color: #0C447C; }
+.badge--amber  { background: var(--gold-soft); color: #7a5800; }
+.badge--teal   { background: var(--teal-soft); color: var(--teal); }
+.badge--coral  { background: var(--coral-soft); color: #8b3a18; }
 
-        .badge-gf {
-            background: rgba(186, 117, 23, 0.2);
-            color: #fac775;
-            border: 0.5px solid rgba(239, 159, 39, 0.3);
-        }
+.card-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+  letter-spacing: .5px;
+  line-height: 1.1;
+}
 
-        .badge-spicy {
-            background: rgba(216, 90, 48, 0.2);
-            color: #f09575;
-            border: 0.5px solid rgba(216, 90, 48, 0.3);
-        }
+.card-sub {
+  font-size: 11px;
+  color: var(--ink-faint);
+  font-style: italic;
+  margin: 3px 0 12px;
+  font-family: var(--serif);
+}
 
-        .badge-new {
-            background: rgba(83, 74, 183, 0.25);
-            color: #afa9ec;
-            border: 0.5px solid rgba(127, 119, 221, 0.35);
-        }
+.card-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 14px;
+}
 
-        .item-desc {
-            font-size: 0.71875rem;
-            color: rgba(245, 234, 216, 0.5);
-            line-height: 1.65;
-            margin-top: 0.35rem;
-            font-weight: 300;
-            font-style: italic;
-        }
+.card-row {
+  font-size: 13px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  line-height: 1.45;
+}
 
-        .item-price {
-            flex-shrink: 0;
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            color: #d4ae62;
-            white-space: nowrap;
-            text-align: right;
-            padding-top: 0.125rem;
-        }
+.card-row-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
 
-        .item-price span {
-            font-size: 0.625rem;
-            color: rgba(212, 174, 98, 0.6);
-            margin-left: 0.125rem;
-        }
+.card-footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
 
-        .divider {
-            height: 1px;
-            background: rgba(245, 234, 216, 0.07);
-            margin: 0.5rem 0 1.25rem;
-            border: none;
-        }
+.price {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
 
-        .img-placeholder {
-            width: 100%;
-            aspect-ratio: 16 / 7;
-            max-height: 160px;
-            border-radius: 8px;
-            margin-bottom: 1.25rem;
-            border: 0.5px solid rgba(212, 174, 98, 0.15);
-            background: linear-gradient(135deg, #2a1e0e, #1a1208);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 0.35rem;
-        }
+.price sub {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--ink-faint);
+  font-family: var(--sans);
+  vertical-align: baseline;
+  margin-left: 2px;
+}
 
-        .img-placeholder .ph-icon {
-            font-size: 1.75rem;
-            line-height: 1;
-            opacity: 0.35;
-        }
+.opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: flex-end;
+  max-width: 55%;
+}
 
-        .img-placeholder span {
-            font-size: 0.625rem;
-            letter-spacing: 0.12em;
-            color: rgba(212, 174, 98, 0.35);
-            text-transform: uppercase;
-        }
+.opt {
+  font-size: 10px;
+  padding: 3px 9px;
+  border: .5px solid var(--line);
+  border-radius: 20px;
+  color: var(--ink-faint);
+  background: var(--paper-warm);
+  white-space: nowrap;
+}
 
-        .two-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.625rem;
-            margin-bottom: 1.25rem;
-        }
+/* ── side-by-side on wider phones ── */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
 
-        @media (max-width: 320px) {
-            .two-col {
-                grid-template-columns: 1fr;
-            }
-        }
+.grid-2 .card {
+  margin-bottom: 0;
+}
 
-        .img-sm {
-            aspect-ratio: 4 / 3;
-            min-height: 72px;
-            border-radius: 8px;
-            border: 0.5px solid rgba(212, 174, 98, 0.15);
-            background: linear-gradient(135deg, #2a1e0e, #1a1208);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 0.25rem;
-            padding: 0.5rem;
-        }
+.grid-2 .card-title {
+  font-size: 19px;
+}
 
-        .img-sm .ph-icon {
-            font-size: 1.25rem;
-            line-height: 1;
-            opacity: 0.3;
-        }
+.grid-2 .card-footer {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
 
-        .img-sm span {
-            font-size: 0.5625rem;
-            letter-spacing: 0.08em;
-            color: rgba(212, 174, 98, 0.35);
-            text-transform: uppercase;
-            text-align: center;
-        }
+.grid-2 .opts {
+  max-width: 100%;
+  justify-content: flex-start;
+}
 
-        .footer {
-            text-align: center;
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(212, 174, 98, 0.2);
-            margin-top: 0.5rem;
-        }
+/* ── dessert footer ── */
+.dessert-bar {
+  margin: 24px 16px 0;
+  background: var(--paper-warm);
+  border-radius: var(--r-sm);
+  border: .5px solid var(--line);
+  padding: 13px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
 
-        .footer p {
-            font-size: 0.625rem;
-            letter-spacing: 0.18em;
-            color: rgba(245, 234, 216, 0.3);
-            text-transform: uppercase;
-        }
+.dessert-bar strong {
+  color: var(--ink);
+  font-weight: 500;
+}
 
-        .footer .jp {
-            font-size: 0.875rem;
-            color: rgba(212, 174, 98, 0.4);
-            margin-bottom: 0.35rem;
-            letter-spacing: 0.3em;
-        }
+/* ── bottom safe area ── */
+.bottom-pad {
+  height: calc(16px + env(safe-area-inset-bottom, 0px));
+}
 
-        .subsection-label {
-            font-size: 0.625rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: rgba(212, 174, 98, 0.45);
-            margin: 0.75rem 0 0.75rem;
-        }
+/* ── animations ── */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-title   { animation: fadeUp .7s ease both; }
+  .hero-eyebrow { animation: fadeUp .7s .1s ease both; }
+  .hero-sub     { animation: fadeUp .7s .15s ease both; }
+  .tea-banner   { animation: fadeUp .5s .25s ease both; }
+  .card         { animation: fadeUp .5s ease both; }
 
-        .gyoza-marketing { 
-            background: rgba(212, 174, 98, 0.03); 
-            border: 1px solid rgba(212, 174, 98, 0.1); 
-            border-radius: 6px; 
-            padding: 1rem; 
-            margin-bottom: 1.25rem; 
-        }
-        .gyoza-marketing p { 
-            font-size: 0.75rem; 
-            color: rgba(245, 234, 216, 0.7); 
-            line-height: 1.6; 
-            font-style: italic; 
-            text-align: center; 
-        }
-        .gyoza-marketing strong { 
-            color: #d4ae62; 
-            font-weight: 500; 
-        }
-/* --- ここからFormulesタイル用のCSS --- */
-.card-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1.25rem;
-        }
-        @media (max-width: 360px) {
-            .card-grid { grid-template-columns: 1fr; }
-        }
-        .card-item {
-            background: rgba(212, 174, 98, 0.02);
-            border: 1px solid rgba(212, 174, 98, 0.15);
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        .card-img {
-            width: 100%;
-            aspect-ratio: 4 / 3;
-            background: linear-gradient(135deg, #2a1e0e, #1a1208);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            border-bottom: 1px solid rgba(212, 174, 98, 0.1);
-            gap: 0.25rem;
-        }
-        .card-img .ph-icon { font-size: 1.5rem; opacity: 0.3; }
-        .card-img span {
-            font-size: 0.5rem;
-            letter-spacing: 0.08em;
-            color: rgba(212, 174, 98, 0.35);
-            text-transform: uppercase;
-        }
-        .card-body {
-            padding: 0.75rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-        .card-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 0.95rem;
-            color: #f5ead8;
-            font-weight: 400;
-            line-height: 1.2;
-            margin-bottom: 0.35rem;
-        }
-        .card-desc {
-            font-size: 0.65rem;
-            color: rgba(245, 234, 216, 0.5);
-            line-height: 1.4;
-            margin-bottom: 0.25rem;
-        }
-        .card-note {
-            font-size: 0.55rem;
-            color: rgba(212, 174, 98, 0.6);
-            margin-bottom: 0.75rem;
-        }
-        .card-price {
-            margin-top: auto;
-            font-family: 'Playfair Display', serif;
-            font-size: 1rem;
-            color: #d4ae62;
-            text-align: right;
-        }
-        .card-price span {
-            font-size: 0.625rem;
-            color: rgba(212, 174, 98, 0.6);
-            margin-left: 0.125rem;
-        }
-        /* --- ここまで --- */
-    </style>
+  .section:nth-child(2) .card { animation-delay: .1s; }
+  .section:nth-child(3) .card:nth-child(1) { animation-delay: .15s; }
+  .section:nth-child(3) .card:nth-child(2) { animation-delay: .20s; }
+  .section:nth-child(4) .card:nth-child(1) { animation-delay: .20s; }
+  .section:nth-child(4) .card:nth-child(2) { animation-delay: .25s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* ── narrow phones: stack grid-2 ── */
+@media (max-width: 380px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-2 .card { margin-bottom: 0; }
+  .grid-2 .card-footer { flex-direction: row; align-items: flex-end; }
+  .grid-2 .opts { max-width: 55%; justify-content: flex-end; }
+  .hero-title { font-size: 48px; }
+}
+</style>
 </head>
-
 <body>
-    <div class="menu-wrap">
-        <div class="texture" aria-hidden="true"></div>
-        <main class="content">
 
-            <header class="header">
-                <div class="header-top">
-                    <div class="logo-mark" aria-hidden="true">S</div>
-                    <h1 class="brand">Söya</h1>
-                </div>
-                <p class="tagline">Japanese Ramen · La Marsa · Tunisia</p>
-            </header>
+{{-- Hero --}}
+<div class="hero">
+  <p class="hero-eyebrow">Menzah 9 — Tunis</p>
+  <h1 class="hero-title">Söya<span>.</span></h1>
+  <p class="hero-sub">Craft Ramen &amp; Gyoza</p>
+  <div class="hero-divider"></div>
+</div>
 
-            <div class="img-placeholder" role="img" aria-label="Ramen bowl hero photo placeholder">
-                <span class="ph-icon" aria-hidden="true">🍜</span>
-                <span>Hero photo — ramen bowl</span>
-            </div>
+{{-- Tea banner --}}
+<div class="tea-banner">
+  <span class="tea-icon">🍵</span>
+  <div class="tea-text">
+    <strong>自家製 冷たい日本茶、全メニューに含まれます</strong>
+    着席後すぐにお出しします — inclus dans chaque menu
+  </div>
+</div>
 
-            <section class="section" aria-labelledby="section-broth">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🍜</span>
-                    <h2 id="section-broth" class="section-title">Noodles in Broth</h2>
-                    <div class="section-line" aria-hidden="true"></div>
-                </div>
+{{-- Section: Ramen --}}
+<div class="section">
+  <p class="section-label">🍜 ラーメン体験</p>
 
-                <div class="two-col" aria-hidden="true">
-                    <div class="img-sm">
-                        <span class="ph-icon">💧</span>
-                        <span>Miso ramen</span>
-                    </div>
-                    <div class="img-sm">
-                        <span class="ph-icon">🔥</span>
-                        <span>Malâ red</span>
-                    </div>
-                </div>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Söya Miso Ramen</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">Chashu / Fruits de mer</span>
-                        </div>
-                        <p class="item-desc">Bouillon miso maison, riche et savoureux, garni au choix de chashu ou fruits de mer.</p>
-                    </div>
-                    <div class="item-price" aria-label="32 TND">32<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Tan-Tan Ramen</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                        </div>
-                        <p class="item-desc">Bouillon tantanmen épicé à la crème de sésame et viande hachée, profond et généreux.</p>
-                    </div>
-                    <div class="item-price" aria-label="32 TND">32<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Malâ Red Ramen</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                            <span class="item-variant">Fruits de mer</span>
-                        </div>
-                        <p class="item-desc">Bouillon rouge épicé à l'huile Malâ, intense et parfumé, garni de fruits de mer.</p>
-                    </div>
-                    <div class="item-price" aria-label="32 TND">32<span>TND</span></div>
-                </article>
-            </section>
-
-            <hr class="divider">
-
-            <section class="section" aria-labelledby="section-sauce">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🥢</span>
-                    <h2 id="section-sauce" class="section-title">Noodles bathed in Sauce</h2>
-                    <div class="section-line" aria-hidden="true"></div>
-                </div>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Söya Mix Ramen</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-new">New Style</span>
-                            <span class="item-variant">Chashu / Fruits de mer</span>
-                        </div>
-                        <p class="item-desc">Nouilles japonaises nappées de sauce maison. Bien mélanger avant de déguster. Terminer avec du riz — demandez au staff.</p>
-                    </div>
-                    <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Mabo-Malâ Mix Ramen</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                            <span class="item-variant">Poulet · Aubergine</span>
-                        </div>
-                        <p class="item-desc">Nouilles mélangées à la sauce Mabo épicée Malâ, poulet tendre et aubergine fondante.</p>
-                    </div>
-                    <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Tan-Tan Mix Ramen</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                        </div>
-                        <p class="item-desc">Nouilles mélangées à la sauce tantanmen épicée, viande hachée et crème de sésame. Bien mélanger avant de déguster. Terminer avec du riz — demandez au staff.</p>
-                    </div>
-                    <div class="item-price" aria-label="28 TND">28<span>TND</span></div>
-                </article>
-            </section>
-
-            <hr class="divider">
-
-            <section class="section" aria-labelledby="section-rice">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🍚</span>
-                    <h2 id="section-rice" class="section-title">Rice</h2>
-                    <div class="section-line" aria-hidden="true"></div>
-                </div>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Onigiri du Jour</h3>
-                        <p class="item-desc">Boulette de riz japonaise garnie du jour. Demandez au staff.</p>
-                    </div>
-                    <div class="item-price" aria-label="9 TND">9<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Donburi Katsu Poulet</h3>
-                        <p class="item-desc">Bol de riz garni de poulet pané, œufs liés à la sauce maison.</p>
-                    </div>
-                    <div class="item-price" aria-label="24 TND">24<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Curry Rice</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-vegan">Vegan</span>
-                            <span class="badge badge-gf">Gluten Free</span>
-                        </div>
-                        <p class="item-desc">Curry japonais doux et parfumé, servi sur riz. 100% végétal et sans gluten.</p>
-                    </div>
-                    <div class="item-price" aria-label="22 TND">22<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Donburi Mabo Chicken</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                        </div>
-                        <p class="item-desc">Bol de riz garni de poulet tendre, aubergine et sauce Mabo épicée Malâ.</p>
-                    </div>
-                    <div class="item-price" aria-label="24 TND">24<span>TND</span></div>
-                </article>
-            </section>
-
-            <hr class="divider">
-
-            <section class="section" aria-labelledby="section-plates">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🍽️</span>
-                    <h2 id="section-plates" class="section-title">Small Plates</h2>
-                    <div class="section-line" aria-hidden="true"></div>
-                </div>
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Korokke</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">2 pièces</span>
-                        </div>
-                        <p class="item-desc">Croquettes japonaises, onctueuses à l'intérieur, croustillantes dehors.</p>
-                    </div>
-                    <div class="item-price" aria-label="13 TND">13<span>TND</span></div>
-                </article>
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Mabo Chicken</h3>
-                        <div class="item-meta">
-                            <span class="badge badge-spicy">Épicé</span>
-                        </div>
-                        <p class="item-desc">Poulet tendre et aubergine fondante à la sauce Mabo, idéal avec un bol de riz.</p>
-                    </div>
-                    <div class="item-price" aria-label="22 TND">22<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Salade Wakamé Zesté</h3>
-                        <p class="item-desc">Algues wakamé fraîches, vinaigrette au zeste d'agrumes.</p>
-                    </div>
-                    <div class="item-price" aria-label="11 TND">11<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Salade verte</h3>
-                        <p class="item-desc">Algues wakamé fraîches, laitue, salade.</p>
-                    </div>
-                    <div class="item-price" aria-label="11 TND">11<span>TND</span></div>
-                </article>
-
-                <hr class="divider" style="margin-top: 1.5rem;">
-
-                <p class="subsection-label">Gyoza Fait Maison</p>
-                
-                <div class="gyoza-marketing">
-                    <p><strong>100% fait maison.</strong> Des raviolis minutieusement pliés à la main, préparés avec une pâte fraîche façonnée par nos artisans nouilliers. Servis avec notre duo de sauces signature : <strong>soja classique & huile pimentée.</strong></p>
-                </div>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Gyoza Chicken</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">6 pièces</span>
-                        </div>
-                        <p class="item-desc">Raviolis japonais grillés au poulet, croustillants dehors, fondants dedans.</p>
-                    </div>
-                    <div class="item-price" aria-label="16 TND">16<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Gyoza Veggi (Tofu & Champignon)</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">6 pièces</span>
-                            <span class="badge badge-vegan">Vegan</span>
-                        </div>
-                        <p class="item-desc">Raviolis japonais grillés au tofu, champignons et légumes frais.</p>
-                    </div>
-                    <div class="item-price" aria-label="15 TND">15<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Gyoza Bœuf & Fromage</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">6 pièces</span>
-                            <span class="badge badge-new">Populaire</span>
-                        </div>
-                        <p class="item-desc">Raviolis grillés au bœuf haché et fromage fondant. Une fusion gourmande.</p>
-                    </div>
-                    <div class="item-price" aria-label="18 TND">18<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Gyoza Fruits de Mer</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">6 pièces</span>
-                        </div>
-                        <p class="item-desc">Raviolis grillés aux crevettes et calamars, riches en saveurs océaniques.</p>
-                    </div>
-                    <div class="item-price" aria-label="18 TND">18<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Premium Gyoza Canard</h3>
-                        <div class="item-meta">
-                            <span class="item-variant">6 pièces</span>
-                        </div>
-                        <p class="item-desc">Raviolis de luxe farcis au magret de canard. Notre signature.</p>
-                    </div>
-                    <div class="item-price" aria-label="22 TND">22<span>TND</span></div>
-                </article>           <hr class="divider">
-
-                <section class="section" aria-labelledby="section-formules">
-                <div class="section-header">
-                    <span class="section-icon" aria-hidden="true">🍱</span>
-                    <h2 id="section-formules" class="section-title">Formules (Sets)</h2>
-                    <div class="section-line" aria-hidden="true"></div>
-                </div>
-
-                <div class="card-grid">
-                    <article class="card-item">
-                        <div class="card-img" aria-hidden="true">
-                            <span class="ph-icon">🍜</span>
-                            <span>Classic Set</span>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Classic Ramen Set</h3>
-                            <p class="card-desc">Söya Miso Ramen + 6 Gyozas au choix* + Salade Wakamé</p>
-                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
-                            <div class="card-price" aria-label="45 TND">45<span>TND</span></div>
-                        </div>
-                    </article>
-
-                    <article class="card-item">
-                        <div class="card-img" aria-hidden="true">
-                            <span class="ph-icon">🥢</span>
-                            <span>Mix Set</span>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Mix Ramen Set</h3>
-                            <p class="card-desc">Söya Mix Ramen + 6 Gyozas au choix* + Salade Wakamé</p>
-                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
-                            <div class="card-price" aria-label="42 TND">42<span>TND</span></div>
-                        </div>
-                    </article>
-
-                    <article class="card-item">
-                        <div class="card-img" aria-hidden="true">
-                            <span class="ph-icon">🍛</span>
-                            <span>Curry Set</span>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Curry & Gyoza Set</h3>
-                            <p class="card-desc">Curry Japonais + 6 Gyozas au choix* + Salade Wakamé + Soupe</p>
-                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
-                            <div class="card-price" aria-label="38 TND">38<span>TND</span></div>
-                        </div>
-                    </article>
-
-                    <article class="card-item">
-                        <div class="card-img" aria-hidden="true">
-                            <span class="ph-icon">🍙</span>
-                            <span>Onigiri Set</span>
-                        </div>
-                        <div class="card-body">
-                            <h3 class="card-title">Onigiri & Gyoza Set</h3>
-                            <p class="card-desc">2 Onigiri + 6 Gyozas au choix* + Salade Wakamé + Soupe Miso</p>
-                            <p class="card-note">*Poulet ou Veggi (Bœuf / Fruits de mer +2 DT)</p>
-                            <div class="card-price" aria-label="32 TND">32<span>TND</span></div>
-                        </div>
-                    </article>
-                </div>
-            </section>
-
-            <hr class="divider">
-
-            <section class="section" aria-labelledby="section-soups">
-                <p class="subsection-label">Soups</p>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Soupe Miso Wakamé</h3>
-                        <p class="item-desc">Bouillon miso délicat, algues wakamé, tofu soyeux.</p>
-                    </div>
-                    <div class="item-price" aria-label="8 TND">8<span>TND</span></div>
-                </article>
-
-                <article class="item">
-                    <div class="item-body">
-                        <h3 class="item-name">Soupe Miso Fruits de Mer</h3>
-                        <p class="item-desc">Bouillon miso parfumé aux fruits de mer frais.</p>
-                    </div>
-                    <div class="item-price" aria-label="10 TND">10<span>TND</span></div>
-                </article>
-            </section>
-
-            <footer class="footer">
-                <div class="jp" aria-hidden="true">そ や</div>
-                <p>La Marsa · Tunisia · {{ date('Y') }}</p>
-            </footer>
-
-        </main>
+  <div class="card card--signature card--featured">
+    <div class="card-header">
+      <h2 class="card-title">Menu Craft</h2>
+      <span class="badge badge--blue">Signature</span>
     </div>
-</body>
+    <p class="card-sub">Söya. の全てが詰まった一杯</p>
+    <div class="card-rows">
+      <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 自家製餃子 4個</div>
+      <div class="card-row"><span class="card-row-icon">🍜</span> ラーメン（下記から選択）</div>
+    </div>
+    <div class="card-footer">
+      <div class="price">39 DT<sub>/ 1名</sub></div>
+      <div class="opts">
+        <span class="opt">味噌チャーシュー</span>
+        <span class="opt">味噌海老</span>
+        <span class="opt">担々麺</span>
+        <span class="opt">まぜそば</span>
+      </div>
+    </div>
+  </div>
+</div>
 
+{{-- Section: Rice --}}
+<div class="section">
+  <p class="section-label">🍚 ライス体験</p>
+
+  <div class="grid-2">
+    <div class="card card--amber card--featured">
+      <div class="card-header">
+        <h2 class="card-title">Katsu<br>Curry</h2>
+        <span class="badge badge--amber">Killer</span>
+      </div>
+      <p class="card-sub">東京の味、チュニジアで</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 味噌汁</div>
+        <div class="card-row"><span class="card-row-icon">🍛</span> チキンカツカレー</div>
+      </div>
+      <div class="card-footer">
+        <div class="price">35 DT<sub>/ 1名</sub></div>
+        <div class="opts">
+          <span class="opt">+4DT 海老</span>
+          <span class="opt">-4DT ベジ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card--amber">
+      <div class="card-header">
+        <h2 class="card-title">Tokyo<br>Bowl</h2>
+        <span class="badge badge--amber">どんぶり</span>
+      </div>
+      <p class="card-sub">日本の定食スタイル</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 味噌汁</div>
+        <div class="card-row"><span class="card-row-icon">🍱</span> チキンカツ丼</div>
+      </div>
+      <div class="card-footer">
+        <div class="price">32 DT<sub>/ 1名</sub></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- Section: Gyoza --}}
+<div class="section">
+  <p class="section-label">🥟 餃子体験</p>
+
+  <div class="grid-2">
+    <div class="card card--teal">
+      <div class="card-header">
+        <h2 class="card-title">Gyoza<br>Plate</h2>
+        <span class="badge badge--teal">食べ比べ</span>
+      </div>
+      <p class="card-sub">4種の調理法を一皿で</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ</div>
+        <div class="card-row"><span class="card-row-icon">🥟</span> 餃子 8個<br><small style="color:var(--ink-faint);font-size:11px">焼・スープ・揚・麻婆</small></div>
+        <div class="card-row"><span class="card-row-icon">🍙</span> おにぎり + ソース 2種</div>
+      </div>
+      <div class="card-footer">
+        <div class="price">38 DT<sub>/ 1名</sub></div>
+      </div>
+    </div>
+
+    <div class="card card--coral">
+      <div class="card-header">
+        <h2 class="card-title">Duo<br>Söya</h2>
+        <span class="badge badge--coral">2名様</span>
+      </div>
+      <p class="card-sub">デートに最適な特別コース</p>
+      <div class="card-rows">
+        <div class="card-row"><span class="card-row-icon">🍽️</span> 大皿シェア前菜</div>
+        <div class="card-row"><span class="card-row-icon">🍜</span> メイン 2品（自由選択）</div>
+      </div>
+      <div class="card-footer">
+        <div class="price">72 DT<sub>/ 2名</sub></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{-- Dessert bar --}}
+<div class="dessert-bar">
+  <span style="font-size:20px">🍮</span>
+  <div><strong>デザート別売り</strong> — 食後にスタッフよりご案内します</div>
+</div>
+
+<div class="bottom-pad"></div>
+
+</body>
 </html>
