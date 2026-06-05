@@ -1,4 +1,4 @@
-{{-- resources/views/menu_test.blade.php --}}
+{{-- resources/views/menu/index.blade.php --}}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -8,35 +8,33 @@
 <title>Söya. — Craft Ramen & Gyoza</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-/* ── reset & base ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --ink:        #0a0a08;
-  --ink-soft:   #3a3935;
-  --ink-faint:  #8a8880;
-  --paper:      #f7f5f0;
-  --paper-warm: #efece4;
-  --paper-card: #faf9f6;
-  --red:        #c41e1e;
-  --red-soft:   #f5e8e8;
-  --gold:       #b8860b;
-  --gold-soft:  #f5f0e0;
-  --teal:       #0f6e56;
-  --teal-soft:  #e4f2ee;
-  --coral:      #c45c2e;
-  --coral-soft: #f5ede8;
-  --line:       rgba(10,10,8,.10);
-  --r:          12px;
-  --r-sm:       8px;
-  --serif:      'Cormorant Garamond', Georgia, serif;
-  --sans:       'DM Sans', sans-serif;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a0a08;
+  --ink-soft:#3a3935;
+  --ink-faint:#8a8880;
+  --paper:#f7f5f0;
+  --paper-warm:#efece4;
+  --paper-card:#faf9f6;
+  --red:#c41e1e;
+  --gold:#9a7000;
+  --gold-soft:#f5f0e0;
+  --teal:#0f6e56;
+  --teal-soft:#e4f2ee;
+  --coral:#c45c2e;
+  --coral-soft:#f5ede8;
+  --blue:#1a5fa8;
+  --blue-soft:#e6f1fb;
+  --line:rgba(10,10,8,.10);
+  --r:14px;
+  --r-sm:8px;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',sans-serif;
 }
 
 html { background: var(--ink); }
-
 body {
   font-family: var(--sans);
   background: var(--paper);
@@ -46,247 +44,181 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-/* ── hero header ── */
+/* ── Hero ── */
 .hero {
   background: var(--ink);
-  padding: 56px 24px 40px;
+  padding: 52px 24px 36px;
   text-align: center;
   position: relative;
   overflow: hidden;
 }
-
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 40% at 30% 80%, rgba(196,30,30,.18) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 50% at 75% 20%, rgba(184,134,11,.12) 0%, transparent 70%);
+    radial-gradient(ellipse 60% 40% at 25% 80%, rgba(196,30,30,.20) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 78% 15%, rgba(154,112,0,.14) 0%, transparent 70%);
   pointer-events: none;
 }
-
-.hero-eyebrow {
-  font-family: var(--sans);
-  font-size: 10px;
+.hero-eye {
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 4px;
-  color: var(--ink-faint);
+  color: rgba(247,245,240,.35);
   text-transform: uppercase;
-  margin-bottom: 12px;
-  opacity: .7;
+  margin-bottom: 14px;
 }
-
 .hero-title {
   font-family: var(--serif);
-  font-size: 56px;
+  font-size: 58px;
   font-weight: 300;
   color: #f7f5f0;
-  letter-spacing: 6px;
+  letter-spacing: 7px;
   line-height: 1;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
-
-.hero-title span {
-  color: var(--red);
-}
-
+.hero-title em { color: var(--red); font-style: normal; }
 .hero-sub {
   font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 300;
+  font-size: 13px;
   font-style: italic;
-  color: rgba(247,245,240,.45);
-  letter-spacing: 1px;
+  color: rgba(247,245,240,.40);
+  letter-spacing: 1.5px;
+}
+.hero-line {
+  width: 28px;
+  height: .5px;
+  background: rgba(247,245,240,.18);
+  margin: 18px auto 0;
 }
 
-.hero-divider {
-  width: 32px;
-  height: 1px;
-  background: rgba(247,245,240,.20);
-  margin: 20px auto 0;
-}
-
-/* ── tea banner ── */
-.tea-banner {
+/* ── Tea banner ── */
+.tea {
   background: var(--teal);
-  padding: 14px 20px;
+  padding: 13px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
 }
+.tea-icon { font-size: 20px; flex-shrink: 0; }
+.tea-txt { font-size: 12px; color: rgba(255,255,255,.80); line-height: 1.5; }
+.tea-txt strong { color: #fff; font-weight: 500; font-size: 13px; display: block; margin-bottom: 1px; }
+.tea-arabizi { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; }
 
-.tea-icon {
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.tea-text {
-  font-size: 12px;
-  color: rgba(255,255,255,.85);
-  line-height: 1.5;
-}
-
-.tea-text strong {
-  color: #fff;
-  font-weight: 500;
-  display: block;
-  font-size: 13px;
-  margin-bottom: 1px;
-}
-
-/* ── section ── */
-.section {
-  padding: 28px 16px 0;
-}
-
-.section:last-of-type {
-  padding-bottom: 32px;
-}
-
-.section-label {
+/* ── Sections ── */
+.section { padding: 24px 14px 0; }
+.sec-label {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: 3px;
   color: var(--ink-faint);
   text-transform: uppercase;
-  padding: 0 4px;
-  margin-bottom: 12px;
+  padding: 0 2px;
+  margin-bottom: 10px;
 }
+.sec-label::after { content: ''; flex: 1; height: .5px; background: var(--line); }
 
-.section-label::after {
-  content: '';
-  flex: 1;
-  height: .5px;
-  background: var(--line);
-}
-
-/* ── cards ── */
+/* ── Cards ── */
 .card {
   background: var(--paper-card);
   border-radius: var(--r);
   border: .5px solid var(--line);
-  padding: 18px 18px 16px;
+  padding: 16px 16px 14px;
   margin-bottom: 10px;
   position: relative;
   overflow: hidden;
 }
-
 .card::before {
   content: '';
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 3px;
-  border-radius: var(--r) 0 0 var(--r);
 }
+.card--blue::before  { background: var(--blue); }
+.card--gold::before  { background: var(--gold); }
+.card--teal::before  { background: var(--teal); }
+.card--coral::before { background: var(--coral); }
+.card--featured { border: 1.5px solid rgba(26,95,168,.28); background: #f9fcff; }
+.card--featured-gold { border: 1.5px solid rgba(154,112,0,.28); background: #fdfbf5; }
 
-.card--signature::before { background: #378ADD; }
-.card--amber::before     { background: var(--gold); }
-.card--teal::before      { background: var(--teal); }
-.card--coral::before     { background: var(--coral); }
-.card--featured {
-  border: 1.5px solid rgba(55,138,221,.35);
-  background: #fafcff;
-}
-
-.card-header {
+.card-top {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 2px;
+  margin-bottom: 1px;
 }
-
 .badge {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 500;
   letter-spacing: .5px;
-  padding: 3px 10px;
+  padding: 3px 9px;
   border-radius: 20px;
   flex-shrink: 0;
-  margin-top: 2px;
+  margin-top: 3px;
 }
+.b-blue  { background: var(--blue-soft); color: #0a3d6b; }
+.b-gold  { background: var(--gold-soft); color: #5a4000; }
+.b-teal  { background: var(--teal-soft); color: var(--teal); }
+.b-coral { background: var(--coral-soft); color: #7a2e0a; }
 
-.badge--blue   { background: #E6F1FB; color: #0C447C; }
-.badge--amber  { background: var(--gold-soft); color: #7a5800; }
-.badge--teal   { background: var(--teal-soft); color: var(--teal); }
-.badge--coral  { background: var(--coral-soft); color: #8b3a18; }
-
-.card-title {
+.card-name {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 400;
   color: var(--ink);
   letter-spacing: .5px;
-  line-height: 1.1;
+  line-height: 1.05;
 }
-
 .card-sub {
-  font-size: 11px;
-  color: var(--ink-faint);
-  font-style: italic;
-  margin: 3px 0 12px;
   font-family: var(--serif);
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-faint);
+  margin: 2px 0 10px;
 }
 
-.card-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  margin-bottom: 14px;
-}
-
-.card-row {
-  font-size: 13px;
+.rows { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }
+.row {
+  font-size: 12.5px;
   color: var(--ink-soft);
   display: flex;
   align-items: baseline;
   gap: 7px;
   line-height: 1.45;
 }
+.row-icon { font-size: 13px; flex-shrink: 0; }
+.row small { font-size: 10.5px; color: var(--ink-faint); margin-left: 2px; }
 
-.card-row-icon {
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.card-footer {
+.card-foot {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 8px;
 }
-
 .price {
   font-family: var(--serif);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: 400;
   color: var(--ink);
   line-height: 1;
 }
-
 .price sub {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 300;
   color: var(--ink-faint);
   font-family: var(--sans);
   vertical-align: baseline;
   margin-left: 2px;
 }
-
-.opts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  justify-content: flex-end;
-  max-width: 55%;
-}
-
+.opts { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; max-width: 52%; }
 .opt {
   font-size: 10px;
-  padding: 3px 9px;
+  padding: 3px 8px;
   border: .5px solid var(--line);
   border-radius: 20px;
   color: var(--ink-faint);
@@ -294,217 +226,196 @@ body {
   white-space: nowrap;
 }
 
-/* ── side-by-side on wider phones ── */
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
+/* ── 2-col grid ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid2 .card { margin-bottom: 0; }
+.grid2 .card-name { font-size: 20px; }
+.grid2 .card-foot { flex-direction: column; align-items: flex-start; gap: 5px; }
+.grid2 .opts { max-width: 100%; justify-content: flex-start; }
 
-.grid-2 .card {
-  margin-bottom: 0;
-}
+.divider { border: none; border-top: .5px solid var(--line); margin: 0 14px; }
 
-.grid-2 .card-title {
-  font-size: 19px;
-}
-
-.grid-2 .card-footer {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.grid-2 .opts {
-  max-width: 100%;
-  justify-content: flex-start;
-}
-
-/* ── dessert footer ── */
-.dessert-bar {
-  margin: 24px 16px 0;
+/* ── Dessert bar ── */
+.dessert {
+  margin: 20px 14px 0;
   background: var(--paper-warm);
   border-radius: var(--r-sm);
   border: .5px solid var(--line);
-  padding: 13px 16px;
+  padding: 12px 15px;
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--ink-soft);
 }
+.dessert strong { color: var(--ink); font-weight: 500; }
 
-.dessert-bar strong {
-  color: var(--ink);
-  font-weight: 500;
+.bottom { height: calc(28px + env(safe-area-inset-bottom, 0px)); }
+
+/* ── Responsive ── */
+@media (max-width: 375px) {
+  .grid2 { grid-template-columns: 1fr; }
+  .grid2 .card-foot { flex-direction: row; align-items: flex-end; }
+  .grid2 .opts { max-width: 55%; justify-content: flex-end; }
+  .hero-title { font-size: 50px; }
 }
 
-/* ── bottom safe area ── */
-.bottom-pad {
-  height: calc(16px + env(safe-area-inset-bottom, 0px));
-}
-
-/* ── animations ── */
+/* ── Animations ── */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-title   { animation: fadeUp .7s ease both; }
-  .hero-eyebrow { animation: fadeUp .7s .1s ease both; }
-  .hero-sub     { animation: fadeUp .7s .15s ease both; }
-  .tea-banner   { animation: fadeUp .5s .25s ease both; }
-  .card         { animation: fadeUp .5s ease both; }
-
-  .section:nth-child(2) .card { animation-delay: .1s; }
-  .section:nth-child(3) .card:nth-child(1) { animation-delay: .15s; }
-  .section:nth-child(3) .card:nth-child(2) { animation-delay: .20s; }
-  .section:nth-child(4) .card:nth-child(1) { animation-delay: .20s; }
-  .section:nth-child(4) .card:nth-child(2) { animation-delay: .25s; }
+  .hero-title  { animation: fadeUp .7s ease both; }
+  .hero-eye    { animation: fadeUp .7s .08s ease both; }
+  .hero-sub    { animation: fadeUp .6s .14s ease both; }
+  .tea         { animation: fadeUp .5s .22s ease both; }
+  .card        { animation: fadeUp .5s ease both; }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
+    from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-}
-
-/* ── narrow phones: stack grid-2 ── */
-@media (max-width: 380px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-2 .card { margin-bottom: 0; }
-  .grid-2 .card-footer { flex-direction: row; align-items: flex-end; }
-  .grid-2 .opts { max-width: 55%; justify-content: flex-end; }
-  .hero-title { font-size: 48px; }
 }
 </style>
 </head>
 <body>
 
 {{-- Hero --}}
-<div class="hero">
-  <p class="hero-eyebrow">Menzah 9 — Tunis</p>
-  <h1 class="hero-title">Söya<span>.</span></h1>
+<header class="hero">
+  <p class="hero-eye">Menzah 9 — Tunis</p>
+  <h1 class="hero-title">Söya<em>.</em></h1>
   <p class="hero-sub">Craft Ramen &amp; Gyoza</p>
-  <div class="hero-divider"></div>
-</div>
+  <div class="hero-line"></div>
+</header>
 
 {{-- Tea banner --}}
-<div class="tea-banner">
+<div class="tea">
   <span class="tea-icon">🍵</span>
-  <div class="tea-text">
-    <strong>自家製 冷たい日本茶、全メニューに含まれます</strong>
-    着席後すぐにお出しします — inclus dans chaque menu
+  <div class="tea-txt">
+    <strong>Thé japonais glacé maison — inclus dans chaque menu</strong>
+    Servi dès votre arrivée — 自家製冷たい日本茶つき
+    <div class="tea-arabizi">saha! — صحة</div>
   </div>
 </div>
 
-{{-- Section: Ramen --}}
-<div class="section">
-  <p class="section-label">🍜 ラーメン体験</p>
+{{-- Ramen --}}
+<section class="section">
+  <p class="sec-label">🍜 L'Expérience Ramen</p>
 
-  <div class="card card--signature card--featured">
-    <div class="card-header">
-      <h2 class="card-title">Menu Craft</h2>
-      <span class="badge badge--blue">Signature</span>
+  <div class="card card--blue card--featured">
+    <div class="card-top">
+      <h2 class="card-name">THE CRAFT</h2>
+      <span class="badge b-blue">Signature</span>
     </div>
-    <p class="card-sub">Söya. の全てが詰まった一杯</p>
-    <div class="card-rows">
-      <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 自家製餃子 4個</div>
-      <div class="card-row"><span class="card-row-icon">🍜</span> ラーメン（下記から選択）</div>
+    <p class="card-sub">L'essentiel Söya. — notre meilleur</p>
+    <div class="rows">
+      <div class="row"><span class="row-icon">🥗</span> Salade + Gyoza maison 4 pcs</div>
+      <div class="row"><span class="row-icon">🍜</span> Ramen au choix</div>
     </div>
-    <div class="card-footer">
-      <div class="price">39 DT<sub>/ 1名</sub></div>
+    <div class="card-foot">
+      <div class="price">39 DT<sub>/ pers.</sub></div>
       <div class="opts">
-        <span class="opt">味噌チャーシュー</span>
-        <span class="opt">味噌海老</span>
-        <span class="opt">担々麺</span>
-        <span class="opt">まぜそば</span>
+        <span class="opt">Miso Chashu</span>
+        <span class="opt">Miso Crevettes</span>
+        <span class="opt">Tan-Tan Épicé</span>
+        <span class="opt">Malâ Mix</span>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-{{-- Section: Rice --}}
-<div class="section">
-  <p class="section-label">🍚 ライス体験</p>
+<div class="divider"></div>
 
-  <div class="grid-2">
-    <div class="card card--amber card--featured">
-      <div class="card-header">
-        <h2 class="card-title">Katsu<br>Curry</h2>
-        <span class="badge badge--amber">Killer</span>
+{{-- Riz --}}
+<section class="section">
+  <p class="sec-label">🍚 L'Expérience Riz</p>
+
+  <div class="grid2">
+    <div class="card card--gold card--featured-gold">
+      <div class="card-top">
+        <h2 class="card-name">TOKYO<br>GOLD<br>CURRY</h2>
+        <span class="badge b-gold">Killer</span>
       </div>
-      <p class="card-sub">東京の味、チュニジアで</p>
-      <div class="card-rows">
-        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 味噌汁</div>
-        <div class="card-row"><span class="card-row-icon">🍛</span> チキンカツカレー</div>
+      <p class="card-sub">Le curry légendaire de Tokyo</p>
+      <div class="rows">
+        <div class="row"><span class="row-icon">🥗</span> Salade + Soupe miso</div>
+        <div class="row"><span class="row-icon">🍛</span> Curry katsu poulet</div>
       </div>
-      <div class="card-footer">
-        <div class="price">35 DT<sub>/ 1名</sub></div>
+      <div class="card-foot">
+        <div class="price">35 DT<sub>/ pers.</sub></div>
         <div class="opts">
-          <span class="opt">+4DT 海老</span>
-          <span class="opt">-4DT ベジ</span>
+          <span class="opt">+4DT crevettes</span>
+          <span class="opt">-4DT véggi</span>
         </div>
       </div>
     </div>
 
-    <div class="card card--amber">
-      <div class="card-header">
-        <h2 class="card-title">Tokyo<br>Bowl</h2>
-        <span class="badge badge--amber">どんぶり</span>
+    <div class="card card--gold">
+      <div class="card-top">
+        <h2 class="card-name">LE BOWL<br>ROZA</h2>
+        <span class="badge b-gold">roza روزة</span>
       </div>
-      <p class="card-sub">日本の定食スタイル</p>
-      <div class="card-rows">
-        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ + 味噌汁</div>
-        <div class="card-row"><span class="card-row-icon">🍱</span> チキンカツ丼</div>
+      <p class="card-sub">Ton bol, ton choix</p>
+      <div class="rows">
+        <div class="row"><span class="row-icon">🥗</span> Salade + Soupe miso</div>
+        <div class="row"><span class="row-icon">🍱</span> Donburi au choix</div>
       </div>
-      <div class="card-footer">
-        <div class="price">32 DT<sub>/ 1名</sub></div>
+      <div class="card-foot">
+        <div class="price">32 DT<sub>/ pers.</sub></div>
+        <div class="opts">
+          <span class="opt">Katsu Poulet</span>
+          <span class="opt">Mabô Poulet</span>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-{{-- Section: Gyoza --}}
-<div class="section">
-  <p class="section-label">🥟 餃子体験</p>
+<div class="divider"></div>
 
-  <div class="grid-2">
+{{-- Gyoza --}}
+<section class="section">
+  <p class="sec-label">🥟 L'Expérience Gyoza</p>
+
+  <div class="grid2">
     <div class="card card--teal">
-      <div class="card-header">
-        <h2 class="card-title">Gyoza<br>Plate</h2>
-        <span class="badge badge--teal">食べ比べ</span>
+      <div class="card-top">
+        <h2 class="card-name">GYOZA<br>FESTIN</h2>
+        <span class="badge b-teal">kol kol! كل</span>
       </div>
-      <p class="card-sub">4種の調理法を一皿で</p>
-      <div class="card-rows">
-        <div class="card-row"><span class="card-row-icon">🥗</span> サラダ</div>
-        <div class="card-row"><span class="card-row-icon">🥟</span> 餃子 8個<br><small style="color:var(--ink-faint);font-size:11px">焼・スープ・揚・麻婆</small></div>
-        <div class="card-row"><span class="card-row-icon">🍙</span> おにぎり + ソース 2種</div>
+      <p class="card-sub">La fête de la gyoza maison</p>
+      <div class="rows">
+        <div class="row"><span class="row-icon">🥗</span> Salade</div>
+        <div class="row"><span class="row-icon">🥟</span> Gyoza grillés 12 pcs<small>viande 6 + crevettes 6</small></div>
+        <div class="row"><span class="row-icon">🍙</span> Onigiri + 2 sauces maison</div>
       </div>
-      <div class="card-footer">
-        <div class="price">38 DT<sub>/ 1名</sub></div>
+      <div class="card-foot">
+        <div class="price">38 DT<sub>/ pers.</sub></div>
       </div>
     </div>
 
     <div class="card card--coral">
-      <div class="card-header">
-        <h2 class="card-title">Duo<br>Söya</h2>
-        <span class="badge badge--coral">2名様</span>
+      <div class="card-top">
+        <h2 class="card-name">DUO<br>SÖYA</h2>
+        <span class="badge b-coral">marhba! مرحبا</span>
       </div>
-      <p class="card-sub">デートに最適な特別コース</p>
-      <div class="card-rows">
-        <div class="card-row"><span class="card-row-icon">🍽️</span> 大皿シェア前菜</div>
-        <div class="card-row"><span class="card-row-icon">🍜</span> メイン 2品（自由選択）</div>
+      <p class="card-sub">Pour un moment à deux</p>
+      <div class="rows">
+        <div class="row"><span class="row-icon">🍵</span> Thé glacé × 2</div>
+        <div class="row"><span class="row-icon">🍽️</span> Grand plateau partagé</div>
+        <div class="row"><span class="row-icon">⭐</span> 2 plats au choix</div>
       </div>
-      <div class="card-footer">
-        <div class="price">72 DT<sub>/ 2名</sub></div>
+      <div class="card-foot">
+        <div class="price">72 DT<sub>/ 2 pers.</sub></div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-{{-- Dessert bar --}}
-<div class="dessert-bar">
+{{-- Dessert --}}
+<div class="dessert">
   <span style="font-size:20px">🍮</span>
-  <div><strong>デザート別売り</strong> — 食後にスタッフよりご案内します</div>
+  <div><strong>Desserts — en option</strong> — proposés par notre équipe après le repas</div>
 </div>
 
-<div class="bottom-pad"></div>
+<div class="bottom"></div>
 
 </body>
 </html>
