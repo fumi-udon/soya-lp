@@ -18,7 +18,6 @@
   --paper:#f7f5f0;
   --paper-warm:#efece4;
   --paper-card:#faf9f6;
-  --red:#c41e1e;
   --gold:#9a7000;
   --gold-soft:#f5f0e0;
   --teal:#0f6e56;
@@ -78,7 +77,7 @@ body {
   line-height: 1;
   margin-bottom: 6px;
 }
-.hero-title em { color: var(--red); font-style: normal; }
+.hero-title em { color: #c41e1e; font-style: normal; }
 .hero-sub {
   font-family: var(--serif);
   font-size: 13px;
@@ -106,8 +105,33 @@ body {
 .tea-txt strong { color: #fff; font-weight: 500; font-size: 13px; display: block; margin-bottom: 1px; }
 .tea-arabizi { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 2px; }
 
+/* ── Entrée universelle banner ── */
+.entree-banner {
+  margin: 16px 14px 0;
+  background: var(--paper-warm);
+  border-radius: var(--r-sm);
+  border: .5px solid var(--line);
+  padding: 11px 15px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.entree-banner-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.entree-banner-txt { font-size: 12px; color: var(--ink-soft); line-height: 1.55; }
+.entree-banner-txt strong { color: var(--ink); font-weight: 500; font-size: 13px; display: block; margin-bottom: 2px; }
+.entree-banner-opt {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 10px;
+  padding: 3px 10px;
+  border: .5px solid var(--line);
+  border-radius: 20px;
+  color: var(--ink-faint);
+  background: var(--paper-card);
+}
+
 /* ── Sections ── */
-.section { padding: 24px 14px 0; }
+.section { padding: 20px 14px 0; }
 .sec-label {
   display: flex;
   align-items: center;
@@ -142,7 +166,7 @@ body {
 .card--gold::before  { background: var(--gold); }
 .card--teal::before  { background: var(--teal); }
 .card--coral::before { background: var(--coral); }
-.card--featured { border: 1.5px solid rgba(26,95,168,.28); background: #f9fcff; }
+.card--featured      { border: 1.5px solid rgba(26,95,168,.28); background: #f9fcff; }
 .card--featured-gold { border: 1.5px solid rgba(154,112,0,.28); background: #fdfbf5; }
 
 .card-top {
@@ -161,9 +185,9 @@ body {
   flex-shrink: 0;
   margin-top: 3px;
 }
-.b-blue  { background: var(--blue-soft); color: #0a3d6b; }
-.b-gold  { background: var(--gold-soft); color: #5a4000; }
-.b-teal  { background: var(--teal-soft); color: var(--teal); }
+.b-blue  { background: var(--blue-soft);  color: #0a3d6b; }
+.b-gold  { background: var(--gold-soft);  color: #5a4000; }
+.b-teal  { background: var(--teal-soft);  color: var(--teal); }
 .b-coral { background: var(--coral-soft); color: #7a2e0a; }
 
 .card-name {
@@ -193,6 +217,7 @@ body {
 }
 .row-icon { font-size: 13px; flex-shrink: 0; }
 .row small { font-size: 10.5px; color: var(--ink-faint); margin-left: 2px; }
+.row--included { color: var(--ink-faint); font-size: 11.5px; }
 
 .card-foot {
   display: flex;
@@ -233,7 +258,7 @@ body {
 .grid2 .card-foot { flex-direction: column; align-items: flex-start; gap: 5px; }
 .grid2 .opts { max-width: 100%; justify-content: flex-start; }
 
-.divider { border: none; border-top: .5px solid var(--line); margin: 0 14px; }
+.divider { border: none; border-top: .5px solid var(--line); margin: 4px 14px 0; }
 
 /* ── Dessert bar ── */
 .dessert {
@@ -262,11 +287,12 @@ body {
 
 /* ── Animations ── */
 @media (prefers-reduced-motion: no-preference) {
-  .hero-title  { animation: fadeUp .7s ease both; }
-  .hero-eye    { animation: fadeUp .7s .08s ease both; }
-  .hero-sub    { animation: fadeUp .6s .14s ease both; }
-  .tea         { animation: fadeUp .5s .22s ease both; }
-  .card        { animation: fadeUp .5s ease both; }
+  .hero-title     { animation: fadeUp .7s ease both; }
+  .hero-eye       { animation: fadeUp .7s .08s ease both; }
+  .hero-sub       { animation: fadeUp .6s .14s ease both; }
+  .tea            { animation: fadeUp .5s .20s ease both; }
+  .entree-banner  { animation: fadeUp .5s .26s ease both; }
+  .card           { animation: fadeUp .5s ease both; }
 
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
@@ -295,6 +321,16 @@ body {
   </div>
 </div>
 
+{{-- Entrée universelle --}}
+<div class="entree-banner">
+  <span class="entree-banner-icon">🥗🥟</span>
+  <div class="entree-banner-txt">
+    <strong>Entrée incluse dans tous les menus</strong>
+    Salade maison + Gyoza grillés maison 4 pcs
+    <span class="entree-banner-opt">Option : remplacer les Gyoza par une Soupe Miso</span>
+  </div>
+</div>
+
 {{-- Ramen --}}
 <section class="section">
   <p class="sec-label">🍜 L'Expérience Ramen</p>
@@ -306,7 +342,7 @@ body {
     </div>
     <p class="card-sub">L'essentiel Söya. — notre meilleur</p>
     <div class="rows">
-      <div class="row"><span class="row-icon">🥗</span> Salade + Gyoza maison 4 pcs</div>
+      <div class="row row--included"><span class="row-icon">🥗🥟</span> Entrée maison incluse</div>
       <div class="row"><span class="row-icon">🍜</span> Ramen au choix</div>
     </div>
     <div class="card-foot">
@@ -335,7 +371,7 @@ body {
       </div>
       <p class="card-sub">Le curry légendaire de Tokyo</p>
       <div class="rows">
-        <div class="row"><span class="row-icon">🥗</span> Salade + Soupe miso</div>
+        <div class="row row--included"><span class="row-icon">🥗🥟</span> Entrée maison incluse</div>
         <div class="row"><span class="row-icon">🍛</span> Curry katsu poulet</div>
       </div>
       <div class="card-foot">
@@ -354,7 +390,7 @@ body {
       </div>
       <p class="card-sub">Ton bol, ton choix</p>
       <div class="rows">
-        <div class="row"><span class="row-icon">🥗</span> Salade + Soupe miso</div>
+        <div class="row row--included"><span class="row-icon">🥗🥟</span> Entrée maison incluse</div>
         <div class="row"><span class="row-icon">🍱</span> Donburi au choix</div>
       </div>
       <div class="card-foot">
@@ -382,7 +418,7 @@ body {
       </div>
       <p class="card-sub">La fête de la gyoza maison</p>
       <div class="rows">
-        <div class="row"><span class="row-icon">🥗</span> Salade</div>
+        <div class="row row--included"><span class="row-icon">🥗🥟</span> Entrée maison incluse</div>
         <div class="row"><span class="row-icon">🥟</span> Gyoza grillés 12 pcs<small>viande 6 + crevettes 6</small></div>
         <div class="row"><span class="row-icon">🍙</span> Onigiri + 2 sauces maison</div>
       </div>
@@ -398,7 +434,7 @@ body {
       </div>
       <p class="card-sub">Pour un moment à deux</p>
       <div class="rows">
-        <div class="row"><span class="row-icon">🍵</span> Thé glacé × 2</div>
+        <div class="row row--included"><span class="row-icon">🥗🥟</span> Entrée maison × 2</div>
         <div class="row"><span class="row-icon">🍽️</span> Grand plateau partagé</div>
         <div class="row"><span class="row-icon">⭐</span> 2 plats au choix</div>
       </div>
