@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ReservationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,17 +15,9 @@ use App\Http\Controllers\MenuController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-//予約
-Route::get('/reservation', function () {
-    // 既存のステータス管理変数（status）はControllerから渡す想定ですが、
-    // ここでは簡易的に 1 (通常営業) としています。
-    return view('reservation', ['status' => 1, 'message' => '']);
-})->name('reservation');
-
+// 予約
+Route::get('/reservation', [ReservationController::class, 'create'])->name('reservation');
+Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
 
 Route::get('/', function (Request $request) {
     $host = $request->getHost();
@@ -61,3 +54,4 @@ Route::get('/shopcardv', function () {
 Route::get('/shopcardv', function () {
     return view('shopcardv');
 })->name('shopcardv');
+

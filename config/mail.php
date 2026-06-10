@@ -96,6 +96,8 @@ return [
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    'from_name_reservation' => env('MAIL_FROM_NAME_RESERV', '[SOYA]'),
+
     /*
     |--------------------------------------------------------------------------
     | Order notification (fallback when tenant has no order_notification_email)
@@ -103,6 +105,16 @@ return [
     */
     'order_notification' => [
         'address' => env('MAIL_ORDER_NOTIFICATION_ADDRESS'),
+        'send_enabled' => filter_var(env('TAKEOUT_MAIL_SEND', false), FILTER_VALIDATE_BOOLEAN),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reservation notification (uses same recipient & send flag as takeout)
+    |--------------------------------------------------------------------------
+    */
+    'reservation_notification' => [
+        'address' => env('MAIL_ORDER_NOTIFICATION_ADDRESS', 'soya.menzah9@gmail.com'),
         'send_enabled' => filter_var(env('TAKEOUT_MAIL_SEND', false), FILTER_VALIDATE_BOOLEAN),
     ],
 

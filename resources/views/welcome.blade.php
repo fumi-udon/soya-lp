@@ -82,6 +82,136 @@
         transform: translateY(0);
     }
 
+    /* New Open ヒーロー — 写真主役・エディトリアル */
+    .new-open-hero-card {
+        position: relative;
+        border-radius: 1rem;
+        overflow: hidden;
+        aspect-ratio: 4 / 3;
+        box-shadow: 0 4px 20px rgba(17, 10, 8, 0.12);
+    }
+    .new-open-hero-img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 40%;
+        transform: scale(1);
+        animation: newOpenKenBurns 14s ease-in-out infinite alternate;
+    }
+    @keyframes newOpenKenBurns {
+        from { transform: scale(1); }
+        to   { transform: scale(1.05); }
+    }
+    /* 下部のみスクリム — 写真の上半分はそのまま見せる */
+    .new-open-hero-scrim {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 48%;
+        background: linear-gradient(
+            to top,
+            rgba(17, 10, 8, 0.78) 0%,
+            rgba(17, 10, 8, 0.28) 50%,
+            transparent 100%
+        );
+        pointer-events: none;
+    }
+    .new-open-hero-content {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+    }
+    .new-open-stamp {
+        position: absolute;
+        top: 0.75rem;
+        left: 0.75rem;
+        background: #e60012;
+        color: #ffffff;
+        font-size: 0.52rem;
+        font-weight: 700;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        padding: 0.38rem 0.7rem;
+        border-radius: 2px;
+        opacity: 0;
+        transform: translateY(-8px) scale(0.92);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 2px 12px rgba(230, 0, 18, 0.35);
+    }
+    .new-open-hero-copy {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 1.25rem 1.35rem;
+    }
+    .new-open-title {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(3rem, 14vw, 4.2rem);
+        font-weight: 700;
+        line-height: 0.9;
+        letter-spacing: 0.06em;
+        color: #ffffff;
+        margin: 0;
+    }
+    .new-open-char {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .new-open-char.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .new-open-divider {
+        width: 2rem;
+        height: 2px;
+        background: #e60012;
+        margin: 0.55rem auto 0.5rem;
+        opacity: 0;
+        transform: scaleX(0);
+        transition: opacity 0.4s ease 0.7s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.7s;
+        transform-origin: center;
+    }
+    .new-open-line {
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.95);
+        margin: 0;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.45s ease, transform 0.45s ease;
+    }
+    .new-open-line.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .new-open-line--sub {
+        font-size: 0.58rem;
+        font-weight: 500;
+        letter-spacing: 0.24em;
+        color: rgba(244, 241, 235, 0.75);
+        margin-top: 0.3rem;
+    }
+    .new-open-hero-card.is-animated .new-open-stamp {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    .new-open-hero-card.is-animated .new-open-divider {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+
 </style>
 @endpush
 
@@ -122,7 +252,7 @@
                         <p class="collab-text animate__animated animate__fadeIn">
                             Bistronippon <span style="font-size:0.8em; margin:0 5px;">→</span> Menzah 9
                         </p>
-                        <h1 class="brand-title">Söya<span class="dot-highlight">.</span></h1>
+                        <h1 class="brand-title" style="text-transform: uppercase;">SÖYA.</h1>
                         <h2 class="brand-subtitle" id="subtitle"></h2>
                     </div>
                     <div class="col-lg-7">
@@ -142,7 +272,7 @@
                 <div>
                     <h1 style="font-family: 'Playfair Display', serif; font-size: 1.3rem;
                                font-weight: 700; letter-spacing: -0.02em; color: #110A08;">
-                        Söya<span style="color: #e60012;">.</span>
+                        SÖYA.
                     </h1>
                     <p style="font-size: 0.6rem; letter-spacing: 0.2em;
                               color: #A3B8C9; margin-top: 1px;">
@@ -168,86 +298,24 @@
                   id="mobile-scroll-area"
                   style="-webkit-overflow-scrolling: touch;">
 
-                {{-- A: クイックアクセス グリッド --}}
-                <section class="fade-in-section px-4 pt-5 pb-2">
-                    <div class="grid grid-cols-2 gap-2">
-
-                        {{-- Menu --}}
-                        <a href="{{ $menuUrl }}"
-                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
-                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/menu_photo.webp') }}"
-                                 alt="Menu ramen" width="48" height="48" class="w-12 h-12 object-cover shrink-0" decoding="async" fetchpriority="high">
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Menu</span>
-                        </a>
-
-                        {{-- Reservation --}}
-                        <a href="https://soyam9.bistronippon.tn/reservation"
-                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
-                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/rsrv.webp') }}"
-                                 alt="Réservation" width="48" height="48" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
-                            <span style="font-size: 0.7rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Booking</span>
-                        </a>
-
-                        {{-- Access --}}
-                        <button type="button" onclick="openAccessSheet()"
-                                class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
-                                style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
-                                 style="background: rgba(230,0,18,0.08);">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                     viewBox="0 0 24 24" fill="none" stroke="#e60012"
-                                     stroke-width="1.5" stroke-linecap="round">
-                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                                    <circle cx="12" cy="9" r="2.5"/>
-                                </svg>
+                {{-- A: New Open ヒーロー（店頭写真 + 動的テキスト） --}}
+                <section class="fade-in-section px-4 pt-4 pb-2">
+                    <div id="new-open-hero" class="new-open-hero-card">
+                        <img src="{{ asset('images/facades.png') }}"
+                             alt="Façade Söya. Menzah 9"
+                             class="new-open-hero-img"
+                             width="800" height="600"
+                             decoding="async" fetchpriority="high">
+                        <div class="new-open-hero-scrim" aria-hidden="true"></div>
+                        <div class="new-open-hero-content">
+                            <span class="new-open-stamp">New</span>
+                            <div class="new-open-hero-copy">
+                                <h2 class="new-open-title" id="new-open-title" aria-label="New Open"></h2>
+                                <div class="new-open-divider" aria-hidden="true"></div>
+                                <p class="new-open-line" data-new-open-line>Menzah 9 · Tunis</p>
+                                <p class="new-open-line new-open-line--sub" data-new-open-line>Spring 2026</p>
                             </div>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Accès</span>
-                        </button>
-
-                        {{-- Instagram --}}
-                        <a href="https://www.instagram.com/soya.tunis/"
-                           target="_blank" rel="noopener noreferrer"
-                           class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150"
-                           style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
-                                 style="background: rgba(163,184,201,0.15);">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                     viewBox="0 0 24 24" fill="none" stroke="#110A08"
-                                     stroke-width="1.5" stroke-linecap="round">
-                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                                    <circle cx="12" cy="12" r="4"/>
-                                    <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
-                                </svg>
-                            </div>
-                            <span style="font-size: 0.7rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Instagram</span>
-                        </a>
-
-                        {{-- Notre Histoire --}}
-                        <button type="button" onclick="document.getElementById('story-section').scrollIntoView({behavior:'smooth'})"
-                                class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
-                                style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <img src="{{ asset('images/story.webp') }}"
-                                 alt="Notre Histoire" width="48" height="48" class="w-12 h-12 object-cover shrink-0" loading="lazy" decoding="async">
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Story</span>
-                        </button>
-
-                        {{-- Contact → INFO Contact & SNS へスクロール --}}
-                        <button type="button"
-                                onclick="document.getElementById('info-contact').scrollIntoView({behavior:'smooth'})"
-                                class="flex items-center gap-3 rounded-lg overflow-hidden active:scale-95 transition-all duration-150 text-left w-full"
-                                style="background: #ffffff; border: 1px solid rgba(163,184,201,0.2); box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
-                            <div class="w-12 h-12 shrink-0 flex items-center justify-center"
-                                 style="background: rgba(163,184,201,0.15);">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                     fill="none" stroke="#110A08" stroke-width="1.5" stroke-linecap="round">
-                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.15 1.19 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
-                                </svg>
-                            </div>
-                            <span style="font-size: 0.8rem; font-weight: 700; color: #110A08; letter-spacing: 0.01em;">Contact</span>
-                        </button>
-
+                        </div>
                     </div>
                 </section>
 
@@ -682,6 +750,41 @@
             }, { threshold: 0.1 });
 
             fadeEls.forEach(el => observer.observe(el));
+
+            // New Open ヒーロー — 文字が順番に登場
+            const newOpenHero = document.getElementById('new-open-hero');
+            const newOpenTitle = document.getElementById('new-open-title');
+            if (newOpenHero && newOpenTitle) {
+                const titleText = 'OPEN';
+                titleText.split('').forEach((char, i) => {
+                    const span = document.createElement('span');
+                    span.className = 'new-open-char';
+                    span.textContent = char;
+                    span.style.transitionDelay = `${0.35 + i * 0.09}s`;
+                    newOpenTitle.appendChild(span);
+                });
+
+                const lines = newOpenHero.querySelectorAll('[data-new-open-line]');
+                const runNewOpenAnimation = () => {
+                    if (newOpenHero.classList.contains('is-animated')) return;
+                    newOpenHero.classList.add('is-animated');
+                    newOpenTitle.querySelectorAll('.new-open-char').forEach(el => el.classList.add('is-visible'));
+                    lines.forEach((line, i) => {
+                        setTimeout(() => line.classList.add('is-visible'), 900 + i * 220);
+                    });
+                };
+
+                const heroObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            runNewOpenAnimation();
+                            heroObserver.disconnect();
+                        }
+                    });
+                }, { threshold: 0.35 });
+
+                heroObserver.observe(newOpenHero);
+            }
 
             // アクティブタブ スタイル初期化
             document.querySelectorAll('.nav-tab').forEach(tab => {
