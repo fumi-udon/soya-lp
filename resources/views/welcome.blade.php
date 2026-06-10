@@ -93,7 +93,7 @@
     $accessTelDisplay = '54 497 077';
     $infoMapsShareUrl = 'https://share.google/AuyzAfsXz5CmrBywq';
     $infoInstagramUrl = 'https://www.instagram.com/soya.tunis/';
-    $infoWhatsAppUrl = 'https://wa.me/21655778665';
+    $infoWhatsAppUrl = 'https://wa.me/21654497077';
     $menuUrl = 'https://soyam9.bistronippon.tn/guest/menu/soya/readonly';
 @endphp
 

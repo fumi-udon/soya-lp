@@ -38,15 +38,21 @@ Route::get('/', function (Request $request) {
     // ※ 'welcome' の部分は実際のSöyaトップページのblade名（indexなど）に合わせてください
     return view('welcome');
 });
+// SOYA. THE CRAFT A5マニフェストチラシ用のルート
+Route::get('/soya/manifesto', function () {
+    return view('soya.manifesto');
+})->name('soya.manifesto');
+
+// SOYA. THE CRAFT A5マニフェストチラシ用のルート
+Route::get('/soya/manifestoa4', function () {
+    return view('soya.manifestoa4');
+})->name('soya.manifestoa4');
+
 Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');
 
 Route::get('/menu_test', function () {
     return view('menu_test');
 })->name('menu_test');
-
-Route::get('/shopcard', function () {
-    return view('shopcard');
-})->name('shopcard');
 
 Route::get('/shopcardv', function () {
     return view('shopcardv');
