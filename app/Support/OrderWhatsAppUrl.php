@@ -12,7 +12,7 @@ class OrderWhatsAppUrl
      */
     public static function build(Order $order, Tenant $tenant): string
     {
-        $waNumber = $tenant->whatsapp_number ?: '216557786656';
+        $waNumber = $tenant->whatsapp_number ?: config('services.soya.whatsapp', '21654497077');
         $storeName = $tenant->name;
 
         $order->loadMissing('items');
@@ -40,8 +40,6 @@ class OrderWhatsAppUrl
         $text .= '*Total:* '.number_format((float) $order->total_price, 3, '.', '')." DT\n\n";
         $text .= '_Waiting for shop confirmation..._';
 
-        return 'https://api.whatsapp.com/send/?phone='.$waNumber
-            .'&text='.rawurlencode($text)
-            .'&type=phone_number&app_absent=0';
+        return 'https://wa.me/'.$waNumber.'?text='.rawurlencode($text);
     }
 }

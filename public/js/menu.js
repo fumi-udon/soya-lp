@@ -605,9 +605,9 @@ window.App = {
         if (!orderNo) return;
         const el = document.getElementById('order-tracker-wa-link');
         if (!el) return;
-        const phone = window.TENANT_WA_NUMBER || '216557786656';
+        const phone = window.TENANT_WA_NUMBER || window.SOYA_DEFAULT_WA || '21654497077';
         const text = `Please confirm my order #${orderNo}`;
-        el.href = `https://api.whatsapp.com/send/?phone=${phone}&text=${encodeURIComponent(text)}&type=phone_number&app_absent=0`;
+        el.href = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     },
 
     showOrderWaFollowup(url, orderNumber) {

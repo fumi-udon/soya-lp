@@ -249,10 +249,10 @@
                     </svg>
                     <span>Open WhatsApp</span>
                 </a>
-                <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
+                <a href="tel:{{ config('services.soya.tel', '+21654497077') }}"
                     class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all">
                     <i class="bi bi-telephone-fill"></i>
-                    <span>Tel: +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}</span>
+                    <span>Tel: {{ config('services.soya.tel_display', '54 497 077') }}</span>
                 </a>
             </div>
 
@@ -300,10 +300,10 @@
             </svg>
             <span>Open WhatsApp</span>
         </a>
-        <a href="tel:+{{ $tenant->whatsapp_number ?? '216557786656' }}"
+        <a href="tel:{{ config('services.soya.tel', '+21654497077') }}"
             class="w-full bg-[var(--theme-bg)] text-[#110A08] py-3.5 rounded-xl font-bold text-[12px] tracking-widest flex justify-center items-center gap-2 hover:bg-[var(--theme-primary)] hover:text-white transition-all">
             <i class="bi bi-telephone-fill"></i>
-            <span>Tel: +{{ $tenant->whatsapp_number ?? '216 55 778 6656' }}</span>
+            <span>Tel: {{ config('services.soya.tel_display', '54 497 077') }}</span>
         </a>
         <button type="button" onclick="App.dismissOrderWaFollowup()"
             class="text-[10px] font-bold text-[#A3B8C9] uppercase tracking-wider hover:text-[#110A08]">Hide</button>
@@ -311,7 +311,8 @@
 
     <script>
         window.TENANT_STORE_NAME = "{{ $tenant->name ?? 'Söya Menzah9' }}";
-        window.TENANT_WA_NUMBER = "{{ $tenant->whatsapp_number ?? '216557786656' }}";
+        window.TENANT_WA_NUMBER = "{{ $tenant->whatsapp_number ?? config('services.soya.whatsapp', '21654497077') }}";
+        window.SOYA_DEFAULT_WA = "{{ config('services.soya.whatsapp', '21654497077') }}";
         window.ALL_PRODUCTS = @json($categories->flatMap->products);
 
         const openProductModal = (id) => App.openModal(id);

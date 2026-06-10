@@ -16,6 +16,7 @@
     ];
 
     $isClosed = $holiday['is_active'] && now()->between($holiday['start'], $holiday['end']);
+    $whatsappNumber = config('services.soya.whatsapp', '21654497077');
 @endphp
 
 @section('content')
@@ -112,6 +113,7 @@
 @push('scripts')
     <script type="module">
         $(function() {
+            const SOYA_WA_NUMBER = @json($whatsappNumber);
             const $whatsappBtn = $('#whatsappBtn');
             const $inputs = $('.input-soya');
             const $scroller = $('.photo-scroller');
@@ -176,7 +178,7 @@ Please send this without modification.`;
                     });
                 }
 
-                window.open(`https://wa.me/216557786656?text=${encodeURIComponent(text)}`, '_blank');
+                window.location.href = `https://wa.me/${SOYA_WA_NUMBER}?text=${encodeURIComponent(text)}`;
             });
 
             // 日付制限

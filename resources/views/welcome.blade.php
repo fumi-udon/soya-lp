@@ -88,12 +88,12 @@
 @php
     $accessAddress = '38 Av. Salah Ben Youssef, Tunis 1013';
     $accessMapsUrl = 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode($accessAddress);
-    $accessTel = config('services.takeout.tel', '+21654497077');
+    $accessTel = config('services.soya.tel', '+21654497077');
     $accessTelHref = 'tel:' . preg_replace('/[^\d+]/', '', $accessTel);
-    $accessTelDisplay = '54 497 077';
+    $accessTelDisplay = config('services.soya.tel_display', '54 497 077');
     $infoMapsShareUrl = 'https://share.google/AuyzAfsXz5CmrBywq';
     $infoInstagramUrl = 'https://www.instagram.com/soya.tunis/';
-    $infoWhatsAppUrl = 'https://wa.me/21654497077';
+    $infoWhatsAppUrl = 'https://wa.me/' . config('services.soya.whatsapp', '21654497077');
     $menuUrl = 'https://soyam9.bistronippon.tn/guest/menu/soya/readonly';
 @endphp
 
@@ -340,11 +340,11 @@
                             <p class="text-sm font-bold mb-1" style="color: #110A08;">Horaires</p>
                             <ul class="space-y-2" style="font-size: 0.8rem; color: #110A08; line-height: 1.5;">
                                 <li>
-                                    <span class="font-semibold" style="color: #A3B8C9;">Mar – Dim</span>
-                                    <span class="block mt-0.5">12h00 – 15h00 | 18h30 – 22h15</span>
+                                    <span class="font-semibold" style="color: #A3B8C9;">Lun – Sam</span>
+                                    <span class="block mt-0.5">12h00 – 15h00 | 18h30 – 22h30</span>
                                 </li>
                                 <li>
-                                    <span class="font-semibold" style="color: #A3B8C9;">Lun</span>
+                                    <span class="font-semibold" style="color: #A3B8C9;">Dim</span>
                                     <span class="block mt-0.5 font-semibold" style="color: #A3B8C9;">Fermé</span>
                                 </li>
                             </ul>

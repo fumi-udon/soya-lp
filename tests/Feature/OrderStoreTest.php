@@ -78,8 +78,8 @@ class OrderStoreTest extends TestCase
 
         $url = $response->json('whatsapp_url');
         $this->assertIsString($url);
-        $this->assertStringStartsWith('https://api.whatsapp.com/send/', $url);
-        $this->assertStringContainsString('phone=216555555555', $url);
+        $this->assertStringStartsWith('https://wa.me/216555555555', $url);
+        $this->assertStringContainsString('text=', $url);
 
         Mail::assertSent(NewOrderNotification::class, function (NewOrderNotification $mail) {
             return $mail->hasTo('kitchen@example.test')

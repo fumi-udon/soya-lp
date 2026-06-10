@@ -30,10 +30,10 @@
             <div class="info-item">
                 <span class="info-label">Tel &amp; WhatsApp</span>
                 <p class="info-value">
-                    <a href="tel:+21654497077" itemprop="telephone" content="+21654497077"
-                       style="color: inherit; text-decoration: none;">54&nbsp;497&nbsp;077</a>
+                    <a href="tel:{{ config('services.soya.tel', '+21654497077') }}" itemprop="telephone" content="{{ config('services.soya.tel', '+21654497077') }}"
+                       style="color: inherit; text-decoration: none;">{{ str_replace(' ', '&nbsp;', config('services.soya.tel_display', '54 497 077')) }}</a>
                     <span aria-hidden="true" style="opacity: 0.4; margin: 0 6px;">·</span>
-                    <a href="https://wa.me/21654497077" target="_blank" rel="noopener noreferrer"
+                    <a href="https://wa.me/{{ config('services.soya.whatsapp', '21654497077') }}" target="_blank" rel="noopener noreferrer"
                        style="color: inherit; text-decoration: none;">WhatsApp</a>
                 </p>
             </div>
