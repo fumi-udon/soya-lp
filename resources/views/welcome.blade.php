@@ -82,6 +82,96 @@
         transform: translateY(0);
     }
 
+    /* ハンバーガーメニュー */
+    .mobile-menu-root {
+        pointer-events: none;
+        visibility: hidden;
+    }
+    .mobile-menu-root.is-open {
+        pointer-events: auto;
+        visibility: visible;
+    }
+    .mobile-menu-overlay {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .mobile-menu-root.is-open .mobile-menu-overlay {
+        opacity: 1;
+    }
+    .mobile-menu-panel {
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .mobile-menu-root.is-open .mobile-menu-panel {
+        transform: translateX(0);
+    }
+    .mobile-menu-trigger {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.65rem;
+        background: rgba(163, 184, 201, 0.2);
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .mobile-menu-trigger:active {
+        background: rgba(163, 184, 201, 0.35);
+    }
+    .mobile-menu-trigger span {
+        display: block;
+        width: 14px;
+        height: 1.5px;
+        background: #110A08;
+        border-radius: 1px;
+        transition: transform 0.25s ease, opacity 0.25s ease;
+    }
+    .mobile-menu-trigger.is-open span:nth-child(1) {
+        transform: translateY(5.5px) rotate(45deg);
+    }
+    .mobile-menu-trigger.is-open span:nth-child(2) {
+        opacity: 0;
+    }
+    .mobile-menu-trigger.is-open span:nth-child(3) {
+        transform: translateY(-5.5px) rotate(-45deg);
+    }
+    .mobile-menu-link {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 0.75rem;
+        border-radius: 1rem;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.2s ease, transform 0.15s ease;
+    }
+    .mobile-menu-link:active {
+        transform: scale(0.98);
+    }
+    .mobile-menu-link:hover {
+        background: rgba(163, 184, 201, 0.12);
+    }
+    .mobile-menu-link--accent {
+        background: #110A08;
+    }
+    .mobile-menu-link--accent:hover {
+        background: #1a100d;
+    }
+    .mobile-menu-icon {
+        flex-shrink: 0;
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(163, 184, 201, 0.18);
+    }
+
     /* New Open ヒーロー — 写真主役・エディトリアル */
     .new-open-hero-card {
         position: relative;
@@ -225,6 +315,7 @@
     $infoInstagramUrl = 'https://www.instagram.com/soya.tunis/';
     $infoWhatsAppUrl = 'https://wa.me/' . config('services.soya.whatsapp', '21654497077');
     $menuUrl = 'https://soyam9.bistronippon.tn/guest/menu/soya/readonly';
+    $reservationUrl = 'https://soyam9.bistronippon.tn/reservation';
 @endphp
 
 @section('content')
@@ -279,18 +370,16 @@
                         北 と 北
                     </p>
                 </div>
-                <a href="https://www.instagram.com/soya.tunis/"
-                   target="_blank" rel="noopener noreferrer"
-                   class="flex items-center justify-center w-9 h-9 rounded-full"
-                   style="background: rgba(163,184,201,0.2);">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                         viewBox="0 0 24 24" fill="none" stroke="#110A08"
-                         stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                        <circle cx="12" cy="12" r="4"/>
-                        <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
-                    </svg>
-                </a>
+                <button type="button"
+                        id="mobile-menu-trigger"
+                        class="mobile-menu-trigger"
+                        aria-expanded="false"
+                        aria-controls="mobile-menu-root"
+                        aria-label="Ouvrir le menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </header>
 
             {{-- MIDDLE: スクロールエリア --}}
@@ -514,7 +603,7 @@
                     <span style="font-size: 0.55rem; font-weight: 600; letter-spacing: 0.05em;">MENU</span>
                 </a>
 
-                <a href="https://soyam9.bistronippon.tn/reservation"
+                <a href="{{ $reservationUrl }}"
                    class="flex flex-col items-center gap-0.5 px-3 nav-tab"
                    style="color: #A3B8C9;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -546,6 +635,145 @@
         </div>{{-- end モバイル専用 --}}
 
     </div>{{-- end .main-container --}}
+
+    {{-- ハンバーガーメニュー --}}
+    <div id="mobile-menu-root"
+         class="mobile-menu-root fixed inset-0 z-[70]"
+         aria-hidden="true"
+         role="dialog"
+         aria-labelledby="mobile-menu-title">
+        <div class="mobile-menu-overlay absolute inset-0 bg-black/30"
+             onclick="closeMobileMenu()"
+             aria-hidden="true"></div>
+
+        <div id="mobile-menu-panel"
+             class="mobile-menu-panel absolute inset-y-0 right-0 left-0 mx-auto max-w-[480px] overflow-y-auto overscroll-contain hide-scrollbar"
+             style="background: #eaedf0;"
+             onclick="event.stopPropagation()">
+            <div class="flex flex-col min-h-full px-5 pt-5 pb-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <p style="font-family: 'Playfair Display', serif; font-size: 0.85rem;
+                                  font-weight: 700; letter-spacing: 0.08em; color: #A3B8C9;">
+                            SÖYA.
+                        </p>
+                        <h2 id="mobile-menu-title"
+                            style="font-size: 1.75rem; font-weight: 700; color: #110A08; margin-top: 0.35rem; line-height: 1.1;">
+                            Menu
+                        </h2>
+                    </div>
+                    <button type="button"
+                            onclick="closeMobileMenu()"
+                            class="flex items-center justify-center w-9 h-9 rounded-xl active:scale-95 transition-transform"
+                            style="background: rgba(163,184,201,0.2);"
+                            aria-label="Fermer le menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                             fill="none" stroke="#110A08" stroke-width="2" stroke-linecap="round">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <nav class="flex flex-col gap-1">
+                    <button type="button"
+                            class="mobile-menu-link w-full text-left"
+                            onclick="closeMobileMenu(); document.getElementById('mobile-scroll-area').scrollTo({top:0,behavior:'smooth'});">
+                        <span class="mobile-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.5" stroke-linecap="round">
+                                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                                <polyline points="9 22 9 12 15 12 15 22"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #110A08;">Accueil</span>
+                            <span class="block text-xs mt-0.5" style="color: #A3B8C9;">Découvrir Söya</span>
+                        </span>
+                    </button>
+
+                    <a href="{{ $menuUrl }}" class="mobile-menu-link">
+                        <span class="mobile-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.5" stroke-linecap="round">
+                                <rect x="3" y="3" width="18" height="4" rx="1"/>
+                                <rect x="3" y="9" width="18" height="4" rx="1"/>
+                                <rect x="3" y="15" width="18" height="4" rx="1"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #110A08;">Menu</span>
+                            <span class="block text-xs mt-0.5" style="color: #A3B8C9;">Carte &amp; spécialités</span>
+                        </span>
+                    </a>
+
+                    <a href="{{ $reservationUrl }}"
+                       class="mobile-menu-link mobile-menu-link--accent">
+                        <span class="mobile-menu-icon" style="background: rgba(255,255,255,0.12);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                                <line x1="16" y1="2" x2="16" y2="6"/>
+                                <line x1="8" y1="2" x2="8" y2="6"/>
+                                <line x1="3" y1="10" x2="21" y2="10"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #ffffff;">Réservation</span>
+                            <span class="block text-xs mt-0.5" style="color: rgba(255,255,255,0.65);">Réserver une table</span>
+                        </span>
+                    </a>
+
+                    <button type="button"
+                            class="mobile-menu-link w-full text-left"
+                            onclick="closeMobileMenu(); document.getElementById('info-section').scrollIntoView({behavior:'smooth'});">
+                        <span class="mobile-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.5" stroke-linecap="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="12" y1="8" x2="12" y2="12"/>
+                                <line x1="12" y1="16" x2="12.01" y2="16"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #110A08;">Infos</span>
+                            <span class="block text-xs mt-0.5" style="color: #A3B8C9;">Horaires &amp; accès</span>
+                        </span>
+                    </button>
+
+                    <a href="{{ $infoInstagramUrl }}"
+                       target="_blank" rel="noopener noreferrer"
+                       class="mobile-menu-link">
+                        <span class="mobile-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.5" stroke-linecap="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                                <circle cx="12" cy="12" r="4"/>
+                                <circle cx="17.5" cy="6.5" r="1" fill="#110A08" stroke="none"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #110A08;">Instagram</span>
+                            <span class="block text-xs mt-0.5" style="color: #A3B8C9;">@soya.tunis</span>
+                        </span>
+                    </a>
+
+                    <a href="{{ $accessTelHref }}" class="mobile-menu-link">
+                        <span class="mobile-menu-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                 fill="none" stroke="#110A08" stroke-width="1.8" stroke-linecap="round">
+                                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8 19.79 19.79 0 01.15 1.19 2 2 0 012.11 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/>
+                            </svg>
+                        </span>
+                        <span>
+                            <span class="block text-sm font-bold" style="color: #110A08;">Téléphone</span>
+                            <span class="block text-xs mt-0.5" style="color: #A3B8C9;">{{ $accessTelDisplay }}</span>
+                        </span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
 
     {{-- Accès ボトムシート（モバイルのみ） --}}
     <div id="access-sheet-root" class="bottom-sheet-root fixed inset-0 z-[60]" aria-hidden="true" role="dialog" aria-labelledby="access-sheet-title">
@@ -859,6 +1087,39 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && accessSheetRoot?.classList.contains('is-open')) {
                 closeAccessSheet();
+            }
+            if (e.key === 'Escape' && mobileMenuRoot?.classList.contains('is-open')) {
+                closeMobileMenu();
+            }
+        });
+
+        // --- ハンバーガーメニュー ---
+        const mobileMenuRoot = document.getElementById('mobile-menu-root');
+        const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+
+        window.openMobileMenu = function() {
+            if (!mobileMenuRoot) return;
+            mobileMenuRoot.classList.add('is-open');
+            mobileMenuRoot.setAttribute('aria-hidden', 'false');
+            mobileMenuTrigger?.classList.add('is-open');
+            mobileMenuTrigger?.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeMobileMenu = function() {
+            if (!mobileMenuRoot) return;
+            mobileMenuRoot.classList.remove('is-open');
+            mobileMenuRoot.setAttribute('aria-hidden', 'true');
+            mobileMenuTrigger?.classList.remove('is-open');
+            mobileMenuTrigger?.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        };
+
+        mobileMenuTrigger?.addEventListener('click', () => {
+            if (mobileMenuRoot?.classList.contains('is-open')) {
+                closeMobileMenu();
+            } else {
+                openMobileMenu();
             }
         });
     </script>
