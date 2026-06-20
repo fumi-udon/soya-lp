@@ -55,7 +55,7 @@
         -webkit-overflow-scrolling: touch;
         overscroll-behavior-y: contain;
         touch-action: pan-y;
-        padding: 1rem 1rem 0.5rem;
+        padding: 0.75rem 1rem 0.5rem;
     }
 
     .soya-app-actions {
@@ -186,11 +186,11 @@
     .soya-input {
         width: 100%;
         border: none;
-        border-bottom: 1px solid rgba(163, 184, 201, 0.45);
+        border-bottom: 1px solid rgba(100, 116, 139, 0.45);
         background: transparent;
-        padding: 0.75rem 0;
-        font-size: 0.9rem;
-        letter-spacing: 0.06em;
+        padding: 0.45rem 0;
+        font-size: 0.875rem;
+        letter-spacing: 0.04em;
         color: #110A08;
         outline: none;
     }
@@ -198,18 +198,53 @@
         border-bottom-color: #110A08;
     }
     .soya-label {
+        font-size: 0.52rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: #5c6570;
+        display: block;
+        margin-bottom: 0.2rem;
+    }
+    .soya-text-muted {
+        color: #5c6570;
+    }
+    .soya-form-card {
+        border-radius: 0.85rem;
+        padding: 0.75rem;
+        background: #ffffff;
+        border: 1px solid rgba(163, 184, 201, 0.3);
+    }
+    .soya-form-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+    .soya-form-row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+    }
+    .soya-page-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #110A08;
+        margin: 0.15rem 0 0;
+        line-height: 1.2;
+    }
+    .soya-page-kicker {
         font-size: 0.55rem;
         font-weight: 700;
-        letter-spacing: 0.22em;
+        color: #5c6570;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
-        color: #A3B8C9;
-        display: block;
-        margin-bottom: 0.5rem;
+        margin: 0;
     }
     .soya-btn-primary {
         width: 100%;
-        padding: 0.8rem;
-        border-radius: 0.85rem;
+        padding: 0.7rem;
+        border-radius: 0.75rem;
         border: none;
         font-size: 0.75rem;
         font-weight: 700;
@@ -225,8 +260,8 @@
     }
     .soya-btn-secondary {
         width: 100%;
-        padding: 0.8rem;
-        border-radius: 0.85rem;
+        padding: 0.7rem;
+        border-radius: 0.75rem;
         border: 1px solid rgba(163, 184, 201, 0.45);
         font-size: 0.75rem;
         font-weight: 700;
@@ -251,10 +286,10 @@
     .soya-recap-item dt {
         font-size: 0.5rem;
         font-weight: 700;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.16em;
         text-transform: uppercase;
-        color: #A3B8C9;
-        margin-bottom: 0.2rem;
+        color: #5c6570;
+        margin-bottom: 0.15rem;
     }
     .soya-recap-item dd {
         font-size: 0.85rem;

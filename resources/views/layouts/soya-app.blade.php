@@ -17,7 +17,7 @@
 
     <div class="soya-app-shell">
 
-        <header class="soya-app-header flex items-center justify-between px-5 py-3 border-b"
+        <header class="soya-app-header flex items-center justify-between px-4 py-2 border-b"
                 style="background-color: #eaedf0; border-color: rgba(163,184,201,0.3);">
             <div>
                 <a href="{{ url('/') }}" style="text-decoration: none; color: inherit;">

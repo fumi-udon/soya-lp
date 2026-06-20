@@ -4,41 +4,35 @@
 
 @section('content')
     @if ($isClosed)
-        <div class="rounded-2xl p-6 text-center"
-             style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-            <h2 style="font-family: 'Playfair Display', serif; font-size: 1.75rem; color: #110A08;">
+        <div class="soya-form-card text-center p-4">
+            <h2 class="soya-page-title" style="font-size: 1.35rem;">
                 {{ $holiday['title'] }}
             </h2>
-            <p class="mt-4 text-sm leading-relaxed" style="color: #4a4a4a;">
+            <p class="mt-3 text-sm leading-relaxed" style="color: #4a4a4a;">
                 {!! nl2br(e($holiday['message'])) !!}
             </p>
-            <p class="mt-5 pt-4 text-xs tracking-widest" style="color: #A3B8C9; border-top: 1px solid rgba(0,0,0,0.05);">
+            <p class="mt-4 pt-3 text-xs tracking-widest soya-text-muted" style="border-top: 1px solid rgba(0,0,0,0.05);">
                 {{ $holiday['period_txt'] }}
             </p>
         </div>
     @else
-        <div class="mb-6">
-            <p style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase;">
-                Réservation
-            </p>
-            <h1 style="font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: #110A08; margin-top: 0.35rem;">
-                Réserver une table
-            </h1>
-            <p class="mt-2 text-sm" style="color: #A3B8C9;">
+        <div class="mb-2">
+            <p class="soya-page-kicker">Réservation</p>
+            <h1 class="soya-page-title">Réserver une table</h1>
+            <p class="mt-1 text-xs leading-snug soya-text-muted">
                 Lun – Sam · 12h00–14h45 · 18h30–21h45
             </p>
         </div>
 
         @if (session('error'))
-            <div class="rounded-2xl p-4 mb-4 text-sm"
+            <div class="rounded-lg px-3 py-2 mb-2 text-xs"
                  style="background: #fff0f0; border: 1px solid rgba(230,0,18,0.25); color: #110A08;">
                 {{ session('error') }}
             </div>
         @endif
 
         <form method="POST" action="{{ route('reservation.confirm.submit') }}"
-              class="rounded-2xl p-5 flex flex-col gap-5"
-              style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
+              id="resForm" class="soya-form-card soya-form-fields">
             @csrf
 
             <div>
@@ -50,7 +44,7 @@
                 @enderror
             </div>
 
-            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div class="soya-form-row-2">
                 <div>
                     <label class="soya-label" for="date">Date</label>
                     <input type="date" id="date" name="date" class="soya-input"
@@ -77,11 +71,11 @@
             </div>
 
             <div>
-                <label class="soya-label" for="guests">Nombre de personnes</label>
+                <label class="soya-label" for="guests">Personnes</label>
                 <select id="guests" name="guests" class="soya-input" required>
                     @for ($i = 1; $i <= 6; $i++)
                         <option value="{{ $i }}" @selected((string) $formValues['guests'] === (string) $i)>
-                            {{ $i }} {{ $i > 1 ? 'personnes' : 'personne' }}
+                            {{ $i }} {{ $i > 1 ? 'pers.' : 'pers.' }}
                         </option>
                     @endfor
                 </select>
@@ -89,13 +83,17 @@
                     <span class="text-danger small d-block mt-1">{{ $message }}</span>
                 @enderror
             </div>
-
-            <button type="submit" class="soya-btn-primary mt-2">
-                Vérifier la réservation
-            </button>
         </form>
     @endif
 @endsection
+
+@if (! $isClosed)
+@section('page-actions')
+    <button type="submit" form="resForm" class="soya-btn-primary">
+        Vérifier la réservation
+    </button>
+@endsection
+@endif
 
 @push('scripts')
     <script type="module">

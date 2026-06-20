@@ -20,7 +20,7 @@
     <div class="rounded-xl p-3"
          style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
         <p class="mb-2"
-           style="font-size: 0.55rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.18em; text-transform: uppercase;">
+           style="font-size: 0.52rem; font-weight: 700; color: #5c6570; letter-spacing: 0.16em; text-transform: uppercase;">
             Récapitulatif
         </p>
 
