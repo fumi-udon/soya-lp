@@ -3,59 +3,56 @@
 @section('title', 'Confirmation | Söya.')
 
 @section('content')
-    <div class="rounded-2xl p-4 mb-5 border-2"
+    <div class="rounded-xl px-3 py-2.5 mb-3 border-2"
          style="background: #fff8e6; border-color: #e60012;">
-        <p class="text-sm font-bold" style="color: #e60012;">
-            ⚠ Votre réservation n'est pas encore confirmée
-        </p>
-        <p class="text-xs mt-2 leading-relaxed" style="color: #110A08;">
-            Veuillez vérifier les informations ci-dessous, puis appuyez sur «&nbsp;Confirmer la réservation&nbsp;» pour finaliser votre demande.
+        <p class="text-xs font-bold leading-snug" style="color: #e60012;">
+            ⚠ Pas encore confirmé — vérifiez puis appuyez sur Confirmer.
         </p>
     </div>
 
     @if (session('error'))
-        <div class="rounded-2xl p-4 mb-4 text-sm"
+        <div class="rounded-xl px-3 py-2.5 mb-3 text-xs"
              style="background: #fff0f0; border: 1px solid rgba(230,0,18,0.25); color: #110A08;">
             {{ session('error') }}
         </div>
     @endif
 
-    <div class="rounded-2xl p-5 mb-5"
+    <div class="rounded-xl p-3.5 mb-2"
          style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-        <p style="font-size: 0.65rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;">
+        <p class="mb-2.5"
+           style="font-size: 0.55rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.18em; text-transform: uppercase;">
             Récapitulatif
         </p>
 
-        <dl class="space-y-4 text-sm">
-            <div>
-                <dt class="soya-label mb-1">Nom</dt>
-                <dd style="color: #110A08; font-weight: 600;">{{ $reservation['name'] }}</dd>
+        <dl class="soya-recap-grid">
+            <div class="soya-recap-item soya-recap-item--full">
+                <dt>Nom</dt>
+                <dd>{{ $reservation['name'] }}</dd>
             </div>
-            <div>
-                <dt class="soya-label mb-1">Date</dt>
-                <dd style="color: #110A08; font-weight: 600;">{{ $formattedDate }}</dd>
+            <div class="soya-recap-item">
+                <dt>Date</dt>
+                <dd>{{ $formattedDate }}</dd>
             </div>
-            <div>
-                <dt class="soya-label mb-1">Heure</dt>
-                <dd style="color: #110A08; font-weight: 600;">{{ $reservation['time'] }}</dd>
+            <div class="soya-recap-item">
+                <dt>Heure</dt>
+                <dd>{{ $reservation['time'] }}</dd>
             </div>
-            <div>
-                <dt class="soya-label mb-1">Nombre de personnes</dt>
-                <dd style="color: #110A08; font-weight: 600;">
-                    {{ $reservation['guests'] }} {{ $reservation['guests'] > 1 ? 'personnes' : 'personne' }}
-                </dd>
+            <div class="soya-recap-item">
+                <dt>Personnes</dt>
+                <dd>{{ $reservation['guests'] }} {{ $reservation['guests'] > 1 ? 'pers.' : 'pers.' }}</dd>
             </div>
         </dl>
     </div>
+@endsection
 
-    <form method="POST" action="{{ route('reservation.store') }}" class="flex flex-col gap-3">
+@section('page-actions')
+    <form method="POST" action="{{ route('reservation.store') }}" class="flex flex-col gap-2">
         @csrf
         <button type="submit" class="soya-btn-primary">
             Confirmer la réservation
         </button>
     </form>
-
-    <a href="{{ route('reservation') }}" class="soya-btn-secondary mt-3">
+    <a href="{{ route('reservation') }}" class="soya-btn-secondary mt-2">
         Modifier
     </a>
 @endsection

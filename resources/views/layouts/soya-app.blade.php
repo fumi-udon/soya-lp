@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="soya-app-html">
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>@yield('title', 'Söya. | prod. bistronippon')</title>
 
     @stack('meta')
@@ -12,13 +12,12 @@
     @stack('page-styles')
 </head>
 
-<body>
+<body class="soya-app-body">
     <div class="concrete-bg"></div>
 
-    <div class="flex flex-col w-full overflow-hidden mx-auto max-w-[480px] min-h-[100dvh]"
-         style="background-color: #eaedf0; color: #110A08;">
+    <div class="soya-app-shell">
 
-        <header class="shrink-0 flex items-center justify-between px-5 py-3 border-b"
+        <header class="soya-app-header flex items-center justify-between px-5 py-3 border-b"
                 style="background-color: #eaedf0; border-color: rgba(163,184,201,0.3);">
             <div>
                 <a href="{{ url('/') }}" style="text-decoration: none; color: inherit;">
@@ -44,9 +43,15 @@
             </button>
         </header>
 
-        <main class="flex-1 overflow-y-auto overscroll-contain hide-scrollbar px-4 py-5"
-              style="-webkit-overflow-scrolling: touch;">
-            @yield('content')
+        <main class="soya-app-main">
+            <div class="soya-app-scroll hide-scrollbar">
+                @yield('content')
+            </div>
+            @hasSection('page-actions')
+                <div class="soya-app-actions">
+                    @yield('page-actions')
+                </div>
+            @endif
         </main>
     </div>
 
@@ -63,7 +68,6 @@
             mobileMenuRoot.setAttribute('aria-hidden', 'false');
             mobileMenuTrigger?.classList.add('is-open');
             mobileMenuTrigger?.setAttribute('aria-expanded', 'true');
-            document.body.style.overflow = 'hidden';
         };
 
         window.closeMobileMenu = function() {
@@ -72,7 +76,6 @@
             mobileMenuRoot.setAttribute('aria-hidden', 'true');
             mobileMenuTrigger?.classList.remove('is-open');
             mobileMenuTrigger?.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
         };
 
         mobileMenuTrigger?.addEventListener('click', () => {

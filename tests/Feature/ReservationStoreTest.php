@@ -39,7 +39,7 @@ class ReservationStoreTest extends TestCase
 
         $this->get(route('reservation.confirm'))
             ->assertOk()
-            ->assertSee('pas encore confirmée')
+            ->assertSee('Pas encore confirmé')
             ->assertSee('Jane Doe');
 
         $this->post('/reservation')

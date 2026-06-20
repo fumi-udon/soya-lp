@@ -1,11 +1,70 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-    body,
-    .concrete-bg { background-color: #eaedf0 !important; }
+    html.soya-app-html,
+    body.soya-app-body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        overscroll-behavior: none;
+        -webkit-text-size-adjust: 100%;
+    }
 
-    .global-header,
-    .global-nav,
-    .site-footer { display: none !important; }
+    body.soya-app-body,
+    body.soya-app-body .concrete-bg {
+        background-color: #eaedf0 !important;
+    }
+
+    body.soya-app-body .global-header,
+    body.soya-app-body .global-nav,
+    body.soya-app-body .site-footer {
+        display: none !important;
+    }
+
+    .soya-app-shell {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 480px;
+        height: 100dvh;
+        height: 100svh;
+        max-height: 100dvh;
+        max-height: 100svh;
+        margin: 0 auto;
+        overflow: hidden;
+        background-color: #eaedf0;
+        color: #110A08;
+    }
+
+    .soya-app-header {
+        flex: 0 0 auto;
+    }
+
+    .soya-app-main {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    .soya-app-scroll {
+        flex: 1 1 0;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        touch-action: pan-y;
+        padding: 1rem 1rem 0.5rem;
+    }
+
+    .soya-app-actions {
+        flex: 0 0 auto;
+        padding: 0.5rem 1rem max(0.75rem, env(safe-area-inset-bottom));
+        background: #eaedf0;
+        border-top: 1px solid rgba(163, 184, 201, 0.3);
+        box-shadow: 0 -4px 16px rgba(17, 10, 8, 0.06);
+    }
 
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar {
@@ -127,8 +186,8 @@
     }
     .soya-btn-primary {
         width: 100%;
-        padding: 1rem;
-        border-radius: 1rem;
+        padding: 0.8rem;
+        border-radius: 0.85rem;
         border: none;
         font-size: 0.75rem;
         font-weight: 700;
@@ -144,8 +203,8 @@
     }
     .soya-btn-secondary {
         width: 100%;
-        padding: 1rem;
-        border-radius: 1rem;
+        padding: 0.8rem;
+        border-radius: 0.85rem;
         border: 1px solid rgba(163, 184, 201, 0.45);
         font-size: 0.75rem;
         font-weight: 700;
@@ -159,7 +218,27 @@
         display: block;
         transition: transform 0.15s ease;
     }
-    .soya-btn-secondary:active {
-        transform: scale(0.98);
+    .soya-recap-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem 0.75rem;
+    }
+    .soya-recap-item--full {
+        grid-column: 1 / -1;
+    }
+    .soya-recap-item dt {
+        font-size: 0.5rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #A3B8C9;
+        margin-bottom: 0.2rem;
+    }
+    .soya-recap-item dd {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #110A08;
+        margin: 0;
+        line-height: 1.3;
     }
 </style>
