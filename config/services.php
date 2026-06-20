@@ -35,6 +35,7 @@ return [
         'whatsapp' => env('SOYA_WHATSAPP', '21654497077'),
         'tel' => env('SOYA_TEL', '+21654497077'),
         'tel_display' => env('SOYA_TEL_DISPLAY', '54 497 077'),
+        'mailtest_token' => env('SOYA_MAILTEST_TOKEN'),
     ],
 
 ];

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use App\Http\Controllers\MailTestController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ReservationController;
 /*
@@ -18,6 +19,9 @@ use App\Http\Controllers\ReservationController;
 // 予約
 Route::get('/reservation', [ReservationController::class, 'create'])->name('reservation');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+
+Route::get('/mailtest', [MailTestController::class, 'show'])->name('mailtest');
+Route::post('/mailtest', [MailTestController::class, 'send'])->name('mailtest.send');
 
 Route::get('/', function (Request $request) {
     $host = $request->getHost();
