@@ -18,7 +18,10 @@ use App\Http\Controllers\ReservationController;
 
 // 予約
 Route::get('/reservation', [ReservationController::class, 'create'])->name('reservation');
+Route::post('/reservation/confirm', [ReservationController::class, 'confirm'])->name('reservation.confirm.submit');
+Route::get('/reservation/confirm', [ReservationController::class, 'showConfirm'])->name('reservation.confirm');
 Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+Route::get('/reservation/complete', [ReservationController::class, 'complete'])->name('reservation.complete');
 
 Route::get('/mailtest', [MailTestController::class, 'show'])->name('mailtest');
 Route::post('/mailtest', [MailTestController::class, 'send'])->name('mailtest.send');

@@ -1,16 +1,18 @@
 <x-mail::message>
-# New Reservation — SÖYA. Menzah 9
+# Nouvelle réservation — SÖYA. Menzah 9
 
-**ID:** {{ $reservationId }}  
-**Guest:** {{ $customerName }}  
+**Réf.:** {{ $reservationId }}  
+**Client:** {{ $customerName }}  
 **Date:** {{ $bookingDate }}  
-**Time:** {{ $bookingTime }}  
-**Party size:** {{ $partySize }} {{ $partySize > 1 ? 'people' : 'person' }}
+**Heure:** {{ $bookingTime }}  
+**Couverts:** {{ $partySize }} {{ $partySize > 1 ? 'personnes' : 'personne' }}
 
 ---
 
-Please confirm this reservation with the guest.
+Une nouvelle demande de réservation a bien été reçue.
 
-Thanks,<br>
+Merci de préparer l'accueil du client. Nous comptons sur vous pour confirmer la disponibilité de la table.
+
+Bonne journée,<br>
 {{ config('mail.from.name') }}
 </x-mail::message>

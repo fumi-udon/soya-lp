@@ -22,22 +22,28 @@ class ReservationStoreTest extends TestCase
         ]);
     }
 
-    public function test_reservation_store_sends_mail(): void
+    public function test_reservation_flow_sends_mail_and_shows_complete_page(): void
     {
         Mail::fake();
 
         $bookableDate = $this->bookableDate();
-        $dateStr = $bookableDate->format('Y-m-d');
-
-        $response = $this->post('/reservation', [
+        $payload = [
             'name' => 'Jane Doe',
-            'date' => $dateStr,
+            'date' => $bookableDate->format('Y-m-d'),
             'time' => '19:00',
             'guests' => 2,
-        ]);
+        ];
 
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
+        $this->post('/reservation/confirm', $payload)
+            ->assertRedirect(route('reservation.confirm'));
+
+        $this->get(route('reservation.confirm'))
+            ->assertOk()
+            ->assertSee('pas encore confirmée')
+            ->assertSee('Jane Doe');
+
+        $this->post('/reservation')
+            ->assertRedirect(route('reservation.complete'));
 
         $expectedSubject = sprintf(
             '[SOYA] Jane Doe, 2P, %s, 19h00',
@@ -51,15 +57,35 @@ class ReservationStoreTest extends TestCase
                 && $mail->partySize === 2
                 && $mail->envelope()->subject === $expectedSubject;
         });
+
+        $this->get(route('reservation.complete'))
+            ->assertOk()
+            ->assertSee('Réservation confirmée')
+            ->assertSee('Jane Doe')
+            ->assertSee('20 minutes');
+
+        $this->get(route('reservation.complete'))
+            ->assertRedirect(route('reservation'));
     }
 
-    public function test_reservation_store_validates_required_fields(): void
+    public function test_reservation_confirm_validates_required_fields(): void
     {
         Mail::fake();
 
-        $response = $this->post('/reservation', []);
+        $response = $this->post('/reservation/confirm', []);
 
+        $response->assertRedirect(route('reservation'));
         $response->assertSessionHasErrors(['name', 'date', 'time', 'guests']);
+        Mail::assertNothingSent();
+    }
+
+    public function test_reservation_store_requires_pending_session(): void
+    {
+        Mail::fake();
+
+        $this->post('/reservation')
+            ->assertRedirect(route('reservation'));
+
         Mail::assertNothingSent();
     }
 
@@ -72,7 +98,7 @@ class ReservationStoreTest extends TestCase
             $this->markTestSkipped('No Sunday within the 7-day booking window.');
         }
 
-        $response = $this->post('/reservation', [
+        $response = $this->post('/reservation/confirm', [
             'name' => 'Jane Doe',
             'date' => $sunday->format('Y-m-d'),
             'time' => '19:00',
@@ -92,7 +118,7 @@ class ReservationStoreTest extends TestCase
             $tooFar->addDay();
         }
 
-        $response = $this->post('/reservation', [
+        $response = $this->post('/reservation/confirm', [
             'name' => 'Jane Doe',
             'date' => $tooFar->format('Y-m-d'),
             'time' => '19:00',
@@ -107,7 +133,7 @@ class ReservationStoreTest extends TestCase
     {
         Mail::fake();
 
-        $response = $this->post('/reservation', [
+        $response = $this->post('/reservation/confirm', [
             'name' => 'Jane Doe',
             'date' => $this->bookableDate()->format('Y-m-d'),
             'time' => '15:00',
