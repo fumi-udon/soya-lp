@@ -37,7 +37,7 @@
     <ul class="nav-links">
         <li><a href="{{ url('/') }}" class="nav-item">Home</a></li>
         <li><a href="https://soyam9.bistronippon.tn/guest/menu/soya/readonly" class="nav-item">Menu</a></li>
-        <li><a href="https://soyam9.bistronippon.tn/reservation" class="nav-item">Reservation</a></li>
+        <li><a href="{{ route('reservation') }}" class="nav-item">Reservation</a></li>
         <li><a href="https://www.instagram.com/soya.tunis/" target="_blank" rel="noopener noreferrer" class="nav-item">Instagram</a></li>
     </ul>
 </nav>

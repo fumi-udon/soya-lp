@@ -36,7 +36,6 @@ class ReservationController extends Controller
         return view('reservation', [
             'holiday' => $this->holidayConfig(),
             'isClosed' => $this->isClosed(),
-            'whatsappNumber' => config('services.soya.whatsapp', '21654497077'),
         ]);
     }
 

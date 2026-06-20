@@ -315,7 +315,7 @@
             <div class="footer__qr-wrap">
                 <div class="footer__qr-text">Scan To Discover</div>
                 <div class="footer__qr">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&amp;data=https://wa.me/{{ config('services.soya.whatsapp', '21654497077') }}&amp;color=2D2B2A&amp;bgcolor=F4F1EB" alt="QR Code SÖYA">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&amp;data=https://soya.bistronippon.tn/reservation&amp;color=2D2B2A&amp;bgcolor=F4F1EB" alt="QR Code SÖYA Reservation">
                 </div>
             </div>
         </div>
