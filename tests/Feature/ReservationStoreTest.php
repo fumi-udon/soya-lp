@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Mail\NewReservationNotification;
+use App\Support\ReservationSlots;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
@@ -24,8 +26,8 @@ class ReservationStoreTest extends TestCase
     {
         Mail::fake();
 
-        $tomorrow = now()->addDay();
-        $dateStr = $tomorrow->format('Y-m-d');
+        $bookableDate = $this->bookableDate();
+        $dateStr = $bookableDate->format('Y-m-d');
 
         $response = $this->post('/reservation', [
             'name' => 'Jane Doe',
@@ -39,7 +41,7 @@ class ReservationStoreTest extends TestCase
 
         $expectedSubject = sprintf(
             '[SOYA] Jane Doe, 2P, %s, 19h00',
-            $tomorrow->format('n/j'),
+            $bookableDate->format('n/j'),
         );
 
         Mail::assertSent(NewReservationNotification::class, function (NewReservationNotification $mail) use ($expectedSubject) {
@@ -59,5 +61,82 @@ class ReservationStoreTest extends TestCase
 
         $response->assertSessionHasErrors(['name', 'date', 'time', 'guests']);
         Mail::assertNothingSent();
+    }
+
+    public function test_reservation_store_rejects_sunday(): void
+    {
+        Mail::fake();
+
+        $sunday = Carbon::now()->next(Carbon::SUNDAY);
+        if ($sunday->gt(now()->addDays(7))) {
+            $this->markTestSkipped('No Sunday within the 7-day booking window.');
+        }
+
+        $response = $this->post('/reservation', [
+            'name' => 'Jane Doe',
+            'date' => $sunday->format('Y-m-d'),
+            'time' => '19:00',
+            'guests' => 2,
+        ]);
+
+        $response->assertSessionHasErrors('date');
+        Mail::assertNothingSent();
+    }
+
+    public function test_reservation_store_rejects_date_beyond_seven_days(): void
+    {
+        Mail::fake();
+
+        $tooFar = now()->addDays(8);
+        while ($tooFar->isSunday()) {
+            $tooFar->addDay();
+        }
+
+        $response = $this->post('/reservation', [
+            'name' => 'Jane Doe',
+            'date' => $tooFar->format('Y-m-d'),
+            'time' => '19:00',
+            'guests' => 2,
+        ]);
+
+        $response->assertSessionHasErrors('date');
+        Mail::assertNothingSent();
+    }
+
+    public function test_reservation_store_rejects_invalid_time_slot(): void
+    {
+        Mail::fake();
+
+        $response = $this->post('/reservation', [
+            'name' => 'Jane Doe',
+            'date' => $this->bookableDate()->format('Y-m-d'),
+            'time' => '15:00',
+            'guests' => 2,
+        ]);
+
+        $response->assertSessionHasErrors('time');
+        Mail::assertNothingSent();
+    }
+
+    public function test_reservation_slots_include_lunch_and_dinner_windows(): void
+    {
+        $slots = ReservationSlots::allowedTimes();
+
+        $this->assertContains('12:00', $slots);
+        $this->assertContains('14:30', $slots);
+        $this->assertContains('18:30', $slots);
+        $this->assertContains('21:30', $slots);
+        $this->assertNotContains('14:45', $slots);
+        $this->assertNotContains('15:00', $slots);
+    }
+
+    protected function bookableDate(): Carbon
+    {
+        $date = now();
+        while ($date->isSunday()) {
+            $date->addDay();
+        }
+
+        return $date;
     }
 }

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Mail\NewReservationNotification;
+use App\Support\ReservationSlots;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class ReservationController extends Controller
@@ -36,6 +39,9 @@ class ReservationController extends Controller
         return view('reservation', [
             'holiday' => $this->holidayConfig(),
             'isClosed' => $this->isClosed(),
+            'timeSlots' => ReservationSlots::allowedTimes(),
+            'minDate' => now()->toDateString(),
+            'maxDate' => now()->addDays(7)->toDateString(),
         ]);
     }
 
@@ -45,10 +51,23 @@ class ReservationController extends Controller
             return back()->with('error', 'Reservations are currently unavailable.');
         }
 
+        $allowedTimes = ReservationSlots::allowedTimes();
+        $maxDate = now()->addDays(7)->toDateString();
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
-            'date' => ['required', 'date', 'after:today'],
-            'time' => ['required', 'in:12:00,19:00'],
+            'date' => [
+                'required',
+                'date',
+                'after_or_equal:today',
+                'before_or_equal:'.$maxDate,
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (Carbon::parse((string) $value)->isSunday()) {
+                        $fail('We are closed on Sundays.');
+                    }
+                },
+            ],
+            'time' => ['required', Rule::in($allowedTimes)],
             'guests' => ['required', 'integer', 'min:1', 'max:6'],
         ]);
 

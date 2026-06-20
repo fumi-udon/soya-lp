@@ -70,7 +70,10 @@
                             <div class="form-group">
                                 <label class="label-min" for="date">SELECT DATE</label>
                                 <input type="date" id="date" name="date" class="input-soya"
-                                    value="{{ old('date') }}" required>
+                                    value="{{ old('date') }}"
+                                    min="{{ $minDate }}"
+                                    max="{{ $maxDate }}"
+                                    required>
                                 @error('date')
                                     <span class="text-danger small d-block mt-1">{{ $message }}</span>
                                 @enderror
@@ -81,8 +84,9 @@
                                 <label class="label-min" for="time">TIME</label>
                                 <select id="time" name="time" class="input-soya" required>
                                     <option value="">--:--</option>
-                                    <option value="12:00" @selected(old('time') === '12:00')>12:00</option>
-                                    <option value="19:00" @selected(old('time') === '19:00')>19:00</option>
+                                    @foreach ($timeSlots as $slot)
+                                        <option value="{{ $slot }}" @selected(old('time') === $slot)>{{ $slot }}</option>
+                                    @endforeach
                                 </select>
                                 @error('time')
                                     <span class="text-danger small d-block mt-1">{{ $message }}</span>
@@ -145,10 +149,18 @@
                 $(this).css('transform', 'scale(1)');
             });
 
-            // --- 2. 日付制限 ---
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            $('#date').attr('min', tomorrow.toISOString().split('T')[0]);
+            // --- 2. 日付制限（当日〜7日先、日曜不可） ---
+            const $date = $('#date');
+            $date.on('change', function() {
+                if (!this.value) {
+                    return;
+                }
+                const picked = new Date(this.value + 'T12:00:00');
+                if (picked.getDay() === 0) {
+                    alert('We are closed on Sundays.');
+                    this.value = '';
+                }
+            });
         });
     </script>
 @endpush
