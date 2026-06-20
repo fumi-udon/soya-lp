@@ -43,7 +43,7 @@
             </button>
         </header>
 
-        <main class="soya-app-main">
+        <main @class(['soya-app-main', 'soya-app-main--compact' => $__env->hasSection('page-actions')])>
             <div class="soya-app-scroll hide-scrollbar">
                 @yield('content')
             </div>

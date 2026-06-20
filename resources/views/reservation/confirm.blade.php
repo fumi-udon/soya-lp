@@ -3,7 +3,7 @@
 @section('title', 'Confirmation | Söya.')
 
 @section('content')
-    <div class="rounded-xl px-3 py-2.5 mb-3 border-2"
+    <div class="rounded-xl px-3 py-2 mb-2 border-2"
          style="background: #fff8e6; border-color: #e60012;">
         <p class="text-xs font-bold leading-snug" style="color: #e60012;">
             ⚠ Pas encore confirmé — vérifiez puis appuyez sur Confirmer.
@@ -17,9 +17,9 @@
         </div>
     @endif
 
-    <div class="rounded-xl p-3.5 mb-2"
+    <div class="rounded-xl p-3"
          style="background: #ffffff; border: 1px solid rgba(163,184,201,0.3);">
-        <p class="mb-2.5"
+        <p class="mb-2"
            style="font-size: 0.55rem; font-weight: 700; color: #A3B8C9; letter-spacing: 0.18em; text-transform: uppercase;">
             Récapitulatif
         </p>
@@ -46,13 +46,13 @@
 @endsection
 
 @section('page-actions')
-    <form method="POST" action="{{ route('reservation.store') }}" class="flex flex-col gap-2">
+    <form method="POST" action="{{ route('reservation.store') }}">
         @csrf
         <button type="submit" class="soya-btn-primary">
             Confirmer la réservation
         </button>
     </form>
-    <a href="{{ route('reservation') }}" class="soya-btn-secondary mt-2">
+    <a href="{{ route('reservation') }}" class="soya-btn-secondary" style="margin-top: 0.5rem;">
         Modifier
     </a>
 @endsection

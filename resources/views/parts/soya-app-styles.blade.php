@@ -66,6 +66,28 @@
         box-shadow: 0 -4px 16px rgba(17, 10, 8, 0.06);
     }
 
+    /* 確認画面など：コンテンツ直下にボタンを置き、間の空白を作らない */
+    .soya-app-main--compact {
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
+        touch-action: pan-y;
+    }
+
+    .soya-app-main--compact .soya-app-scroll {
+        flex: 0 0 auto;
+        min-height: auto;
+        overflow: visible;
+        padding: 0.75rem 1rem 0;
+    }
+
+    .soya-app-main--compact .soya-app-actions {
+        padding: 0.75rem 1rem max(0.75rem, env(safe-area-inset-bottom));
+        border-top: none;
+        box-shadow: none;
+    }
+
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar {
         -ms-overflow-style: none;
